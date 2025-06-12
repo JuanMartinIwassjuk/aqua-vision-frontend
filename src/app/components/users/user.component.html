@@ -1,0 +1,44 @@
+<div class="user-table-container">
+  <h2>User List</h2>
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Roles</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>
+          <span *ngFor="let role of user.roles; let last = last">
+            {{ role.name }}<span *ngIf="!last">, </span>
+          </span>
+        </td>
+        <td>
+   
+          <button class="edit-button" [routerLink]="['/edit', user.id]">
+            <span class="material-icons">edit</span>
+          </button>
+        </td>
+        <td>
+ 
+          <button class="delete-button" (click)="confirmDelete(user.id)">
+            <span class="material-icons">delete</span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div *ngIf="userToDelete !== null" class="delete-confirmation">
+    <p>Are you sure? The user will be deleted permanently.</p>
+    <button (click)="deleteUser()">Yes, Delete</button>
+    <button (click)="cancelDelete()">Cancel</button>
+  </div>
+</div>
