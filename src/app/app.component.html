@@ -15,21 +15,23 @@
     <div class="container-header">
       <div class="logo">
         <a href="/">
-          <img id="logo" class="logo_img" src="/logo.png" alt="Logo">
+          <img id="logo" class="logo_img" src="/logonav.png" alt="Logo">
         </a>
       </div>
         <header>
           <div class="menu-toggle" (click)="toggleMenu()">
             <span class="span_nav" *ngIf="!isMenuActive">☰</span>
             <span class="span_nav" *ngIf="isMenuActive">✖</span>
-          </div> <!-- <-- este cierre estaba faltando -->
+          </div> 
 
           <nav id="menu" [ngClass]="{ 'active': isMenuActive }">
-            <ul class="un-header">
-              <li *ngIf="!isLoggedIn"><a routerLink="/login">Log In</a></li>
+          <ul class="un-header">
+            <ng-container *ngIf="isLoggedIn">
               <li><a routerLink="/users">Users</a></li>
               <li><a routerLink="/create">Create</a></li>
-            </ul>
+            </ng-container>
+          </ul>
+
           </nav>
         </header>
 
