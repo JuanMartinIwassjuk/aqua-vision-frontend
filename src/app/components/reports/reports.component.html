@@ -1,0 +1,25 @@
+<div class="reportes-container">
+  <h2>Reportes de Consumo</h2>
+
+  <div class="chart-card">
+    <h3>Consumo por área</h3>
+    <div class="chart-wrapper">
+      <canvas baseChart
+              [data]="pieChartData"
+              [type]="pieChartType"
+              [options]="pieChartOptions">
+      </canvas>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Consumo mensual</h3>
+    <div class="chart-wrapper">
+      <canvas baseChart
+              [data]="barChartFullData"
+              [type]="'bar'"
+              [options]="barChartOptions">
+      </canvas>
+    </div>
+  </div>
+</div>

@@ -24,8 +24,8 @@ export class LoginComponent {
         this.authService.setToken(response.token);
         console.log(response.message);
 
-        this.router.navigate(['/users']);
-      },
+        this.router.navigate(['/reportes']);
+      }, 
       (error) => {
         console.error('Error during login:', error);
        

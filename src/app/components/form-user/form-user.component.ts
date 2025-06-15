@@ -2,7 +2,7 @@ import { CommonModule, NgIf, NgStyle } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/users/user.service';
+import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 
 
