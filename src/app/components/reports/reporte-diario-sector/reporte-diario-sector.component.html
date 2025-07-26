@@ -1,1 +1,58 @@
-<p>reporte-diario-sector works!</p>
+<div class="reportes-container">
+
+  <h2>Reportes de Consumo del Día</h2>
+
+  <div class="filtros-sectores">
+    <h4>Filtrar por sector</h4>
+    <div *ngFor="let sector of sectoresDisponibles">
+      <label>
+        <input
+          type="checkbox"
+          [(ngModel)]="sectoresSeleccionados[sector]"
+          (change)="actualizarDatos()" />
+        {{ sector }}
+      </label>
+    </div>
+  </div>
+
+
+  <div class="chart-card">
+<h3>Proporción de Consumo por Sector</h3>
+    <div class="chart-wrapper">
+      <canvas
+        baseChart
+        [data]="pieChartData"
+        [type]="pieChartType"
+        [options]="pieChartOptions">
+      </canvas>
+    </div>
+  </div>
+
+
+  <div class="chart-card">
+    <h3>Consumo Diario</h3>
+    <div class="chart-wrapper">
+      <canvas
+        baseChart
+        [data]="barChartData"
+        [type]="'bar'"
+        [options]="barChartOptions">
+      </canvas>
+    </div>
+  </div>
+
+
+<div class="costos">
+  <h4>Costos por Sector</h4>
+  <div class="costo-card" *ngFor="let sector of sectoresFiltrados">
+    <div class="costo-header">
+      <span class="sector-nombre">{{ sector.nombre_sector }}</span>
+      <span class="costo-precio">{{ sector.costo }}</span>
+    </div>
+    <div class="costo-detalle">
+      <span>Consumo total: {{ sector.consumo_total }} L</span>
+      <span>Media: {{ sector.media_consumo }} L</span>
+      <span>Pico: {{ sector.pico_maximo }} L</span>
+    </div>
+  </div>
+</div>
