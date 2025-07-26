@@ -213,11 +213,14 @@ nav ul li a:hover,
 .submenu-list {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -10%;
+  width: 15vw;   
+
   background-color: #008c9e;
   padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.2s ease-out;
@@ -273,6 +276,10 @@ nav ul li a:hover,
   padding: 0;
   align-items: flex-start;
   margin-top: 1vh;
+    left: 0;
+  width: auto;   
+  
+  
 }
 
   .submenu-list li a {
