@@ -5,7 +5,7 @@ import { LoginGuard } from './auth/guards/login';
 export const routes: Routes = [
   {
     path: 'reportes',
-    loadComponent: () => import('./components/reports/reports.component').then(c => c.ReportsComponent),
+    loadComponent: () => import('./components/reports/reporte-diario-hogar/reporte-diario-hogar.component').then(c => c.ReporteDiarioHogarComponent),
     //canActivate: [AuthGuard] 
   },
   {

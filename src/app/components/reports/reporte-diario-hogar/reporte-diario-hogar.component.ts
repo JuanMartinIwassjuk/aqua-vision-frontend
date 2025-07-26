@@ -1,19 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions, ChartType } from 'chart.js';
-import { ReporteService } from '../../services/reports.service';
-
+import { ReporteService } from '../../../services/reports.service'
 
 @Component({
-  selector: 'app-reports',
-  standalone: true,
+  selector: 'app-reporte-diario-hogar',
   imports: [CommonModule, NgChartsModule],
-  templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.css']
+  templateUrl: './reporte-diario-hogar.component.html',
+  styleUrl: './reporte-diario-hogar.component.css'
 })
-export class ReportsComponent implements OnInit {
-  public pieChartType: ChartType = 'pie';
+export class ReporteDiarioHogarComponent {
+
+   public pieChartType: ChartType = 'pie';
 
   public pieChartData: ChartData<'pie', number[], string> = {
     labels: [],
@@ -81,4 +80,7 @@ export class ReportsComponent implements OnInit {
     this.barChartFullData.labels = consumoMensual.labels;
     this.barChartData[0].data = consumoMensual.data;
   }
+
 }
+
+
