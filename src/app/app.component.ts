@@ -11,7 +11,7 @@ import { AuthService } from './auth/serviceAuth/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'CustomCrudFront';
+  title = 'AquaVision';
   isMenuActive = false;
   isDesktop: boolean = window.innerWidth > 768;
 
@@ -34,9 +34,28 @@ export class AppComponent {
     }
   }
 
-  expandedIndex: number | null = null;
+expandedIndex: number | null = null;
 
-  toggleService(index: number) {
-    this.expandedIndex = this.expandedIndex === index ? null : index;
+toggleService(index: number) {
+  this.expandedIndex = this.expandedIndex === index ? null : index;
+}
+
+closeMenu() {
+  if (!this.isDesktop) {
+    this.isMenuActive = false;
   }
+  this.expandedIndex = null;
+}
+
+@HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+if (!target.closest('.submenu')) {
+  this.expandedIndex = null;
+}
+
+}
+
+
+
 }

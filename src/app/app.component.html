@@ -13,25 +13,37 @@
   <main>
    
     <div class="container-header">
-      <div class="logo">
-        <a href="/">
-          <img id="logo" class="logo_img" src="/logonav.png" alt="Logo">
-        </a>
-      </div>
+                <div class="logo">
+                <a href="/">
+                  <img id="logo" class="logo_img" src="/logonav.png" alt="Logo">
+                </a>
+              </div>
         <header>
+
           <div class="menu-toggle" (click)="toggleMenu()">
             <span class="span_nav" *ngIf="!isMenuActive">☰</span>
             <span class="span_nav" *ngIf="isMenuActive">✖</span>
           </div> 
 
-          <nav id="menu" [ngClass]="{ 'active': isMenuActive }">
-          <ul class="un-header">
-            <ng-container *ngIf="isLoggedIn">
+          <nav  id="menu" [ngClass]="{ 'active': isMenuActive }">
+          <ul  class="un-header">
+            <ng-container *ngIf="!isLoggedIn">
               <li><a routerLink="">Mi Cuenta</a></li>
-              <li><a routerLink="">Reportes</a></li>
               <li><a routerLink="">Predicción de Consumo</a></li>
               <li><a routerLink="">Alertas</a></li>
               <li><a routerLink="">Trivias</a></li>
+            <li class="submenu">
+              <a (click)="toggleService(0)">
+                Reportes ▾
+              </a>
+              <ul *ngIf="expandedIndex === 0" class="submenu-list">
+                <li><a routerLink="/reporte-diario-sector" (click)="closeMenu()">▸Consumo diario por Sector</a></li>
+                <li><a routerLink="/reporte-diario-hogar" (click)="closeMenu()">▸Consumo diario hogar</a></li>
+                <li><a routerLink="/reporte-historico-sector" (click)="closeMenu()">▸Consumo histórico por Sector</a></li>
+                <li><a routerLink="/reporte-historico-hogar" (click)="closeMenu()">▸Consumo histórico hogar</a></li>
+              </ul>
+            </li>
+
             </ng-container>
           </ul>
 

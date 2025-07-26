@@ -7,6 +7,9 @@ body, html {
   background-color: #fdfdfd; 
   color: #3a3a3a; 
 }
+body {
+  overflow-x: hidden;
+}
 
 
 main {
@@ -20,7 +23,7 @@ main {
 .container-header {
   background-color: #008C9E; 
   display: grid;
-  grid-template-columns: 0fr 1fr;
+  grid-template-columns: 2fr 5fr;
   align-items: center;
   padding: 0.5rem 1rem;
 }
@@ -32,6 +35,7 @@ main {
   width: 12vh;
   padding: 1vh;
 }
+
 
 .menu-toggle {
   display: none;
@@ -48,24 +52,12 @@ main {
   margin-right: -15vh;
 }
 
-nav {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
 
 nav ul {
   list-style: none;
   display: flex;
   gap: 20px;
   padding: 0;
-}
-
-nav ul li a {
-  color: #fdfdfd;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: color 0.2s ease;
 }
 
 nav ul li a:hover {
@@ -174,4 +166,121 @@ footer {
   .footer-text {
     white-space: normal;
   }
+}
+nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-list {
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  align-items: center;
+}
+
+
+nav ul li a,
+.submenu > a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+nav ul li a:hover,
+.submenu-list li a:hover {
+  color: #00d4ff;
+  
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 2rem;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2000;
+}
+
+
+.submenu {
+  position: relative;
+}
+.submenu-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #008c9e;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.2s ease-out;
+  z-index: 1500;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  nav {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #008c9e;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    animation: slideInTop 0.4s ease forwards;
+    z-index: 9;
+  }
+
+  nav.active {
+    display: flex;
+  }
+
+  .nav-list {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    align-items: flex-start; 
+  }
+
+.submenu-list {
+  position: relative; 
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
+  align-items: flex-start;
+  margin-top: 1vh;
+}
+
+  .submenu-list li a {
+    padding-left: 1rem;
+  
+  }
+#logo {
+  z-index: 10; 
+  position: relative; 
+}
 }
