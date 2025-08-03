@@ -35,23 +35,44 @@ h2 {
 }
 
 .filtros-sectores {
-  grid-column: span 2;
-  background: #fff;
+  background: #ffffff;
   border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: -1rem;
+  padding: 1.5rem;
+  margin: 1rem auto;
+  max-width: 50vw;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+
+}
+
+.filtros-sectores h4 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+
+}
+
+.checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 2rem;
 }
 
 .filtros-sectores label {
-  display: inline-block;
-  margin-right: 1rem;
-  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
 }
 
-.costos {
+
+.costos  ,.filtros{
   grid-column: span 2;
   background: #fff;
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 10px;
   font-size: 1rem;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
@@ -112,4 +133,11 @@ h3, h4 {
   .filtros-sectores, .costos {
     width: 100%;
   }
+
+  .checkbox-grid {
+
+  justify-content: flex-start;
+  gap: 1rem 2rem;
+  margin-left: 5vw;
+}
 }

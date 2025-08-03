@@ -1,21 +1,7 @@
+
 <div class="reportes-container">
 
   <h2>Reportes de Consumo del Día</h2>
-
-  <div class="filtros-sectores">
-    <h4>Filtrar por sector</h4>
-    <div *ngFor="let sector of sectoresDisponibles">
-      <label>
-        <input
-          type="checkbox"
-          [(ngModel)]="sectoresSeleccionados[sector]"
-          (change)="actualizarDatos()" />
-        {{ sector }}
-      </label>
-    </div>
-  </div>
-
-
   <div class="chart-card">
 <h3>Proporción de Consumo por Sector</h3>
     <div class="chart-wrapper">
@@ -42,7 +28,23 @@
   </div>
 
 
+<div class="filtros">
+    <div class="filtros-sectores">
+  <h4>Filtrar sector</h4>
+  <div class="checkbox-grid">
+    <label *ngFor="let sector of sectoresDisponibles">
+      <input
+        type="checkbox"
+        [(ngModel)]="sectoresSeleccionados[sector]"
+        (change)="actualizarDatos()" />
+      {{ sector }}
+    </label>
+  </div>
+</div>
+</div>
 <div class="costos">
+
+<br>
   <h4>Costos por Sector</h4>
   <div class="costo-card" *ngFor="let sector of sectoresFiltrados">
     <div class="costo-header">
@@ -50,9 +52,11 @@
       <span class="costo-precio">{{ sector.costo }}</span>
     </div>
     <div class="costo-detalle">
-      <span>Consumo total: {{ sector.consumo_total }} L</span>
-      <span>Media: {{ sector.media_consumo }} L</span>
-      <span>Pico: {{ sector.pico_maximo }} L</span>
+      <span>{{ sector.consumo_total }} Litros</span>
     </div>
+    
   </div>
+  
 </div>
+
+

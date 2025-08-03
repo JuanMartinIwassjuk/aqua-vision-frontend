@@ -111,12 +111,12 @@ export class ReporteDiarioSectorComponent {
         {
           label: 'Media de consumo',
           data: medias,
-          backgroundColor: '#00BCEB'
+          backgroundColor: '#e5be01'
         },
         {
           label: 'Pico máximo',
           data: picos,
-          backgroundColor: '#F76C5E'
+          backgroundColor: 'red'
         }
       ]
     };
