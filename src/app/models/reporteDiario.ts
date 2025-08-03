@@ -1,4 +1,4 @@
-export interface ReporteSector {
+export interface ReporteDiario {
   nombre_sector: string;
   consumo_total: number;
   media_consumo: number;

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ReporteSector } from '../models/reporteSector';
+import { ReporteDiario } from '../models/reporteDiario';
 @Injectable({
   providedIn: 'root'
 })
 export class ReporteService {
   constructor() {}
 
-  getConsumoDiarioPorSector(): ReporteSector[] {
+  getConsumoDiarioPorSector(): ReporteDiario[] {
     return [
       {
         nombre_sector: 'Baño',

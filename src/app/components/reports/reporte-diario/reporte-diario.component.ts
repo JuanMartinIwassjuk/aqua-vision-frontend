@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions, ChartType } from 'chart.js';
 import { ReporteService } from '../../../services/reports.service'
-import { ReporteSector } from '../../../models/reporteSector';
+import { ReporteDiario } from '../../../models/reporteDiario';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-reporte-diario-sector',
+  selector: 'app-reporte-diario',
   standalone: true,
   imports: [CommonModule, NgChartsModule, FormsModule],
-  templateUrl: './reporte-diario-sector.component.html',
-  styleUrl: './reporte-diario-sector.component.css'
+  templateUrl: './reporte-diario.component.html',
+  styleUrl: './reporte-diario.component.css'
 })
-export class ReporteDiarioSectorComponent {
-  public sectoresOriginales: ReporteSector[] = [];
-  public sectoresFiltrados: ReporteSector[] = [];
+export class ReporteDiarioComponent {
+  public sectoresOriginales: ReporteDiario[] = [];
+  public sectoresFiltrados: ReporteDiario[] = [];
   public cantidadSectores : number=0;
   public esHogar: boolean = false;
 
