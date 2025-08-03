@@ -1,0 +1,22 @@
+<div class="reportes-container">
+  <h2>Reporte Histórico por Mes</h2>
+
+  <div class="chart-card">
+    <h3>Evolución del Consumo Mensual</h3>
+    <div class="chart-wrapper">
+      <canvas baseChart [data]="barChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+    </div>
+  </div>
+
+  <div class="filtros">
+    <div class="filtros-sectores">
+      <h4>Filtrar por sector</h4>
+      <div class="checkbox-grid">
+        <label *ngFor="let sector of sectoresDisponibles">
+          <input type="checkbox" [(ngModel)]="sectoresSeleccionados[sector]" (change)="actualizarDatos()" />
+          {{ sector }}
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,6 +9,11 @@ export const routes: Routes = [
     //canActivate: [AuthGuard] 
   },
   {
+  path: 'reportes/historico',
+  loadComponent: () => import('./components/reports/reporte-historico/reporte-historico.component').then(m => m.ReporteHistoricoComponent)
+  },
+
+  {
     path: 'create',
     loadComponent: () => import('./components/form-user/form-user.component').then(c => c.FormUserComponent),
     //canActivate: [AuthGuard]
