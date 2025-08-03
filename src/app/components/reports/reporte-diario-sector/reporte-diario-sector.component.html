@@ -46,6 +46,7 @@
 
 <br>
   <h4>Costos por Sector</h4>
+  <div class="costos-2">
   <div class="costo-card" *ngFor="let sector of sectoresFiltrados">
     <div class="costo-header">
       <span class="sector-nombre">{{ sector.nombre_sector }}</span>
@@ -54,7 +55,7 @@
     <div class="costo-detalle">
       <span>{{ sector.consumo_total }} Litros</span>
     </div>
-    
+  </div>
   </div>
   
 </div>

@@ -78,13 +78,21 @@ h2 {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
+.costos-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+
 .costo-card {
   background: #F9FAFB;
   border: 1px solid #E0E0E0;
   padding: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   border-radius: 8px;
   transition: box-shadow 0.2s ease;
+
 }
 
 .costo-card:hover {
@@ -140,4 +148,7 @@ h3, h4 {
   gap: 1rem 2rem;
   margin-left: 5vw;
 }
+  .costos-2 {
+    grid-template-columns: 1fr;
+  }
 }
