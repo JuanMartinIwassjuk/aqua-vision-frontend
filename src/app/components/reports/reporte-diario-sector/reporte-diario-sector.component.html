@@ -1,9 +1,9 @@
-
 <div class="reportes-container">
 
   <h2>Reportes de Consumo del Día</h2>
+
   <div class="chart-card">
-<h3>Proporción de Consumo por Sector</h3>
+    <h3>Proporción de Consumo por {{ esHogar ? 'Hogar' : 'Sector' }}</h3>
     <div class="chart-wrapper-proportions">
       <canvas
         baseChart
@@ -13,7 +13,6 @@
       </canvas>
     </div>
   </div>
-
 
   <div class="chart-card">
     <h3>Consumo Diario</h3>
@@ -27,37 +26,34 @@
     </div>
   </div>
 
-
-<div class="filtros">
+  <div **ngIf="esHogar" class="filtros">
     <div class="filtros-sectores">
-  <h4>Filtrar sector</h4>
-  <div class="checkbox-grid">
-    <label *ngFor="let sector of sectoresDisponibles">
-      <input
-        type="checkbox"
-        [(ngModel)]="sectoresSeleccionados[sector]"
-        (change)="actualizarDatos()" />
-      {{ sector }}
-    </label>
-  </div>
-</div>
-</div>
-
-<div class="costos">
-<br>
-  <h4>Costos por Sector</h4>
-  <div class="costos-2">
-  <div class="costo-card" *ngFor="let sector of sectoresFiltrados">
-    <div class="costo-header">
-      <span class="sector-nombre">{{ sector.nombre_sector }}</span>
-      <span class="costo-precio">{{ sector.costo }}</span>
-    </div>
-    <div class="costo-detalle">
-      <span>{{ sector.consumo_total }} Litros</span>
+      <h4>Filtrar {{ esHogar ? 'Hogar' : 'Sector' }}</h4>
+      <div class="checkbox-grid">
+        <label *ngFor="let sector of sectoresDisponibles">
+          <input
+            type="checkbox"
+            [(ngModel)]="sectoresSeleccionados[sector]"
+            (change)="actualizarDatos()" />
+          {{ sector }}
+        </label>
+      </div>
     </div>
   </div>
+
+  <div class="costos">
+    <br />
+    <h4>Costos por {{ esHogar ? 'Hogar' : 'Sector' }}</h4>
+    <div class="costos-2">
+      <div class="costo-card" *ngFor="let sector of sectoresFiltrados">
+        <div class="costo-header">
+          <span class="sector-nombre">{{ sector.nombre_sector }}</span>
+          <span class="costo-precio">{{ sector.costo }}</span>
+        </div>
+        <div class="costo-detalle">
+          <span>{{ sector.consumo_total }} Litros</span>
+        </div>
+      </div>
+    </div>
   </div>
-  
 </div>
-
-

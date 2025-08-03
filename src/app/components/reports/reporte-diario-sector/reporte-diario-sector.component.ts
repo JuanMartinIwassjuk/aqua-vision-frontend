@@ -16,6 +16,8 @@ import { FormsModule } from '@angular/forms';
 export class ReporteDiarioSectorComponent {
   public sectoresOriginales: ReporteSector[] = [];
   public sectoresFiltrados: ReporteSector[] = [];
+  public cantidadSectores : number=0;
+  public esHogar: boolean = false;
 
   public sectoresDisponibles: string[] = [];
   public sectoresSeleccionados: { [nombre: string]: boolean } = {};
@@ -62,8 +64,11 @@ export class ReporteDiarioSectorComponent {
     this.sectoresOriginales = this.reporteService.getConsumoDiarioPorSector();
     this.sectoresDisponibles = this.sectoresOriginales.map(s => s.nombre_sector);
     this.sectoresDisponibles.forEach(nombre => this.sectoresSeleccionados[nombre] = true);
+    this.cantidadSectores=this.sectoresOriginales.length;
+    this.esHogar = this.cantidadSectores === 1;
     this.actualizarDatos();
   }
+
 
   actualizarDatos() {
     const filtrados = this.sectoresOriginales.filter(
