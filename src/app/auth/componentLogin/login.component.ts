@@ -24,12 +24,12 @@ export class LoginComponent {
         this.authService.setToken(response.token);
         console.log(response.message);
 
-        this.router.navigate(['/reportes']);
+        this.router.navigate(['/dashboard']);
       }, 
       (error) => {
         console.error('Error during login:', error);
        
-        this.errorMessage = 'An error occurred during login. Please try again.';
+        this.errorMessage = 'Usuario o contraseña incorrecta';
       }
     );
   }

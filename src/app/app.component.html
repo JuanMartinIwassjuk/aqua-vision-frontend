@@ -1,71 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
 </head>
+
 <body>
   
-  
-  
+<app-nav *ngIf="showHeaderFooter"></app-nav>
+
   <main>
-   
-    <div class="container-header">
-                <div class="logo">
-                <a href="/">
-                  <img id="logo" class="logo_img" src="/logonav.png?v=2" alt="Logo">
-                </a>
-              </div>
-        <header>
-
-          <div class="menu-toggle" (click)="toggleMenu()">
-            <span class="span_nav" *ngIf="!isMenuActive">☰</span>
-            <span class="span_nav" *ngIf="isMenuActive">✖</span>
-          </div> 
-
-          <nav  id="menu" [ngClass]="{ 'active': isMenuActive }">
-          <ul  class="un-header">
-            <ng-container *ngIf="!isLoggedIn">
-              <li><a routerLink="">Mi Cuenta</a></li>
-              <li><a routerLink="">Predicción de Consumo</a></li>
-              <li><a routerLink="">Alertas</a></li>
-              <li><a routerLink="">Trivias</a></li>
-            <li class="submenu">
-              <a (click)="toggleService(0)">
-                Reportes ▾
-              </a>
-              <ul *ngIf="expandedIndex === 0" class="submenu-list">
-                <li><a routerLink="/reportes/diario" (click)="closeMenu()">▸Consumo diario</a></li>
-                <li><a routerLink="/reportes/historico" (click)="closeMenu()">▸Consumo histórico</a></li>
-              </ul>
-            </li>
-
-            </ng-container>
-          </ul>
-
-          </nav>
-        </header>
-
-    </div>
     <router-outlet></router-outlet>
-    
- 
   </main>
-  
-  
-<footer>
-  <div class="footer-container">
-    <span class="footer-text">© 2025 AquaVision - Todos los derechos reservados</span>
-    <div class="footer-divider"></div>
-    <a href="/privacidad" class="footer-link">Política de Privacidad</a>
-    <div class="footer-divider"></div>
-    <a href="/terminos" class="footer-link">Términos y Condiciones</a>
-  </div>
-</footer>
 
+<app-footer *ngIf="showHeaderFooter"></app-footer>
 
-  
 </body>
 </html>

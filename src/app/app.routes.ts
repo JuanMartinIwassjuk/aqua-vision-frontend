@@ -28,5 +28,30 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/componentLogin/login.component').then(c => c.LoginComponent),
     //canActivate: [LoginGuard] 
   },
-  //{ path: '**', redirectTo: 'login' } 
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./components/dashboard/dashboard.component').then(c => c.DashboardComponent),
+    //canActivate: [LoginGuard] 
+  },
+  {
+    path: 'consumption-prediction',
+    loadComponent: () => import('./components/consumption-prediction/consumption-prediction.component').then(c => c.ConsumptionPredictionComponent),
+    //canActivate: [LoginGuard] 
+  },
+  {
+    path: 'consumption-alerts',
+    loadComponent: () => import('./components/consumption-alerts/consumption-alerts.component').then(c => c.ConsumptionAlertsComponent),
+    //canActivate: [LoginGuard] 
+  },
+  {
+    path: 'gamification',
+    loadComponent: () => import('./components/gamification/gamification.component').then(c => c.GamificationComponent),
+    //canActivate: [LoginGuard] 
+  },
+  {
+    path: 'account-settings',
+    loadComponent: () => import('./components/account-settings/account-settings.component').then(c => c.AccountSettingsComponent),
+    //canActivate: [LoginGuard] 
+  },
+  { path: '**', redirectTo: 'login' } 
 ];
