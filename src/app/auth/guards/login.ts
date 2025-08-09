@@ -13,8 +13,7 @@ export class LoginGuard implements CanActivate {
     if (!this.authService.isLoggedIn()) {
       return true;
     } else {
-      // Redirecciona a la ruta por defecto, por ejemplo 'users'
-      return this.router.createUrlTree(['/users']);
+      return this.router.createUrlTree(['/dashboard']);
     }
   }
 }

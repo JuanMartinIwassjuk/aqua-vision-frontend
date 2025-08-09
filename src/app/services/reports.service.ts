@@ -74,4 +74,36 @@ export class ReporteService {
            { nombre_sector: 'Cocina', mes: '2025-12', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
     ];
   }
+
+
+  getConsumoPorHora(): { hora: string; caudal_m3?: number }[] {
+  return [
+    { hora: '00:00', caudal_m3: 5 },
+    { hora: '01:00', caudal_m3: 4 },
+    { hora: '02:00', caudal_m3: 3 },
+    { hora: '03:00', caudal_m3: 3.5 },
+    { hora: '04:00', caudal_m3: 4.2 },
+    { hora: '05:00', caudal_m3: 5.1 },
+    { hora: '06:00', caudal_m3: 6.5 },
+    { hora: '07:00', caudal_m3: 8.3 },
+    { hora: '08:00', caudal_m3: 10 },
+    { hora: '09:00', caudal_m3: 12 },
+    { hora: '10:00', caudal_m3: 15 },
+    { hora: '11:00', caudal_m3: 8 },
+    { hora: '12:00', caudal_m3: 2 },
+    { hora: '13:00', caudal_m3: 3 },
+    { hora: '14:00', caudal_m3: 8 },
+    { hora: '15:00', caudal_m3: 9 },
+    { hora: '16:00', caudal_m3: 13 },
+    { hora: '17:00', caudal_m3: 15 },
+    { hora: '18:00', caudal_m3: 18 },
+    { hora: '19:00', caudal_m3: 20 },
+    { hora: '20:00'},
+    { hora: '21:00'},
+    { hora: '22:00'},
+    { hora: '23:00'}
+  ];
+}
+
+
 }

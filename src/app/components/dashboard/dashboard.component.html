@@ -1,1 +1,27 @@
-<p>To do</p>
+<div class="dashboard-container">
+  <h2>¡Bienvenido de nuevo!</h2>
+
+  <div class="cards-row">
+    <div class="small-card">
+      <h4>To do</h4>
+      <p>Consumo total en los ultimos 7 dias y que cambie de color la card por umbral</p>
+    </div>
+
+    <div class="small-card">
+      <h4>To do</h4>
+      <p>Status de medidores</p>
+    </div>
+  </div>
+
+  <div class="chart-card chart-fullwidth">
+    <div class="chart-wrapper">
+    <h4 class="consumption-hours-title">Tus consumos hasta el momento</h4>
+      <canvas
+        baseChart
+        [data]="lineChartData"
+        [options]="lineChartOptions"
+        type="line">
+      </canvas>
+    </div>
+  </div>
+</div>
