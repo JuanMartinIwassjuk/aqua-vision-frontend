@@ -1,7 +1,15 @@
 <div class="reportes-container">
 
-  <h2>Reportes de Consumo del Día</h2>
+    <div class="exports">
+      
+    <div class="exportar-container">
+      <button class="btn-exportar" (click)="exportarExcel()">📥 Exportar XLSX</button>
+      <button class="btn-exportar-pdf" (click)="exportarPDF()">📄 Exportar PDF</button>
+    </div>
+  </div>
 
+
+  <h2>Reportes de Consumo del Día</h2>
   <div class="chart-card">
     <h3>Proporción de Consumo por {{ esHogar ? 'Hogar' : 'Sector' }}</h3>
     <div class="chart-wrapper-proportions">

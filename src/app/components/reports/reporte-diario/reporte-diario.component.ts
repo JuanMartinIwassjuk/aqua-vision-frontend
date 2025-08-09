@@ -5,6 +5,8 @@ import { ChartData, ChartOptions, ChartType } from 'chart.js';
 import { ReporteService } from '../../../services/reports.service'
 import { ReporteDiario } from '../../../models/reporteDiario';
 import { FormsModule } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-reporte-diario',
@@ -141,4 +143,41 @@ export class ReporteDiarioComponent {
       ]
     };
   }
+
+    exportarExcel(): void {
+      if (!this.sectoresFiltrados || this.sectoresFiltrados.length === 0) {
+        console.warn('No hay datos para exportar');
+        return;
+      }
+
+
+      const datosExportar = this.sectoresFiltrados.map(s => ({
+        'Sector / Hogar': s.nombre_sector,
+        'Consumo Total (L)': s.consumo_total,
+        'Media de Consumo (L)': s.media_consumo,
+        'Pico Máximo (L)': s.pico_maximo,
+        'Costo ($)': s.costo
+      }));
+
+
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExportar);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Reporte Diario');
+
+
+      const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const data: Blob = new Blob([excelBuffer], { type: EXCEL_TYPE });
+      saveAs(
+        data,
+        `reporte_diario_${new Date().toISOString().split('T')[0]}.xlsx`
+      );
+    }
+
+
+  exportarPDF() {
+    console.log("Exportando PDF...");
+  }
+
 }
+
+const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';

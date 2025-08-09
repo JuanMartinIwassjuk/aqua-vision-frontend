@@ -141,7 +141,6 @@ export class ReporteHistoricoComponent implements OnInit {
   }
 
   exportarExcel(): void {
-    // Exportar los datos filtrados en bruto
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.sectoresFiltrados);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Reporte Histórico');
@@ -152,7 +151,7 @@ export class ReporteHistoricoComponent implements OnInit {
   }
 
   exportarPDF() : void {
-    
+
   }
 }
 
