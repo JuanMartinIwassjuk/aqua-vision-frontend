@@ -1,4 +1,14 @@
 <div class="contenedor-reporte">
+
+<div class="exports">
+  <div class="exportar-container">
+    <button class="btn-exportar" (click)="exportarExcel()">📥 Exportar XLSX</button>
+    <button class="btn-exportar pdf" (click)="exportarPDF()">📄 Exportar PDF</button>
+  </div>
+</div>
+
+  <br>
+  
   <div class="filtros-generales">
     <div class="inputs-fecha">
       <div class="inputs-fecha-container">
@@ -9,17 +19,17 @@
           <label>Hasta:
             <input type="date" [(ngModel)]="fechaHasta">
           </label>
-          </div>
-          <div class="inputs-fecha-buttom">
+        </div>
+        <div class="inputs-fecha-buttom">
           <button (click)="aplicarFiltro()">Filtrar</button>
-          </div>
+        </div>
       </div>
     </div>
 
     <div class="resumen-global">
-      <p><strong>Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
-      <p><strong>Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
-      <p><strong>Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
     </div>
   </div>
 
