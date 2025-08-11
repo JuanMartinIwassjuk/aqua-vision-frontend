@@ -155,9 +155,11 @@ export class ReporteHistoricoComponent implements OnInit {
     saveAs(data, `reporte_historico_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  exportarPDF() : void {
-
+  exportarPDF(): void {
+    const url = `http://localhost:8080/reportes/1/descargar-reporte-pdf`; 
+    window.open(url, '_blank');
   }
+
 }
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
