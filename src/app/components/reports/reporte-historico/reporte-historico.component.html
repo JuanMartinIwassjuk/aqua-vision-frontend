@@ -30,7 +30,9 @@
       <p><strong class="blue_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
       <p><strong class="blue_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
       <p><strong class="blue_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_effect">Costo total:</strong> {{ costoGlobal | currency:'USD':'symbol':'1.0-2' }}</p> <!-- 🔹 Nuevo -->
     </div>
+
   </div>
 
   <div class="sectores-cards">
@@ -39,8 +41,10 @@
       <p>Total: {{ sector.value.total | number:'1.0-2' }}</p>
       <p>Media: {{ sector.value.media | number:'1.0-2' }}</p>
       <p>Pico: {{ sector.value.pico | number:'1.0-2' }}</p>
+      <p>Costo: {{ sector.value.costo | currency:'USD':'symbol':'1.0-2' }}</p> <!-- 🔹 Nuevo -->
     </div>
   </div>
+
 
   <div class="grafico-contenedor">
     <h3>Histórico de valores</h3>

@@ -62,16 +62,16 @@ export class ReporteService {
 
     getConsumoMensualPorSector(): ReporteMensual[] {
     return [
-      { nombre_sector: 'Baño', mes: '2025-06', consumo_total: 1000, media_consumo: 33, pico_maximo: 180, costo: '$240.00' },
-      { nombre_sector: 'Cocina', mes: '2025-06', consumo_total: 870, media_consumo: 29, pico_maximo: 160, costo: '$210.00' },
-      { nombre_sector: 'Baño', mes: '2025-07', consumo_total: 1100, media_consumo: 35, pico_maximo: 200, costo: '$270.00' },
-      { nombre_sector: 'Cocina', mes: '2025-07', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
-      { nombre_sector: 'Living', mes: '2025-07', consumo_total: 600, media_consumo: 20, pico_maximo: 90, costo: '$150.00' },
-       { nombre_sector: 'Cocina', mes: '2025-08', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
-        { nombre_sector: 'Cocina', mes: '2025-09', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
-         { nombre_sector: 'Cocina', mes: '2025-10', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
-          { nombre_sector: 'Cocina', mes: '2025-11', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
-           { nombre_sector: 'Cocina', mes: '2025-12', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: '$225.00' },
+      { nombre_sector: 'Baño', mes: '2025-06', consumo_total: 1000, media_consumo: 33, pico_maximo: 180, costo: 240.00 },
+      { nombre_sector: 'Cocina', mes: '2025-06', consumo_total: 870, media_consumo: 29, pico_maximo: 160, costo: 210.00 },
+      { nombre_sector: 'Baño', mes: '2025-07', consumo_total: 1100, media_consumo: 35, pico_maximo: 200, costo: 270.00 },
+      { nombre_sector: 'Cocina', mes: '2025-07', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.00 },
+      { nombre_sector: 'Living', mes: '2025-07', consumo_total: 600, media_consumo: 20, pico_maximo: 90, costo: 150.00 },
+       { nombre_sector: 'Cocina', mes: '2025-08', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
+        { nombre_sector: 'Cocina', mes: '2025-09', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
+         { nombre_sector: 'Cocina', mes: '2025-10', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
+          { nombre_sector: 'Cocina', mes: '2025-11', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
+           { nombre_sector: 'Cocina', mes: '2025-12', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
     ];
   }
 

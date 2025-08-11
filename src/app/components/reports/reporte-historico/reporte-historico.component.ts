@@ -19,7 +19,7 @@ import { saveAs } from 'file-saver';
 export class ReporteHistoricoComponent implements OnInit {
   sectoresOriginales: ReporteMensual[] = [];
   sectoresFiltrados: ReporteMensual[] = [];
-  resumenPorSector: { [sector: string]: { total: number, pico: number, media: number } } = {};
+  resumenPorSector: { [sector: string]: { total: number, pico: number, media: number, costo: number } } = {};
 
   fechaDesde?: string;
   fechaHasta?: string;
@@ -27,6 +27,7 @@ export class ReporteHistoricoComponent implements OnInit {
   totalGlobal: number = 0;
   mediaGlobal: number = 0;
   picoGlobal: number = 0;
+  costoGlobal: number = 0; // 🔹 Nuevo
 
   barChartData: ChartData<'bar'> = { labels: [], datasets: [] };
   barChartOptions: ChartOptions = {
@@ -71,6 +72,7 @@ export class ReporteHistoricoComponent implements OnInit {
     this.totalGlobal = 0;
     this.mediaGlobal = 0;
     this.picoGlobal = 0;
+    this.costoGlobal = 0; // 🔹 Nuevo
     this.resumenPorSector = {};
 
     if (this.sectoresFiltrados.length === 0) return;
@@ -79,12 +81,14 @@ export class ReporteHistoricoComponent implements OnInit {
       this.totalGlobal += registro.consumo_total;
       this.mediaGlobal += registro.media_consumo;
       this.picoGlobal = Math.max(this.picoGlobal, registro.pico_maximo);
+      this.costoGlobal += registro.costo || 0; // 🔹 Nuevo
 
       if (!this.resumenPorSector[registro.nombre_sector]) {
         this.resumenPorSector[registro.nombre_sector] = {
           total: 0,
           pico: 0,
-          media: 0
+          media: 0,
+          costo: 0
         };
       }
 
@@ -92,6 +96,7 @@ export class ReporteHistoricoComponent implements OnInit {
       sectorResumen.total += registro.consumo_total;
       sectorResumen.media += registro.media_consumo;
       sectorResumen.pico = Math.max(sectorResumen.pico, registro.pico_maximo);
+      sectorResumen.costo += registro.costo || 0; 
     }
 
     this.mediaGlobal = this.mediaGlobal / this.sectoresFiltrados.length;

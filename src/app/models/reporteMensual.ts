@@ -4,5 +4,5 @@ export interface ReporteMensual {
   consumo_total: number;
   media_consumo: number;
   pico_maximo: number;
-  costo: string;
+  costo: number;
 }
