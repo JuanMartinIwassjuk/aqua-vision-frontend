@@ -3,6 +3,9 @@ import { ReporteDiario } from '../models/reporteDiario';
 import { ReporteMensual } from '../models/reporteMensual';
 import { HttpClient } from '@angular/common/http';
 import { DateUtilsService } from '../services/date.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -69,19 +72,30 @@ export class ReporteService {
     ];
   }
 
-    getConsumoMensualPorSector(): ReporteMensual[] {
-    return [
-      { nombre_sector: 'Baño', mes: '2025-06', consumo_total: 1000, media_consumo: 33, pico_maximo: 180, costo: 240.00 },
-      { nombre_sector: 'Cocina', mes: '2025-06', consumo_total: 870, media_consumo: 29, pico_maximo: 160, costo: 210.00 },
-      { nombre_sector: 'Baño', mes: '2025-07', consumo_total: 1100, media_consumo: 35, pico_maximo: 200, costo: 270.00 },
-      { nombre_sector: 'Cocina', mes: '2025-07', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.00 },
-      { nombre_sector: 'Living', mes: '2025-07', consumo_total: 600, media_consumo: 20, pico_maximo: 90, costo: 150.00 },
-       { nombre_sector: 'Cocina', mes: '2025-08', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
-        { nombre_sector: 'Cocina', mes: '2025-09', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
-         { nombre_sector: 'Cocina', mes: '2025-10', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
-          { nombre_sector: 'Cocina', mes: '2025-11', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
-           { nombre_sector: 'Cocina', mes: '2025-12', consumo_total: 950, media_consumo: 31, pico_maximo: 170, costo: 225.0 },
-    ];
+  getConsumoMensualPorSector(id: number, fechaDesde: string | Date, fechaHasta: string | Date): Observable<ReporteMensual[]> {
+    const desde = this.dateUtils.formatDateToJava(fechaDesde);
+    const hasta = this.dateUtils.formatDateToJava(fechaHasta);
+
+    const url = `${this.baseUrl}/${id}/consumo-fecha?fechaInicio=${encodeURIComponent(desde)}&fechaFin=${encodeURIComponent(hasta)}`;
+
+    return this.http.get<any>(url).pipe(
+      map((response: any) => {
+        return response.consumosPorSector.map((item: any) => ({
+          nombre_sector: item.sector.nombre,
+          mes: desde.substring(0, 7),
+          consumo_total: item.consumoTotal,
+          media_consumo: item.consumoPromedio,
+          pico_maximo: item.consumoPico,
+          costo: this.calcularCosto(item.consumoTotal)
+        }));
+      })
+
+    );
+  }
+
+  private calcularCosto(consumoTotal: number): number {
+    const tarifaPorUnidad = 0.24; 
+    return consumoTotal * tarifaPorUnidad;
   }
 
 
@@ -118,7 +132,7 @@ export class ReporteService {
   descargarReportePDF(id: number, fechaDesde: string | Date, fechaHasta: string | Date) {
     const desde = this.dateUtils.formatDateToJava(fechaDesde);
     const hasta = this.dateUtils.formatDateToJava(fechaHasta);
-    
+
     const url = `${this.baseUrl}/${id}/descargar-reporte-pdf?fechaInicio=${encodeURIComponent(desde)}&fechaFin=${encodeURIComponent(hasta)}`;
     window.open(url, '_blank');
   }

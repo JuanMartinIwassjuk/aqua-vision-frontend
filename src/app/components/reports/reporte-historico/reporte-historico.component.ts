@@ -17,6 +17,7 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./reporte-historico.component.css']
 })
 export class ReporteHistoricoComponent implements OnInit {
+
   sectoresOriginales: ReporteMensual[] = [];
   sectoresFiltrados: ReporteMensual[] = [];
   resumenPorSector: { [sector: string]: { total: number, pico: number, media: number, costo: number } } = {};
@@ -24,10 +25,10 @@ export class ReporteHistoricoComponent implements OnInit {
   fechaDesde?: string;
   fechaHasta?: string;
 
-  totalGlobal: number = 0;
-  mediaGlobal: number = 0;
-  picoGlobal: number = 0;
-  costoGlobal: number = 0; // 🔹 Nuevo
+  totalGlobal = 0;
+  mediaGlobal = 0;
+  picoGlobal = 0;
+  costoGlobal = 0;
 
   barChartData: ChartData<'bar'> = { labels: [], datasets: [] };
   barChartOptions: ChartOptions = {
@@ -42,37 +43,55 @@ export class ReporteHistoricoComponent implements OnInit {
   ngOnInit(): void {
     const hoy = new Date();
     const haceSeisMeses = new Date();
-    haceSeisMeses.setMonth(hoy.getMonth() - 5); 
+    haceSeisMeses.setMonth(hoy.getMonth() - 5);
 
     this.fechaDesde = haceSeisMeses.toISOString().split('T')[0];
     this.fechaHasta = hoy.toISOString().split('T')[0];
 
-    this.sectoresOriginales = this.reporteService.getConsumoMensualPorSector();
-    this.aplicarFiltro();
+  
+    this.cargarDatos();
   }
+cargarDatos(): void {
+  if (!this.fechaDesde || !this.fechaHasta) return;
 
-  aplicarFiltro(): void {
-    const desde = this.fechaDesde ? new Date(this.fechaDesde) : null;
-    const hasta = this.fechaHasta ? new Date(this.fechaHasta) : null;
-
-    this.sectoresFiltrados = this.sectoresOriginales.filter(registro => {
-      const fechaRegistro = new Date(registro.mes + '-01');
-
-      if (desde && fechaRegistro < desde) return false;
-      if (hasta && fechaRegistro > hasta) return false;
-
-      return true;
+  const id = 2;
+  this.reporteService.getConsumoMensualPorSector(id, this.fechaDesde, this.fechaHasta)
+    .subscribe({
+      next: (data) => {
+        console.log('la data es');
+        console.log(data);
+        this.sectoresOriginales = data;
+        this.aplicarFiltro();  
+      },
+      error: (err) => console.error(err)
     });
+}
 
-    this.calcularResumenes();
-    this.generarGrafico();
-  }
+
+aplicarFiltro(): void {
+  if (!this.fechaDesde || !this.fechaHasta) return;
+
+  const id = 2; 
+  this.reporteService.getConsumoMensualPorSector(id, this.fechaDesde, this.fechaHasta)
+    .subscribe({
+      next: (data) => {
+        this.sectoresOriginales = data;
+        this.sectoresFiltrados = data; 
+        this.calcularResumenes();
+        this.generarGrafico();
+      },
+      error: (err) => {
+        console.error('Error al cargar datos con filtro', err);
+      }
+    });
+}
+
 
   calcularResumenes(): void {
     this.totalGlobal = 0;
     this.mediaGlobal = 0;
     this.picoGlobal = 0;
-    this.costoGlobal = 0; // 🔹 Nuevo
+    this.costoGlobal = 0;
     this.resumenPorSector = {};
 
     if (this.sectoresFiltrados.length === 0) return;
@@ -81,7 +100,7 @@ export class ReporteHistoricoComponent implements OnInit {
       this.totalGlobal += registro.consumo_total;
       this.mediaGlobal += registro.media_consumo;
       this.picoGlobal = Math.max(this.picoGlobal, registro.pico_maximo);
-      this.costoGlobal += registro.costo || 0; // 🔹 Nuevo
+      this.costoGlobal += registro.costo || 0;
 
       if (!this.resumenPorSector[registro.nombre_sector]) {
         this.resumenPorSector[registro.nombre_sector] = {
@@ -96,10 +115,11 @@ export class ReporteHistoricoComponent implements OnInit {
       sectorResumen.total += registro.consumo_total;
       sectorResumen.media += registro.media_consumo;
       sectorResumen.pico = Math.max(sectorResumen.pico, registro.pico_maximo);
-      sectorResumen.costo += registro.costo || 0; 
+      sectorResumen.costo += registro.costo || 0;
     }
 
     this.mediaGlobal = this.mediaGlobal / this.sectoresFiltrados.length;
+     console.log('resumenPorSector', this.resumenPorSector);
   }
 
   generarGrafico(): void {
@@ -122,8 +142,7 @@ export class ReporteHistoricoComponent implements OnInit {
       const pico = Math.max(...reportes.map(r => r.pico_maximo));
 
       const [anio, mes] = key.split('-');
-      const nombreMes = this.obtenerNombreMes(+mes);
-      labels.push(`${nombreMes} ${anio}`);
+      labels.push(`${this.obtenerNombreMes(+mes)} ${anio}`);
       consumosTotales.push(total);
       medias.push(+media.toFixed(2));
       picosMaximos.push(pico);
@@ -132,7 +151,7 @@ export class ReporteHistoricoComponent implements OnInit {
     this.barChartData = {
       labels,
       datasets: [
-        { data: consumosTotales, label: 'Consumo Total',  backgroundColor: '#00D4FF' },
+        { data: consumosTotales, label: 'Consumo Total', backgroundColor: '#00D4FF' },
         { data: medias, label: 'Media Consumo', backgroundColor: '#e5be01' },
         { data: picosMaximos, label: 'Pico Máximo', backgroundColor: 'red' }
       ]
@@ -155,16 +174,13 @@ export class ReporteHistoricoComponent implements OnInit {
     saveAs(data, `reporte_historico_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-exportarPDF(): void {
-  if (this.fechaDesde && this.fechaHasta) {
-    this.reporteService.descargarReportePDF(2, this.fechaDesde, this.fechaHasta);
-  } else {
-    console.warn('Faltan fechas para exportar el PDF');
+  exportarPDF(): void {
+    if (this.fechaDesde && this.fechaHasta) {
+      this.reporteService.descargarReportePDF(2, this.fechaDesde, this.fechaHasta);
+    } else {
+      console.warn('Faltan fechas para exportar el PDF');
+    }
   }
-}
-
-
-
 }
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
