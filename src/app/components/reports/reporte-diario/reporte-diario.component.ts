@@ -174,9 +174,15 @@ export class ReporteDiarioComponent {
     }
 
 
-  exportarPDF() {
-    console.log("Exportando PDF...");
+    exportarPDF(): void {
+    const hoy = new Date();
+    this.reporteService.descargarReportePDF(
+      2, 
+      hoy, 
+      hoy  
+    );
   }
+
 
 }
 
