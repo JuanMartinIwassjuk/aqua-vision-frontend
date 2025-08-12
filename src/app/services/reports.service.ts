@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ReporteDiario } from '../models/reporteDiario';
 import { ReporteMensual } from '../models/reporteMensual';
+import { HttpClient } from '@angular/common/http';
+import { DateUtilsService } from '../services/date.service';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReporteService {
-  constructor() {}
+
+    private readonly baseUrl = 'http://localhost:8080/reportes';
+
+    constructor(
+    private http: HttpClient,
+    private dateUtils: DateUtilsService
+  ) {}
 
   getConsumoDiarioPorSector(): ReporteDiario[] {
     return [
@@ -104,6 +113,15 @@ export class ReporteService {
     { hora: '23:00'}
   ];
 }
+
+
+  descargarReportePDF(id: number, fechaDesde: string | Date, fechaHasta: string | Date) {
+    const desde = this.dateUtils.formatDateToJava(fechaDesde);
+    const hasta = this.dateUtils.formatDateToJava(fechaHasta);
+    
+    const url = `${this.baseUrl}/${id}/descargar-reporte-pdf?fechaInicio=${encodeURIComponent(desde)}&fechaFin=${encodeURIComponent(hasta)}`;
+    window.open(url, '_blank');
+  }
 
 
 }

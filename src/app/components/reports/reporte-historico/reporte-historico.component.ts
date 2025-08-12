@@ -155,15 +155,13 @@ export class ReporteHistoricoComponent implements OnInit {
     saveAs(data, `reporte_historico_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  exportarPDF(): void {
-    const id = 2; 
-    const fechaInicio = '2025-08-01';
-    const fechaFin = '2025-08-11';
-
-    const url = `http://localhost:8080/reportes/${id}/descargar-reporte-pdf?fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}`;
-    
-    window.open(url, '_blank');
+exportarPDF(): void {
+  if (this.fechaDesde && this.fechaHasta) {
+    this.reporteService.descargarReportePDF(2, this.fechaDesde, this.fechaHasta);
+  } else {
+    console.warn('Faltan fechas para exportar el PDF');
   }
+}
 
 
 
