@@ -156,9 +156,16 @@ export class ReporteHistoricoComponent implements OnInit {
   }
 
   exportarPDF(): void {
-    const url = `http://localhost:8080/reportes/1/descargar-reporte-pdf`; 
+    const id = 2; 
+    const fechaInicio = '2025-08-01';
+    const fechaFin = '2025-08-11';
+
+    const url = `http://localhost:8080/reportes/${id}/descargar-reporte-pdf?fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}`;
+    
     window.open(url, '_blank');
   }
+
+
 
 }
 
