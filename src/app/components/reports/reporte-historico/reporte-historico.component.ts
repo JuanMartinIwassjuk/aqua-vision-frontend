@@ -45,47 +45,38 @@ export class ReporteHistoricoComponent implements OnInit {
     const haceSeisMeses = new Date();
     haceSeisMeses.setMonth(hoy.getMonth() - 5);
 
-    this.fechaDesde = haceSeisMeses.toISOString().split('T')[0];
-    this.fechaHasta = hoy.toISOString().split('T')[0];
+    this.fechaDesde = this.formatFechaLocal(haceSeisMeses);
+    this.fechaHasta = this.formatFechaLocal(hoy);
 
-  
-    this.cargarDatos();
+    this.aplicarFiltro();
   }
-cargarDatos(): void {
-  if (!this.fechaDesde || !this.fechaHasta) return;
 
-  const id = 2;
-  this.reporteService.getConsumoMensualPorSector(id, this.fechaDesde, this.fechaHasta)
-    .subscribe({
-      next: (data) => {
-        console.log('la data es');
-        console.log(data);
-        this.sectoresOriginales = data;
-        this.aplicarFiltro();  
-      },
-      error: (err) => console.error(err)
-    });
-}
+  private formatFechaLocal(date: Date): string {
+    // Retorna YYYY-MM-DD usando hora local, no UTC
+    return date.toLocaleDateString('en-CA'); 
+  }
 
+  aplicarFiltro(): void {
+    if (!this.fechaDesde || !this.fechaHasta) return;
 
-aplicarFiltro(): void {
-  if (!this.fechaDesde || !this.fechaHasta) return;
+    // Ajustar fecha hasta al final del día
+    const fechaHastaConHora = new Date(this.fechaHasta);
+    fechaHastaConHora.setHours(23, 59, 59, 999);
 
-  const id = 2; 
-  this.reporteService.getConsumoMensualPorSector(id, this.fechaDesde, this.fechaHasta)
-    .subscribe({
-      next: (data) => {
-        this.sectoresOriginales = data;
-        this.sectoresFiltrados = data; 
-        this.calcularResumenes();
-        this.generarGrafico();
-      },
-      error: (err) => {
-        console.error('Error al cargar datos con filtro', err);
-      }
-    });
-}
-
+    const id = 2;
+    this.reporteService
+      .getConsumoMensualPorSector(id, this.fechaDesde, this.formatFechaLocal(fechaHastaConHora))
+      .subscribe({
+        next: (data) => {
+          console.log('Datos recibidos', data);
+          this.sectoresOriginales = data;
+          this.sectoresFiltrados = data;
+          this.calcularResumenes();
+          this.generarGrafico();
+        },
+        error: (err) => console.error('Error al cargar datos con filtro', err)
+      });
+  }
 
   calcularResumenes(): void {
     this.totalGlobal = 0;
@@ -119,7 +110,7 @@ aplicarFiltro(): void {
     }
 
     this.mediaGlobal = this.mediaGlobal / this.sectoresFiltrados.length;
-     console.log('resumenPorSector', this.resumenPorSector);
+    console.log('resumenPorSector', this.resumenPorSector);
   }
 
   generarGrafico(): void {
