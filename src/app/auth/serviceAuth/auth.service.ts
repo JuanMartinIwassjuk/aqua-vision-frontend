@@ -36,4 +36,46 @@ export class AuthService {
     sessionStorage.removeItem('token');
   }
 
+  private decodeToken(): any {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64);
+      return JSON.parse(payloadJson);
+    } catch (e) {
+      console.error('Error decodificando token', e);
+      return null;
+    }
+  }
+
+
+  isAdmin(): boolean {
+    const decoded = this.decodeToken();
+    if (!decoded || !decoded.authorities) return false;
+    let roles = decoded.authorities;
+    if (typeof roles === 'string') {
+      try {
+        roles = JSON.parse(roles);
+      } catch {
+        return false;
+      }
+    }
+    return roles.some((r: any) => r.authority === 'ROLE_ADMIN');
+  }
+
+  isUser(): boolean {
+    const decoded = this.decodeToken();
+    if (!decoded || !decoded.authorities) return false;
+
+    let roles = decoded.authorities;
+    if (typeof roles === 'string') {
+      try {
+        roles = JSON.parse(roles);
+      } catch {
+        return false;
+      }
+    }
+    return roles.some((r: any) => r.authority === 'ROLE_USER');
+  }
 }

@@ -58,6 +58,12 @@ if (!target.closest('.submenu')) {
 
 }
 
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
 
+  get isUser(): boolean {
+    return this.authService.isUser();
+  }
 
 }

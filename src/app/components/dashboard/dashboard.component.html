@@ -1,27 +1,75 @@
 <div class="dashboard-container">
-  <h2>¡Bienvenido de nuevo!</h2>
+  <h2>
+    {{ isAdmin ? 'Dashboard de Control' : '¡Bienvenido de nuevo!' }}
+  </h2>
 
   <div class="cards-row">
-    <div class="small-card">
-      <h4>To do</h4>
-      <p>Consumo total en los ultimos 7 dias y que cambie de color la card por umbral</p>
-    </div>
 
-    <div class="small-card">
-      <h4>To do</h4>
-      <p>Status de medidores</p>
-    </div>
+    <ng-container *ngIf="isAdmin; else userCard1">
+      <div class="card small-card consumo-flex large-text">
+        Consumo promedio por Hogar
+        <span class="large-text">{{ consumoPromedio }} m³</span>
+      </div>
+    </ng-container>
+    <ng-template #userCard1>
+      <a routerLink="/reportes/diario" class="card small-card consumo-flex large-text">
+        Consumo en lo que va del día: 
+        <span [style.color]="consumoColor" class="large-text">{{ consumoDia }} m³</span>
+      </a>
+    </ng-template>
+
+    <ng-container *ngIf="isAdmin; else userCard2">
+      <div class="card small-card large-text">
+        <div>
+          ✅ <strong>Total de medidores conectados:</strong> {{ medidoresConectadosAdmin }}
+        </div>
+        <div>
+          ⚠️ <strong>Total de medidores desconectados:</strong> {{ medidoresDesconectadosAdmin }}
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #userCard2>
+      <a routerLink="/account-settings" class="card small-card large-text">
+        <div>
+          ✅ <strong>Medidores conectados:</strong> {{ medidoresConectados }}
+        </div>
+        <div>
+          ⚠️ <strong>Medidores desconectados:</strong> {{ medidoresDesconectados }}
+        </div>
+      </a>
+    </ng-template>
+
+    <ng-container *ngIf="isAdmin; else userCard3">
+      <div class="card small-card large-text">
+        <div>
+          🏠 <strong>Total de Hogares:</strong> {{ totalHogaresAdmin }}
+        </div>
+        <div>
+          🎉 <strong>Total de Trivias completadas:</strong> {{ totalTriviasAdmin }}
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #userCard3>
+      <a routerLink="/consumption-alerts" class="card small-card large-text">
+        <div class="info-icon">
+          <span class="icon-circle">i</span> Tenés nuevas Alertas de Consumo
+        </div>
+      </a>
+    </ng-template>
+
   </div>
 
-  <div class="chart-card chart-fullwidth">
-    <div class="chart-wrapper">
-    <h4 class="consumption-hours-title">Tus consumos hasta el momento</h4>
-      <canvas
-        baseChart
-        [data]="lineChartData"
-        [options]="lineChartOptions"
-        type="line">
-      </canvas>
-    </div>
+<div class="chart-card chart-fullwidth">
+  <div class="chart-wrapper">
+    <h4 class="consumption-hours-title">
+      {{ isAdmin ? 'Consumo total de hogares por hora' : 'Tus consumos por hora' }}
+    </h4>
+    <canvas
+      baseChart
+      [data]="isAdmin ? lineChartDataAdmin : lineChartData"
+      [options]="lineChartOptions"
+      type="line">
+    </canvas>
   </div>
+</div>
 </div>

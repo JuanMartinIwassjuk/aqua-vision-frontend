@@ -26,22 +26,22 @@
           </div> 
 
           <nav  id="menu" [ngClass]="{ 'active': isMenuActive }">
-          <ul  class="un-header">
-            <li class="submenu">
-              <a (click)="toggleService(0)">
-                Reportes ▾
-              </a>
+            <ul class="un-header">
+              <li class="submenu" *ngIf="isUser || isAdmin">
+                <a (click)="toggleService(0)">Reportes ▾</a>
               <ul *ngIf="expandedIndex === 0" class="submenu-list">
                 <li><a routerLink="/reportes/diario" (click)="closeMenu()">▸Consumo diario</a></li>
                 <li><a routerLink="/reportes/historico" (click)="closeMenu()">▸Consumo histórico</a></li>
               </ul>
             </li>
-              <li><a routerLink="/consumption-prediction">Predicción de Consumo</a></li>
-              <li><a routerLink="/consumption-alerts">Alertas de Consumo</a></li>
-              <li><a routerLink="/gamification">Trivias</a></li>
-              <li><a routerLink="/account-settings">Mi Cuenta</a></li>
-          </ul>
 
+              <li *ngIf="isUser"><a routerLink="/consumption-prediction">Predicción de Consumo</a></li>
+              <li *ngIf="isUser"><a routerLink="/consumption-alerts">Alertas de Consumo</a></li>
+              <li *ngIf="isUser"><a routerLink="/gamification">Trivias</a></li>
+              <!-- TODO: Revisar si va a ser componente o calculado (ultimo sprint)-->
+              <li *ngIf="isAdmin"><a routerLink="/data-export">Exportar Datos</a></li>
+              <li *ngIf="isUser || isAdmin"><a routerLink="/account-settings">Mi Cuenta</a></li>
+            </ul>
           </nav>
         </header>
 

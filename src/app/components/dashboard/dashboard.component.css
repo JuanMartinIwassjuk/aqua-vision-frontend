@@ -51,6 +51,7 @@ h2 {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
+  align-items: stretch;
   margin-bottom: 1rem;
 }
 
@@ -60,9 +61,7 @@ h2 {
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-
   flex: 1 1 0; 
-  height: 150px; 
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -77,4 +76,86 @@ h2 {
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  color: inherit;
+  text-decoration: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.card-consumo {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: bold;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+}
+
+.small-card {
+  background-color: #FDFDFD;
+  border: 1px solid #E0E0E0;
+  text-align: center;
+}
+
+.small-card div {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+.large-text {
+  font-size: 1.3rem; 
+  font-weight: 600;
+}
+
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #008C9E; 
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.consumo-flex {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap; 
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;           
+  display: block;           
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease;
+}
+
+a.card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
 }

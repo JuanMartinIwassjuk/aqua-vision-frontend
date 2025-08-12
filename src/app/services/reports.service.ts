@@ -115,6 +115,63 @@ export class ReporteService {
 }
 
 
+getConsumoTotalHogaresPorHora(): { hora: string; caudal_m3?: number }[] {
+   return [ 
+      { hora: '00:00', caudal_m3: 300 },
+      { hora: '01:00', caudal_m3: 150 },
+      { hora: '02:00', caudal_m3: 230 },
+      { hora: '03:00', caudal_m3: 150 },
+      { hora: '04:00', caudal_m3: 110 },
+      { hora: '05:00', caudal_m3: 760 },
+      { hora: '06:00', caudal_m3: 950 },
+      { hora: '07:00', caudal_m3: 930 },
+      { hora: '08:00', caudal_m3: 1000 },
+      { hora: '09:00', caudal_m3: 1200 },
+      { hora: '10:00', caudal_m3: 1500 },
+      { hora: '11:00', caudal_m3: 950 },
+      { hora: '12:00', caudal_m3: 1100 },
+      { hora: '13:00', caudal_m3: 1250 },
+      { hora: '14:00', caudal_m3: 920 },
+      { hora: '15:00', caudal_m3: 900 },
+      { hora: '16:00', caudal_m3: 700 },
+      { hora: '17:00', caudal_m3: 800 },
+      { hora: '18:00', caudal_m3: 1250 },
+      { hora: '19:00', caudal_m3: 1500 },
+      { hora: '20:00' },
+      { hora: '21:00' },
+      { hora: '22:00' },
+      { hora: '23:00' }
+    ];
+  }
+
+
+  getConsumoUltimoDia(): number {
+    return 68;
+  }
+
+  getConsumoPromedio(): number {
+    return 52;
+  }
+  getEstadoMedidores(): { conectados: number; desconectados: number } {
+    return {conectados: 3, desconectados: 1};
+  }
+
+  getTotalMedidoresConectados(): number {
+    return 1856;
+  }
+
+  getTotalMedidoresDesconectados(): number {
+    return 13;
+  }
+
+  getTotalHogares(): number {
+    return 1257;
+  }
+
+  getTotalTriviasCompletadas(): number {
+    return 4589;
+  }
+
   descargarReportePDF(id: number, fechaDesde: string | Date, fechaHasta: string | Date) {
     const desde = this.dateUtils.formatDateToJava(fechaDesde);
     const hasta = this.dateUtils.formatDateToJava(fechaHasta);
