@@ -62,14 +62,23 @@ export class ReporteDiarioComponent {
 
   constructor(private reporteService: ReporteService) {}
 
-  ngOnInit(): void {
-    this.sectoresOriginales = this.reporteService.getConsumoDiarioPorSector();
-    this.sectoresDisponibles = this.sectoresOriginales.map(s => s.nombre_sector);
-    this.sectoresDisponibles.forEach(nombre => this.sectoresSeleccionados[nombre] = true);
-    this.cantidadSectores=this.sectoresOriginales.length;
-    this.esHogar = this.cantidadSectores === 1;
-    this.actualizarDatos();
-  }
+ngOnInit(): void {
+  const id = 2; 
+  this.reporteService.getConsumoDiarioPorSector(id).subscribe({
+    next: (data) => {
+      this.sectoresOriginales = data;
+      this.sectoresDisponibles = this.sectoresOriginales.map(s => s.nombre_sector);
+      this.sectoresDisponibles.forEach(nombre => this.sectoresSeleccionados[nombre] = true);
+      this.cantidadSectores = this.sectoresOriginales.length;
+      this.esHogar = this.cantidadSectores === 1;
+      this.actualizarDatos();
+    },
+    error: (err) => {
+      console.error('Error cargando reporte diario', err);
+    }
+  });
+}
+
 
 
   actualizarDatos() {
