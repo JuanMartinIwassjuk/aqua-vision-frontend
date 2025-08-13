@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions, ChartType  } from 'chart.js';
 import { ReporteService } from '../../services/reports.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-consumption-prediction',
@@ -14,6 +15,7 @@ import { ReporteService } from '../../services/reports.service';
 export class ConsumptionPredictionComponent implements OnInit {
 
   public sectoresPrediccion: any[] = [];
+  public homeId!: number;
 
 
   public lineChartData: ChartData<'line'> = {
@@ -37,13 +39,15 @@ export class ConsumptionPredictionComponent implements OnInit {
     plugins: { legend: { position: 'bottom' } }
   };
 
-  constructor(private reporteService: ReporteService) {}
+  constructor(private reporteService: ReporteService,private userService:UserService) {}
 
 ngOnInit(): void {
-  const hogarId = 2; 
   const umbralMensual = 120.5; 
+    this.userService.getAuthenticatedHomeId().subscribe(id => {
+    this.homeId = id;
+    });
 
-  this.reporteService.getPrediccionConsumo(hogarId, umbralMensual).subscribe({
+    this.reporteService.getPrediccionConsumo(this.homeId, umbralMensual).subscribe({
     next: (data) => {
       this.sectoresPrediccion = data;
       this.cargarGraficos();

@@ -7,6 +7,7 @@ import { ReporteDiario } from '../../../models/reporteDiario';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-reporte-diario',
@@ -20,6 +21,7 @@ export class ReporteDiarioComponent {
   public sectoresFiltrados: ReporteDiario[] = [];
   public cantidadSectores : number=0;
   public esHogar: boolean = false;
+  public homeId!: number;
 
   public sectoresDisponibles: string[] = [];
   public sectoresSeleccionados: { [nombre: string]: boolean } = {};
@@ -60,11 +62,10 @@ export class ReporteDiarioComponent {
     }
   };
 
-  constructor(private reporteService: ReporteService) {}
+  constructor(private reporteService: ReporteService,private userService:UserService) {}
 
 ngOnInit(): void {
-  const id = 2; 
-  this.reporteService.getConsumoDiarioPorSector(id).subscribe({
+  this.reporteService.getConsumoDiarioPorSector(this.homeId).subscribe({
     next: (data) => {
       this.sectoresOriginales = data;
       this.sectoresDisponibles = this.sectoresOriginales.map(s => s.nombre_sector);
@@ -77,6 +78,9 @@ ngOnInit(): void {
       console.error('Error cargando reporte diario', err);
     }
   });
+      this.userService.getAuthenticatedHomeId().subscribe(id => {
+    this.homeId = id;
+    });
 }
 
 
@@ -186,7 +190,7 @@ ngOnInit(): void {
     exportarPDF(): void {
     const hoy = new Date();
     this.reporteService.descargarReportePDF(
-      2, 
+      this.homeId, 
       hoy, 
       hoy  
     );

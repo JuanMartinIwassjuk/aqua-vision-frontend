@@ -35,4 +35,8 @@ export class UserService {
       map((response: any) => response as User)
     );
   }
+
+    getAuthenticatedHomeId(): Observable<number> {
+    return this.http.get<number>(`${this.urlBackend}/authenticatedId`);
+  }
 }

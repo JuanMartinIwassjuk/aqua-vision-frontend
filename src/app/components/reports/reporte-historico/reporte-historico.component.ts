@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions, ChartDataset } from 'chart.js';
 import { ReporteService } from '../../../services/reports.service';
+import { UserService } from '../../../services/user.service';
 import { ReporteMensual } from '../../../models/reporteMensual';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -24,6 +25,7 @@ export class ReporteHistoricoComponent implements OnInit {
 
   fechaDesde?: string;
   fechaHasta?: string;
+  homeId!: number;
 
   totalGlobal = 0;
   mediaGlobal = 0;
@@ -38,7 +40,7 @@ export class ReporteHistoricoComponent implements OnInit {
     scales: { y: { beginAtZero: true } }
   };
 
-  constructor(private reporteService: ReporteService) {}
+  constructor(private reporteService: ReporteService, private userService:UserService) {}
 
   ngOnInit(): void {
     const hoy = new Date();
@@ -48,27 +50,29 @@ export class ReporteHistoricoComponent implements OnInit {
     this.fechaDesde = this.formatFechaLocal(haceSeisMeses);
     this.fechaHasta = this.formatFechaLocal(hoy);
 
+
+    this.userService.getAuthenticatedHomeId().subscribe(id => {
+    this.homeId = id;
     this.aplicarFiltro();
+    });
   }
 
   private formatFechaLocal(date: Date): string {
-    // Retorna YYYY-MM-DD usando hora local, no UTC
+
     return date.toLocaleDateString('en-CA'); 
   }
 
   aplicarFiltro(): void {
     if (!this.fechaDesde || !this.fechaHasta) return;
 
-    // Ajustar fecha hasta al final del día
+
     const fechaHastaConHora = new Date(this.fechaHasta);
     fechaHastaConHora.setHours(23, 59, 59, 999);
 
-    const id = 2;
     this.reporteService
-      .getConsumoMensualPorSector(id, this.fechaDesde, this.formatFechaLocal(fechaHastaConHora))
+      .getConsumoMensualPorSector(this.homeId, this.fechaDesde, this.formatFechaLocal(fechaHastaConHora))
       .subscribe({
         next: (data) => {
-          console.log('Datos recibidos', data);
           this.sectoresOriginales = data;
           this.sectoresFiltrados = data;
           this.calcularResumenes();
@@ -167,7 +171,7 @@ export class ReporteHistoricoComponent implements OnInit {
 
   exportarPDF(): void {
     if (this.fechaDesde && this.fechaHasta) {
-      this.reporteService.descargarReportePDF(2, this.fechaDesde, this.fechaHasta);
+      this.reporteService.descargarReportePDF(this.homeId, this.fechaDesde, this.fechaHasta);
     } else {
       console.warn('Faltan fechas para exportar el PDF');
     }
