@@ -19,7 +19,7 @@ export class HomeService {
   }
 
   initHomeId(): void {
-    if (this.homeIdSubject.value === null) {
+
       this.userService.getAuthenticatedHomeId().subscribe({
         next: (id) => {
           this.setHomeId(id);
@@ -28,7 +28,7 @@ export class HomeService {
           console.error('Error obteniendo homeId', err);
         }
       });
-    }
+
   }
 
   public getHomeId(): number | null {
@@ -37,9 +37,9 @@ export class HomeService {
 
   public setHomeId(id: number | null): void {
     if (id !== null) {
-      localStorage.setItem(this.STORAGE_KEY, String(id));
+      sessionStorage.setItem(this.STORAGE_KEY, String(id));
     } else {
-      localStorage.removeItem(this.STORAGE_KEY);
+      sessionStorage.removeItem(this.STORAGE_KEY);
     }
     this.homeIdSubject.next(id);
   }
