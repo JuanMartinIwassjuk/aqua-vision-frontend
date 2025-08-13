@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions, ChartType  } from 'chart.js';
 import { ReporteService } from '../../services/reports.service';
-import { UserService } from '../../services/user.service';
+import { HomeService } from '../../services/home.service';
 
 @Component({
   selector: 'app-consumption-prediction',
@@ -39,12 +39,14 @@ export class ConsumptionPredictionComponent implements OnInit {
     plugins: { legend: { position: 'bottom' } }
   };
 
-  constructor(private reporteService: ReporteService,private userService:UserService) {}
+  constructor(private reporteService: ReporteService,private homeService: HomeService) {}
 
 ngOnInit(): void {
   const umbralMensual = 120.5; 
-    this.userService.getAuthenticatedHomeId().subscribe(id => {
-    this.homeId = id;
+    this.homeService.homeId$.subscribe(id => {
+      if (id !== null) {
+        this.homeId= id;
+      }
     });
 
     this.reporteService.getPrediccionConsumo(this.homeId, umbralMensual).subscribe({

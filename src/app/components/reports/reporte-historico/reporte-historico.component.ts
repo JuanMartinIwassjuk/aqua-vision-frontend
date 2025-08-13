@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions, ChartDataset } from 'chart.js';
 import { ReporteService } from '../../../services/reports.service';
-import { UserService } from '../../../services/user.service';
 import { ReporteMensual } from '../../../models/reporteMensual';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { HomeService } from '../../../services/home.service';
 
 
 @Component({
@@ -40,7 +40,7 @@ export class ReporteHistoricoComponent implements OnInit {
     scales: { y: { beginAtZero: true } }
   };
 
-  constructor(private reporteService: ReporteService, private userService:UserService) {}
+  constructor(private reporteService: ReporteService, private homeService: HomeService) {}
 
   ngOnInit(): void {
     const hoy = new Date();
@@ -50,11 +50,12 @@ export class ReporteHistoricoComponent implements OnInit {
     this.fechaDesde = this.formatFechaLocal(haceSeisMeses);
     this.fechaHasta = this.formatFechaLocal(hoy);
 
-
-    this.userService.getAuthenticatedHomeId().subscribe(id => {
-    this.homeId = id;
-    this.aplicarFiltro();
+    this.homeService.homeId$.subscribe(id => {
+      if (id !== null) {
+        this.homeId= id;
+      }
     });
+    this.aplicarFiltro();
   }
 
   private formatFechaLocal(date: Date): string {

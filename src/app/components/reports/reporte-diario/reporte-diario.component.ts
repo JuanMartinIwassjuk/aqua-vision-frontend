@@ -7,7 +7,7 @@ import { ReporteDiario } from '../../../models/reporteDiario';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { UserService } from '../../../services/user.service';
+import { HomeService } from '../../../services/home.service';
 
 @Component({
   selector: 'app-reporte-diario',
@@ -62,7 +62,7 @@ export class ReporteDiarioComponent {
     }
   };
 
-  constructor(private reporteService: ReporteService,private userService:UserService) {}
+  constructor(private reporteService: ReporteService, private homeService: HomeService) {}
 
 ngOnInit(): void {
   this.reporteService.getConsumoDiarioPorSector(this.homeId).subscribe({
@@ -78,8 +78,10 @@ ngOnInit(): void {
       console.error('Error cargando reporte diario', err);
     }
   });
-      this.userService.getAuthenticatedHomeId().subscribe(id => {
-    this.homeId = id;
+    this.homeService.homeId$.subscribe(id => {
+      if (id !== null) {
+        this.homeId= id;
+      }
     });
 }
 
