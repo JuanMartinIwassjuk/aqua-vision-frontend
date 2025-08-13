@@ -9,7 +9,7 @@
 
   <br>
   
-  <div class="filtros-generales">
+  <div class="filtros-generales slide-top">
     <div class="inputs-fecha">
       <div class="inputs-fecha-container">
         <div>
@@ -35,7 +35,7 @@
 
   </div>
 
-  <div class="sectores-cards">
+  <div class="sectores-cards slide-bottom">
     <div *ngFor="let sector of resumenPorSector | keyvalue" class="card-sector">
       <h3>{{ sector.key }}</h3>
       <p>Total: {{ sector.value.total | number:'1.0-2' }}</p>
@@ -46,7 +46,7 @@
   </div>
 
 
-  <div class="grafico-contenedor">
+  <div class="grafico-contenedor slide-bottom">
     <h3>Histórico de valores</h3>
     <canvas baseChart
             [data]="barChartData"

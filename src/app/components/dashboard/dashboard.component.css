@@ -195,3 +195,13 @@ a.card:hover {
     margin-top: 0;                 
   }
 }
+
+.card, .small-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover, .small-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}

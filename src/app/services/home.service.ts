@@ -6,18 +6,26 @@ import { UserService } from './user.service';
   providedIn: 'root'
 })
 export class HomeService {
-  private homeIdSubject = new BehaviorSubject<number | null>(null);
-  homeId$: Observable<number | null> = this.homeIdSubject.asObservable();
+  private readonly STORAGE_KEY = 'homeId';
+  private homeIdSubject: BehaviorSubject<number | null>;
+  homeId$: Observable<number | null>;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+    const storedHomeId = localStorage.getItem(this.STORAGE_KEY);
+    const initialValue = storedHomeId ? Number(storedHomeId) : null;
+
+    this.homeIdSubject = new BehaviorSubject<number | null>(initialValue);
+    this.homeId$ = this.homeIdSubject.asObservable();
+  }
 
   initHomeId(): void {
     if (this.homeIdSubject.value === null) {
       this.userService.getAuthenticatedHomeId().subscribe({
         next: (id) => {
-          this.homeIdSubject.next(id);
+          this.setHomeId(id);
         },
         error: (err) => {
+          console.error('Error obteniendo homeId', err);
         }
       });
     }
@@ -26,5 +34,13 @@ export class HomeService {
   public getHomeId(): number | null {
     return this.homeIdSubject.value;
   }
-}
 
+  public setHomeId(id: number | null): void {
+    if (id !== null) {
+      localStorage.setItem(this.STORAGE_KEY, String(id));
+    } else {
+      localStorage.removeItem(this.STORAGE_KEY);
+    }
+    this.homeIdSubject.next(id);
+  }
+}

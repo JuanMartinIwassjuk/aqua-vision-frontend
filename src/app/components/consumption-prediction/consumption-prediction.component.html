@@ -1,7 +1,7 @@
 <div class="reportes-container">
   <h2>Predicción de Consumo</h2>  
 
-  <div class="chart-card">
+  <div class="chart-card slide-left">
     <h3>Evolución del Consumo</h3>
     <div class="chart-wrapper">
       <canvas baseChart
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div class="chart-card">
+  <div class="chart-card slide-right">
     <h3>Proyección de Costos</h3>
     <div class="chart-wrapper">
       <canvas baseChart
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="costos">
+  <div class="costos slide-bottom">
     <h4>Detalle por Sector</h4>
     <div class="costos-2">
       <div class="costo-card" *ngFor="let sector of sectoresPrediccion">

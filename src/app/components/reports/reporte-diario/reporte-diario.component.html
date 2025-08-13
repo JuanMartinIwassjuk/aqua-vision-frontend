@@ -10,7 +10,7 @@
 
 
   <h2>Reportes de Consumo del Día</h2>
-  <div class="chart-card">
+  <div class="chart-card slide-left">
     <h3>Proporción de Consumo por {{ esHogar ? 'Hogar' : 'Sector' }}</h3>
     <div class="chart-wrapper-proportions">
       <canvas
@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <div class="chart-card">
+  <div class="chart-card slide-right">
     <h3>Consumo Diario</h3>
     <div class="chart-wrapper">
       <canvas
@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  <div class="costos">
+  <div class="costos slide-bottom">
     <br />
     <h4>Costos por {{ esHogar ? 'Hogar' : 'Sector' }}</h4>
     <div class="costos-2">

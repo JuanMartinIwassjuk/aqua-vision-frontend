@@ -3,7 +3,7 @@
     {{ isAdmin ? 'Dashboard de Control' : '¡Bienvenido de nuevo!' }}
   </h2>
 
-  <div class="cards-row">
+  <div class="cards-row slide-left">
 
     <ng-container *ngIf="isAdmin; else userCard1">
       <div class="card small-card consumo-flex large-text">
@@ -59,7 +59,7 @@
 
   </div>
 
-<div class="chart-card chart-fullwidth">
+<div class="chart-card chart-fullwidth slide-bottom">
   <div class="chart-wrapper">
     <h4 class="consumption-hours-title">
       {{ isAdmin ? 'Consumo total de hogares por hora' : 'Tus consumos por hora' }}
