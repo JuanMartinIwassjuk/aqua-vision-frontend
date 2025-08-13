@@ -78,46 +78,41 @@ export class ReporteDiarioComponent implements OnInit {
     });
   }
 
-  actualizarDatos(): void {
-    const filtrados = this.sectoresOriginales.filter(s => this.sectoresSeleccionados[s.nombre_sector]);
-    this.sectoresFiltrados = filtrados;
+actualizarDatos(): void {
+  const filtrados = this.sectoresOriginales.filter(s => this.sectoresSeleccionados[s.nombre_sector]);
+  this.sectoresFiltrados = filtrados;
 
-    const sectoresAgrupados: Record<string, { consumo_total: number; media_consumo: number; pico_maximo: number; count: number }> = {};
-    filtrados.forEach(s => {
-      if (!sectoresAgrupados[s.nombre_sector]) {
-        sectoresAgrupados[s.nombre_sector] = { consumo_total: 0, media_consumo: 0, pico_maximo: 0, count: 0 };
-      }
-      sectoresAgrupados[s.nombre_sector].consumo_total += s.consumo_total;
-      sectoresAgrupados[s.nombre_sector].media_consumo += s.media_consumo;
-      sectoresAgrupados[s.nombre_sector].pico_maximo = Math.max(
-        sectoresAgrupados[s.nombre_sector].pico_maximo,
-        s.pico_maximo
-      );
-      sectoresAgrupados[s.nombre_sector].count++;
-    });
+  const sectoresAgrupados: Record<string, { consumo_total: number; media_consumo: number; count: number }> = {};
+  filtrados.forEach(s => {
+    if (!sectoresAgrupados[s.nombre_sector]) {
+      sectoresAgrupados[s.nombre_sector] = { consumo_total: 0, media_consumo: 0, count: 0 };
+    }
+    sectoresAgrupados[s.nombre_sector].consumo_total += s.consumo_total;
+    sectoresAgrupados[s.nombre_sector].media_consumo += s.media_consumo;
+    sectoresAgrupados[s.nombre_sector].count++;
+  });
 
-    const labels = Object.keys(sectoresAgrupados);
-    const consumoTotales = labels.map(sector => sectoresAgrupados[sector].consumo_total);
-    const medias = labels.map(sector => sectoresAgrupados[sector].media_consumo / sectoresAgrupados[sector].count);
-    const picos = labels.map(sector => sectoresAgrupados[sector].pico_maximo);
+  const labels = Object.keys(sectoresAgrupados);
+  const consumoTotales = labels.map(sector => sectoresAgrupados[sector].consumo_total);
+  const medias = labels.map(sector => sectoresAgrupados[sector].media_consumo / sectoresAgrupados[sector].count);
 
-    this.barChartData = {
-      labels,
-      datasets: [
-        { label: 'Consumo total', data: consumoTotales, backgroundColor: '#00D4FF' },
-        { label: 'Media de consumo', data: medias, backgroundColor: '#e5be01' },
-        { label: 'Pico máximo', data: picos, backgroundColor: 'red' }
-      ]
-    };
+  this.barChartData = {
+    labels,
+    datasets: [
+      { label: 'Consumo total', data: consumoTotales, backgroundColor: '#00D4FF' },
+      { label: 'Media de consumo', data: medias, backgroundColor: '#e5be01' }
+    ]
+  };
 
-    const colorPalette = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
-    const backgroundColor = labels.map((_, i) => colorPalette[i % colorPalette.length]);
+  const colorPalette = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
+  const backgroundColor = labels.map((_, i) => colorPalette[i % colorPalette.length]);
 
-    this.pieChartData = {
-      labels,
-      datasets: [{ label: 'Proporción de consumo por sector', data: consumoTotales, backgroundColor }]
-    };
-  }
+  this.pieChartData = {
+    labels,
+    datasets: [{ label: 'Proporción de consumo por sector', data: consumoTotales, backgroundColor }]
+  };
+}
+
 
   exportarExcel(): void {
     if (!this.sectoresFiltrados.length) {
@@ -125,13 +120,13 @@ export class ReporteDiarioComponent implements OnInit {
       return;
     }
 
-    const datosExportar = this.sectoresFiltrados.map(s => ({
-      'Sector / Hogar': s.nombre_sector,
-      'Consumo Total (L)': s.consumo_total,
-      'Media de Consumo (L)': s.media_consumo,
-      'Pico Máximo (L)': s.pico_maximo,
-      'Costo ($)': s.costo
-    }));
+const datosExportar = this.sectoresFiltrados.map(s => ({
+  'Sector / Hogar': s.nombre_sector,
+  'Consumo Total (L)': s.consumo_total,
+  'Media de Consumo (L)': s.media_consumo,
+  'Costo ($)': s.costo
+}));
+
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExportar);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();

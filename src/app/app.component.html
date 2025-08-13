@@ -28,7 +28,7 @@
           <nav  id="menu" [ngClass]="{ 'active': isMenuActive }">
             <ul class="un-header">
               <li *ngIf="isUser || isAdmin"><a routerLink="/dashboard">Inicio</a></li>
-              <li class="submenu" *ngIf="isUser || isAdmin">
+              <li class="submenu" *ngIf="!isAdmin">
                 <a (click)="toggleService(0)">Reportes ▾</a>
               <ul *ngIf="expandedIndex === 0" class="submenu-list">
                 <li><a routerLink="/reportes/diario" (click)="closeMenu()">▸Consumo diario</a></li>
