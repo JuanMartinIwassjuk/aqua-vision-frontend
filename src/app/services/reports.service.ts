@@ -167,4 +167,26 @@ getConsumoTotalHogaresPorHora(): { hora: string; caudal_m3?: number }[] {
   }
 
 
+getPrediccionConsumo(hogarId: number, umbralMensual: number): Observable<any[]> {
+  const url = `${this.baseUrl}/${hogarId}/proyeccion?umbralMensual=${umbralMensual}`;
+  return this.http.get<any>(url).pipe(
+    map((response: any) => {
+    
+      return response.sectores.map((item: any) => ({
+        sectorId: item.sectorId,
+        nombre_sector: item.nombreSector,
+        consumo_actual: item.consumoActualMes,
+        consumo_proyectado: item.consumoProyectadoMes,
+        tendencia: item.tendencia,
+        estadoConsumo: item.estadoConsumo,
+        costo_actual: this.calcularCosto(item.consumoActualMes),
+        costo_proyectado: this.calcularCosto(item.consumoProyectadoMes)
+      }));
+    })
+  );
+}
+
+
+
+
 }
