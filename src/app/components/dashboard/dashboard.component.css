@@ -48,8 +48,9 @@ h2 {
 
 .cards-row {
   grid-column: span 2;
-  display: flex;
+  display: grid;
   gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   justify-content: center;
   align-items: stretch;
   margin-bottom: 1rem;
@@ -158,4 +159,39 @@ h2 {
 a.card:hover {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   cursor: pointer;
+}
+
+.cards-row .consumo-flex {
+  display: flex !important;
+  flex-direction: column !important; 
+  align-items: center;
+  text-align: center;
+  white-space: normal !important;      
+  gap: 0.25rem;
+}
+
+
+.cards-row .consumo-flex .large-text {
+  display: block;
+  margin-top: 0.25rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+
+@media (max-width: 768px) {
+  .cards-row {
+    grid-template-columns: 1fr; 
+  }
+}
+
+@media (min-width: 992px) {
+  .cards-row .consumo-flex {
+    flex-direction: row !important;
+    flex-wrap: wrap;                   
+    gap: 0.5rem;
+  }
+  .cards-row .consumo-flex .large-text {
+    margin-top: 0;                 
+  }
 }
