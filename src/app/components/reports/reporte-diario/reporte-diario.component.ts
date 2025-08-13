@@ -16,94 +16,76 @@ import { HomeService } from '../../../services/home.service';
   templateUrl: './reporte-diario.component.html',
   styleUrl: './reporte-diario.component.css'
 })
-export class ReporteDiarioComponent {
+export class ReporteDiarioComponent implements OnInit {
   public sectoresOriginales: ReporteDiario[] = [];
   public sectoresFiltrados: ReporteDiario[] = [];
-  public cantidadSectores : number=0;
-  public esHogar: boolean = false;
+  public cantidadSectores = 0;
+  public esHogar = false;
   public homeId!: number;
 
   public sectoresDisponibles: string[] = [];
   public sectoresSeleccionados: { [nombre: string]: boolean } = {};
 
-  public barChartData: ChartData<'bar'> = {
-    labels: [],
-    datasets: []
-  };
-
+  public barChartData: ChartData<'bar'> = { labels: [], datasets: [] };
   public barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom'
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
+    plugins: { legend: { position: 'bottom' } },
+    scales: { y: { beginAtZero: true } }
   };
 
-  public pieChartData: ChartData<'doughnut'> = {
-    labels: [],
-    datasets: []
-  };
-
+  public pieChartData: ChartData<'doughnut'> = { labels: [], datasets: [] };
   public pieChartType: ChartType = 'doughnut';
-
   public pieChartOptions: ChartOptions = {
     responsive: true,
-    plugins: {
-      legend: {
-        position: 'bottom'
-      }
-    }
+    plugins: { legend: { position: 'bottom' } }
   };
 
-  constructor(private reporteService: ReporteService, private homeService: HomeService) {}
+  constructor(
+    private reporteService: ReporteService,
+    private homeService: HomeService
+  ) {}
 
-ngOnInit(): void {
-  this.reporteService.getConsumoDiarioPorSector(this.homeId).subscribe({
-    next: (data) => {
-      this.sectoresOriginales = data;
-      this.sectoresDisponibles = this.sectoresOriginales.map(s => s.nombre_sector);
-      this.sectoresDisponibles.forEach(nombre => this.sectoresSeleccionados[nombre] = true);
-      this.cantidadSectores = this.sectoresOriginales.length;
-      this.esHogar = this.cantidadSectores === 1;
-      this.actualizarDatos();
-    },
-    error: (err) => {
-      console.error('Error cargando reporte diario', err);
-    }
-  });
-    this.homeService.homeId$.subscribe(id => {
-      if (id !== null) {
-        this.homeId= id;
+  ngOnInit(): void {
+ 
+    this.homeService.initHomeId();
+
+
+    this.homeService.homeId$
+      .subscribe(id => {
+        if (id !== null) {
+          this.homeId = id;
+          this.cargarReporte(id);
+        } else {
+          console.error('No se pudo obtener el homeId');
+        }
+      });
+  }
+
+  private cargarReporte(homeId: number): void {
+    this.reporteService.getConsumoDiarioPorSector(homeId).subscribe({
+      next: (data) => {
+        this.sectoresOriginales = data;
+        this.sectoresDisponibles = data.map(s => s.nombre_sector);
+        this.sectoresDisponibles.forEach(nombre => this.sectoresSeleccionados[nombre] = true);
+        this.cantidadSectores = data.length;
+        this.esHogar = this.cantidadSectores === 1;
+        this.actualizarDatos();
+      },
+      error: (err) => {
+        console.error('Error cargando reporte diario', err);
       }
     });
-}
+  }
 
-
-
-  actualizarDatos() {
-    const filtrados = this.sectoresOriginales.filter(
-      s => this.sectoresSeleccionados[s.nombre_sector]
-    );
+  actualizarDatos(): void {
+    const filtrados = this.sectoresOriginales.filter(s => this.sectoresSeleccionados[s.nombre_sector]);
     this.sectoresFiltrados = filtrados;
 
-
-    const sectoresAgrupados: { [sector: string]: { consumo_total: number, media_consumo: number, pico_maximo: number, count: number } } = {};
-
+    const sectoresAgrupados: Record<string, { consumo_total: number; media_consumo: number; pico_maximo: number; count: number }> = {};
     filtrados.forEach(s => {
       if (!sectoresAgrupados[s.nombre_sector]) {
-        sectoresAgrupados[s.nombre_sector] = {
-          consumo_total: 0,
-          media_consumo: 0,
-          pico_maximo: 0,
-          count: 0
-        };
+        sectoresAgrupados[s.nombre_sector] = { consumo_total: 0, media_consumo: 0, pico_maximo: 0, count: 0 };
       }
       sectoresAgrupados[s.nombre_sector].consumo_total += s.consumo_total;
       sectoresAgrupados[s.nombre_sector].media_consumo += s.media_consumo;
@@ -111,94 +93,59 @@ ngOnInit(): void {
         sectoresAgrupados[s.nombre_sector].pico_maximo,
         s.pico_maximo
       );
-      sectoresAgrupados[s.nombre_sector].count += 1;
+      sectoresAgrupados[s.nombre_sector].count++;
     });
 
     const labels = Object.keys(sectoresAgrupados);
     const consumoTotales = labels.map(sector => sectoresAgrupados[sector].consumo_total);
-    const medias = labels.map(sector =>
-      sectoresAgrupados[sector].media_consumo / sectoresAgrupados[sector].count
-    );
+    const medias = labels.map(sector => sectoresAgrupados[sector].media_consumo / sectoresAgrupados[sector].count);
     const picos = labels.map(sector => sectoresAgrupados[sector].pico_maximo);
-
 
     this.barChartData = {
       labels,
       datasets: [
-        {
-          label: 'Consumo total',
-          data: consumoTotales,
-          backgroundColor: '#00D4FF'
-        },
-        {
-          label: 'Media de consumo',
-          data: medias,
-          backgroundColor: '#e5be01'
-        },
-        {
-          label: 'Pico máximo',
-          data: picos,
-          backgroundColor: 'red'
-        }
+        { label: 'Consumo total', data: consumoTotales, backgroundColor: '#00D4FF' },
+        { label: 'Media de consumo', data: medias, backgroundColor: '#e5be01' },
+        { label: 'Pico máximo', data: picos, backgroundColor: 'red' }
       ]
     };
-
 
     const colorPalette = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
     const backgroundColor = labels.map((_, i) => colorPalette[i % colorPalette.length]);
 
     this.pieChartData = {
       labels,
-      datasets: [
-        {
-          label: 'Proporción de consumo por sector',
-          data: consumoTotales,
-          backgroundColor
-        }
-      ]
+      datasets: [{ label: 'Proporción de consumo por sector', data: consumoTotales, backgroundColor }]
     };
   }
 
-    exportarExcel(): void {
-      if (!this.sectoresFiltrados || this.sectoresFiltrados.length === 0) {
-        console.warn('No hay datos para exportar');
-        return;
-      }
-
-
-      const datosExportar = this.sectoresFiltrados.map(s => ({
-        'Sector / Hogar': s.nombre_sector,
-        'Consumo Total (L)': s.consumo_total,
-        'Media de Consumo (L)': s.media_consumo,
-        'Pico Máximo (L)': s.pico_maximo,
-        'Costo ($)': s.costo
-      }));
-
-
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExportar);
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Reporte Diario');
-
-
-      const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const data: Blob = new Blob([excelBuffer], { type: EXCEL_TYPE });
-      saveAs(
-        data,
-        `reporte_diario_${new Date().toISOString().split('T')[0]}.xlsx`
-      );
+  exportarExcel(): void {
+    if (!this.sectoresFiltrados.length) {
+      console.warn('No hay datos para exportar');
+      return;
     }
 
+    const datosExportar = this.sectoresFiltrados.map(s => ({
+      'Sector / Hogar': s.nombre_sector,
+      'Consumo Total (L)': s.consumo_total,
+      'Media de Consumo (L)': s.media_consumo,
+      'Pico Máximo (L)': s.pico_maximo,
+      'Costo ($)': s.costo
+    }));
 
-    exportarPDF(): void {
-    const hoy = new Date();
-    this.reporteService.descargarReportePDF(
-      this.homeId, 
-      hoy, 
-      hoy  
-    );
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExportar);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Reporte Diario');
+
+    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], { type: EXCEL_TYPE });
+    saveAs(data, `reporte_diario_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-
+  exportarPDF(): void {
+    const hoy = new Date();
+    this.reporteService.descargarReportePDF(this.homeId, hoy, hoy);
+  }
 }
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';

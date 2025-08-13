@@ -1,7 +1,7 @@
 // login.guard.ts
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
-import { AuthService } from '../serviceAuth/auth.service'; // Ajusta la ruta según tu proyecto
+import { AuthService } from '../serviceAuth/auth.service'; 
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class LoginGuard implements CanActivate {
     if (!this.authService.isLoggedIn()) {
       return true;
     } else {
-      return this.router.createUrlTree(['/dashboard']);
+      return this.router.createUrlTree(['/404']);
     }
   }
 }

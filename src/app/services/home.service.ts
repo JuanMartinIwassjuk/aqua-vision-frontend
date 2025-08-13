@@ -22,4 +22,9 @@ export class HomeService {
       });
     }
   }
+
+  public getHomeId(): number | null {
+    return this.homeIdSubject.value;
+  }
 }
+
