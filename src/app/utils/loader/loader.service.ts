@@ -13,15 +13,12 @@ export class LoaderService {
     this.loaderSubject.next(true);
   }
 
-hide(): void {
-  if (this.pendingRequests > 0) {
-    this.pendingRequests--;
-  }
-  if (this.pendingRequests === 0) {
-    setTimeout(() => {
+  hide(): void {
+    if (this.pendingRequests > 0) {
+      this.pendingRequests--;
+    }
+    if (this.pendingRequests === 0) {
       this.loaderSubject.next(false);
-    }, 300); // para ver si aparece
+    }
   }
-}
-
 }
