@@ -4,11 +4,12 @@ import { NavigationEnd, Router, RouterLink, RouterModule, RouterOutlet } from '@
 import { AuthService } from './auth/serviceAuth/auth.service'; 
 import { filter } from 'rxjs';
 import { GamificationComponent } from './components/gamification/gamification.component';
+import { LoaderComponent } from './utils/loader/loader.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterOutlet],
+  imports: [CommonModule, RouterModule, RouterOutlet,LoaderComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
