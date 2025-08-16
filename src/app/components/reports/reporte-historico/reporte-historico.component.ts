@@ -52,23 +52,22 @@ export class ReporteHistoricoComponent implements OnInit {
 
     this.homeService.homeId$.subscribe(id => {
       if (id !== null) {
-        this.homeId= id;
+        this.homeId = id;
       }
     });
     this.aplicarFiltro();
   }
 
   private formatFechaLocal(date: Date): string {
-
     return date.toLocaleDateString('en-CA'); 
   }
 
   aplicarFiltro(): void {
     if (!this.fechaDesde || !this.fechaHasta) return;
 
-
     const fechaHastaConHora = new Date(this.fechaHasta);
     fechaHastaConHora.setHours(23, 59, 59, 999);
+
 
     this.reporteService
       .getConsumoMensualPorSector(this.homeId, this.fechaDesde, this.formatFechaLocal(fechaHastaConHora))
@@ -77,9 +76,15 @@ export class ReporteHistoricoComponent implements OnInit {
           this.sectoresOriginales = data;
           this.sectoresFiltrados = data;
           this.calcularResumenes();
-          this.generarGrafico();
         },
-        error: (err) => console.error('Error al cargar datos con filtro', err)
+        error: (err) => console.error('Error al cargar datos generales', err)
+      });
+
+    this.reporteService
+      .getConsumoMensualAgrupado(this.homeId, this.fechaDesde, this.formatFechaLocal(fechaHastaConHora))
+      .subscribe({
+        next: (data) => this.generarGrafico(data),
+        error: (err) => console.error('Error al cargar datos para gráfico', err)
       });
   }
 
@@ -118,41 +123,25 @@ export class ReporteHistoricoComponent implements OnInit {
     console.log('resumenPorSector', this.resumenPorSector);
   }
 
-  generarGrafico(): void {
-    const agrupadoPorMes: { [mesAnio: string]: ReporteMensual[] } = {};
 
-    this.sectoresFiltrados.forEach(r => {
-      const key = r.mes;
-      if (!agrupadoPorMes[key]) agrupadoPorMes[key] = [];
-      agrupadoPorMes[key].push(r);
-    });
 
-    const labels: string[] = [];
-    const consumosTotales: number[] = [];
-    const medias: number[] = [];
-    const picosMaximos: number[] = [];
+generarGrafico(consumosMensuales: any[]): void {
+  const labels: string[] = [];
+  const consumosTotales: number[] = [];
 
-    Object.entries(agrupadoPorMes).forEach(([key, reportes]) => {
-      const total = reportes.reduce((acc, r) => acc + r.consumo_total, 0);
-      const media = reportes.reduce((acc, r) => acc + r.media_consumo, 0) / reportes.length;
-      const pico = Math.max(...reportes.map(r => r.pico_maximo));
+  consumosMensuales.forEach(m => {
+    labels.push(`${this.obtenerNombreMes(m.mes)} ${m.anio}`); 
+    consumosTotales.push(m.totalMes);
+  });
 
-      const [anio, mes] = key.split('-');
-      labels.push(`${this.obtenerNombreMes(+mes)} ${anio}`);
-      consumosTotales.push(total);
-      medias.push(+media.toFixed(2));
-      picosMaximos.push(pico);
-    });
+  this.barChartData = {
+    labels,
+    datasets: [
+      { data: consumosTotales, label: 'Consumo Total por Mes', backgroundColor: '#00D4FF' }
+    ]
+  };
+}
 
-    this.barChartData = {
-      labels,
-      datasets: [
-        { data: consumosTotales, label: 'Consumo Total', backgroundColor: '#00D4FF' },
-        { data: medias, label: 'Media Consumo', backgroundColor: '#e5be01' },
-        { data: picosMaximos, label: 'Pico Máximo', backgroundColor: 'red' }
-      ]
-    };
-  }
 
   obtenerNombreMes(numeroMes: number): string {
     const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',

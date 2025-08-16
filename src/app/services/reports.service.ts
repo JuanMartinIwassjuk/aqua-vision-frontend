@@ -187,6 +187,22 @@ getPrediccionConsumo(hogarId: number, umbralMensual: number): Observable<any[]> 
 }
 
 
+getConsumoMensualAgrupado(id: number, fechaDesde: string | Date, fechaHasta: string | Date): Observable<any[]> {
+  const desde = this.dateUtils.formatDateToJava(fechaDesde);
+  const hasta = this.dateUtils.formatDateToJava(fechaHasta);
+
+  const url = `${this.baseUrl}/${id}/consumo-fecha-mensual?fechaInicio=${encodeURIComponent(desde)}&fechaFin=${encodeURIComponent(hasta)}`;
+
+  return this.http.get<any>(url).pipe(
+    map((response: any) => {
+      return response.consumosMensualesSector.map((item: any) => ({
+        mes: item.mes,
+        anio: item.anio,        
+        totalMes: item.totalMes
+      }));
+    })
+  );
+}
 
 
 }
