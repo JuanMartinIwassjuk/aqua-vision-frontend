@@ -18,9 +18,7 @@ hide(): void {
     this.pendingRequests--;
   }
   if (this.pendingRequests === 0) {
-    setTimeout(() => {
       this.loaderSubject.next(false);
-    }, 300); 
   }
 }
 
