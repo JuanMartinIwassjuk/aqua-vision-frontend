@@ -10,7 +10,7 @@
   
   
   
-  <main>
+  <main [ngStyle]="{ 'background-color': isLoggedIn ? '#DDF7FA' : '#fdfdfd' }">
    
     <div class="container-header" *ngIf="isLoggedIn">
                 <div class="logo">

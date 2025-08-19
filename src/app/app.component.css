@@ -16,6 +16,7 @@ main {
   display: flex;
   flex-direction: column;
   text-align: center;
+  
 }
 
 
@@ -78,7 +79,7 @@ nav ul {
 
 nav ul li a,
 .submenu > a {
-  color: #fff;
+  color: #fdfdfd;
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.2s ease, transform 0.2s ease;
@@ -283,5 +284,7 @@ footer {
     padding: 0.5rem 0;
     align-self: start;
   }
+
+
 }
 
