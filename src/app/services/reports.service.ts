@@ -5,14 +5,14 @@ import { HttpClient } from '@angular/common/http';
 import { DateUtilsService } from '../services/date.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReporteService {
 
-    private readonly baseUrl = 'http://localhost:8080/reportes';
+    private readonly baseUrl = environment.apiUrl + '/reportes';
 
     constructor(
     private http: HttpClient,
