@@ -14,8 +14,8 @@ RUN npm install
 # Copiar todo el código
 COPY . .
 
-# Build de producción
-RUN ng build --configuration production
+# Build de producción usando npx para Angular CLI
+RUN npx ng build --configuration production
 
 # =====================
 # Stage 2: Serve con Nginx
