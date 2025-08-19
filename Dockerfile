@@ -23,7 +23,7 @@ RUN npx ng build --configuration production
 FROM nginx:alpine
 
 # Copiar los archivos compilados de Angular a Nginx
-COPY --from=build /app/dist/aquavision-front /usr/share/nginx/html
+COPY --from=build /app/dist/aquavision-front/browser /usr/share/nginx/html
 
 # Copiar configuración SPA-ready
 COPY nginx.conf /etc/nginx/conf.d/default.conf
