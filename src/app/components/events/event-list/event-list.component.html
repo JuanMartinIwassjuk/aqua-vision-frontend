@@ -1,0 +1,86 @@
+<div class="wrapper-event">
+
+  <div class="filters">
+
+    <div class="filter-tags" >
+      <label for="tagFilter">Categorías:</label>
+      <select
+        id="tagFilter"
+        [(ngModel)]="tagToAdd"
+        (change)="addTagToSelection()"
+        class="tag-select"
+      >
+        <option value="" disabled selected>Selecciona una categoría</option>
+        <option *ngFor="let tag of availableTags" [ngValue]="tag">
+          {{ tag.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-status">
+      <label for="statusFilter">Estado:</label>
+      <select
+        id="statusFilter"
+        [(ngModel)]="selectedStatus"
+        class="status-select"
+      >
+        <option value="">Todos</option>
+        <option *ngFor="let status of availableStatuses" [value]="status">
+          {{ status }}
+        </option>
+      </select>
+    </div>
+
+    <div class="sort-wrapper">
+      <label>Ordenar:</label>
+      <button class="sort-button" (click)="toggleSortOrder()">
+        Fecha {{ sortOrder === 'asc' ? '↑' : '↓' }}
+      </button>
+    </div>
+
+    <button class="clear-filter" (click)="clearFilter()">Limpiar</button>
+
+ 
+    <div class="selected-categories" *ngIf="selectedTags.length > 0">
+      <div
+        class="tag-chip"
+        *ngFor="let tag of selectedTags"
+        [ngStyle]="{'background-color': tag.color}"
+      >
+        {{ tag.name }}
+        <span class="remove-tag" (click)="removeTag(tag)">×</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="events-wrapper">
+    <div class="event-card" *ngFor="let event of filteredEvents">
+      <div class="event-header">
+        <h3 class="event-status">{{ event.status }}</h3>
+        <div class="actions">
+          <button class="icon-button edit-button" (click)="editEvent(event.id)">
+            <span class="material-icons">edit</span>
+          </button>
+          <button class="icon-button delete-button" (click)="deleteEvent(event.id)">
+            <span class="material-icons">delete</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="event-dates">
+        <span><strong>Inicio:</strong> {{ event.startDate | date:'short' }}</span>
+        <span *ngIf="event.endDate"><br><strong>Fin:</strong> {{ event.endDate | date:'short' }}</span>
+      </div>
+
+      <div class="tags-container">
+        <span
+          *ngFor="let tag of event.tags"
+          class="tag"
+          [ngStyle]="{'background-color': tag.color}"
+        >
+          {{ tag.name }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
