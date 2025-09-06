@@ -48,5 +48,10 @@ export const routes: Routes = [
     loadComponent: () => import('./utils/not-found/not-found.component').then(c => c.NotFoundComponent),
     canActivate: [AuthGuard] 
   },
+  {
+    path: 'events',
+    loadComponent: () => import('./components/events/event-list/event-list.component').then(c => c.EventListComponent),
+    canActivate: [AuthGuard] 
+  },
   { path: '**', redirectTo: 'login' } 
 ];
