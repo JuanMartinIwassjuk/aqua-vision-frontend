@@ -53,13 +53,12 @@
   </div>
 
   <div class="events-wrapper">
-    <div
-      class="event-card"
+    <div class="event-card"
       *ngFor="let event of filteredEvents"
       [ngStyle]="{'border-left': '6px solid ' + getStatusColor(event.status)}"
     >
       <div class="event-header">
-        <h3 class="event-title">{{ event.title }}</h3> <!-- 🆕 Título -->
+        <h3 class="event-title">{{ event.title }}</h3>
         <div class="actions">
           <button class="icon-button edit-button" (click)="editEvent(event.id)">
             <span class="material-icons">edit</span>
@@ -70,7 +69,12 @@
         </div>
       </div>
 
-      <p class="event-description">{{ event.description }}</p> <!-- 🆕 Descripción -->
+      <p class="event-description">{{ event.description }}</p>
+
+ 
+      <p class="event-sector">
+        <strong>Sector:</strong> {{ event.sector.name }}
+      </p>
 
       <h4 class="event-status" [style.color]="getStatusColor(event.status)">
         {{ event.status }}
@@ -81,12 +85,16 @@
         <span *ngIf="event.endDate"><br><strong>Fin:</strong> {{ event.endDate | date:'short' }}</span>
       </div>
 
+     
+      <div class="event-results" *ngIf="event.status === 'Finalizado'">
+        <p><strong>Consumo:</strong> {{ event.litersConsumed }} litros</p>
+        <p><strong>Costo:</strong> ${{ event.cost }}</p>
+      </div>
+
       <div class="tags-container">
-        <span
-          *ngFor="let tag of event.tags"
-          class="tag"
-          [ngStyle]="{'background-color': tag.color}"
-        >
+        <span *ngFor="let tag of event.tags"
+              class="tag"
+              [ngStyle]="{'background-color': tag.color}">
           {{ tag.name }}
         </span>
       </div>
@@ -96,11 +104,13 @@
           Finalizar proceso
         </button>
       </div>
+
       <div *ngIf="event.status === 'Pendiente'" class="start-wrapper">
         <button class="start-btn" (click)="startEvent(event)">
           Comenzar evento
         </button>
       </div>
     </div>
+
   </div>
 </div>

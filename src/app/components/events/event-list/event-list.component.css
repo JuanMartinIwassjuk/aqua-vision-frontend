@@ -47,6 +47,7 @@
   color: #fff;
   font-size: 0.85rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  margin-top: 3.2vh;
 }
 
 .remove-tag {
@@ -314,6 +315,9 @@
   .clear-filter {
     width: 100%; 
     margin-top: auto;
+  } 
+  .tag-chip{
+    margin-top: auto;
   }
 }
 
@@ -375,4 +379,23 @@
 
 .start-btn:hover {
    background-color: #1f6391;
+}
+
+.event-sector {
+  font-size: 0.9rem;
+  color: #34495e;
+  margin: 0.4rem 0;
+}
+
+.event-results {
+  margin-top: 0.6rem;
+  padding: 0.6rem;
+  background-color: #f4f9f9;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.event-results p {
+  margin: 0.2rem 0;
 }

@@ -1,4 +1,5 @@
 import { EventTag } from "./eventTag";
+import { Sector } from "./sector";
 
 export interface AquaEvent {
   id: number;
@@ -8,4 +9,7 @@ export interface AquaEvent {
   endDate?: Date;
   status: 'En proceso' | 'Finalizado' | 'Pendiente' | 'Cancelado';
   tags: EventTag[];
+  sector: Sector;         
+  litersConsumed?: number; 
+  cost?: number;           
 }

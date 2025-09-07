@@ -13,6 +13,7 @@ export class EventService {
     description: 'Se está realizando la limpieza y desinfección del tanque de agua principal.',
     startDate: new Date('2025-09-01T08:00:00'),
     status: 'En proceso',
+    sector: { id: 1, name: 'Tanque Principal' },
     tags: [
       { id: 1, name: 'Limpieza', color: '#27ae60' }
     ]
@@ -24,6 +25,9 @@ export class EventService {
     startDate: new Date('2025-08-28T10:30:00'),
     endDate: new Date('2025-08-28T12:00:00'),
     status: 'Finalizado',
+    sector: { id: 2, name: 'Pileta' },
+    litersConsumed: 1200,
+    cost: 4800,
     tags: [
       { id: 2, name: 'Pileta', color: '#2980b9' }
     ]
@@ -34,6 +38,7 @@ export class EventService {
     description: 'Proceso de riego en curso con sistema de aspersores en el área del jardín.',
     startDate: new Date('2025-09-03T15:00:00'),
     status: 'En proceso',
+    sector: { id: 3, name: 'Jardín' },
     tags: [
       { id: 3, name: 'Riego', color: '#8e44ad' },
       { id: 4, name: 'Jardín', color: '#16a085' }
@@ -45,6 +50,7 @@ export class EventService {
     description: 'Pendiente la revisión técnica de la bomba de presión para el suministro del edificio.',
     startDate: new Date('2025-09-10T09:00:00'),
     status: 'Pendiente',
+    sector: { id: 4, name: 'Sala de Bombas' },
     tags: [
       { id: 5, name: 'Mantenimiento', color: '#e67e22' }
     ]
@@ -55,6 +61,7 @@ export class EventService {
     description: 'Tarea cancelada: cambio de grifería y control de fugas en baño principal.',
     startDate: new Date('2025-09-02T14:00:00'),
     status: 'Cancelado',
+    sector: { id: 5, name: 'Baño Principal' },
     tags: [
       { id: 6, name: 'Baño', color: '#c0392b' }
     ]
@@ -66,6 +73,9 @@ export class EventService {
     startDate: new Date('2025-08-20T07:00:00'),
     endDate: new Date('2025-08-20T09:30:00'),
     status: 'Finalizado',
+    sector: { id: 6, name: 'Cocina' },
+    litersConsumed: 300,
+    cost: 950,
     tags: [
       { id: 7, name: 'Cocina', color: '#d35400' }
     ]
@@ -76,6 +86,7 @@ export class EventService {
     description: 'Lavado en curso en el área destinada a vehículos de residentes.',
     startDate: new Date('2025-09-05T18:00:00'),
     status: 'En proceso',
+    sector: { id: 7, name: 'Área de Lavado de Autos' },
     tags: [
       { id: 8, name: 'Lavado', color: '#3498db' },
       { id: 9, name: 'Autos', color: '#2ecc71' }
@@ -87,6 +98,7 @@ export class EventService {
     description: 'Pendiente la limpieza de pisos y control de desagües en la terraza.',
     startDate: new Date('2025-09-12T11:00:00'),
     status: 'Pendiente',
+    sector: { id: 8, name: 'Terraza' },
     tags: [
       { id: 10, name: 'Terraza', color: '#9b59b6' }
     ]
@@ -98,6 +110,9 @@ export class EventService {
     startDate: new Date('2025-09-15T16:30:00'),
     endDate: new Date('2025-09-15T18:00:00'),
     status: 'Finalizado',
+    sector: { id: 9, name: 'Huerta Comunitaria' },
+    litersConsumed: 600,
+    cost: 2200,
     tags: [
       { id: 11, name: 'Huerta', color: '#27ae60' },
       { id: 12, name: 'Riego', color: '#8e44ad' }
@@ -109,11 +124,13 @@ export class EventService {
     description: 'Se suspendió el evento social programado en el área común por razones organizativas.',
     startDate: new Date('2025-09-20T20:00:00'),
     status: 'Cancelado',
+    sector: { id: 10, name: 'Salón de Usos Múltiples' },
     tags: [
       { id: 13, name: 'Eventos Sociales', color: '#e84393' }
     ]
   }
 ];
+
 
 
   constructor() {}

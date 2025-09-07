@@ -1,0 +1,86 @@
+.event-form-wrapper {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  max-width: 500px;
+  margin: 1rem auto;
+
+}
+@media (max-width: 768px) {
+    .event-form-wrapper {
+          margin: 2rem;
+    }
+}
+
+.event-form-wrapper h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.tag-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 16px;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.tag-chip .remove {
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.create-btn {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.create-btn:hover {
+  background-color: #1e8449;
+}

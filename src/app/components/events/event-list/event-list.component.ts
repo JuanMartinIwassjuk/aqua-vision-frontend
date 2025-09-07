@@ -137,4 +137,9 @@ export class EventListComponent implements OnInit {
       });
     }
   }
+
+  getSectorName(event: AquaEvent): string {
+  return event.sector ? event.sector.name : 'Sin sector';
+}
+
 }
