@@ -23,6 +23,7 @@
   border-radius: 10px;
   cursor: pointer;
   transition: 0.3s;
+  margin-top: 1.5rem;
 }
 
 .clear-filter:hover {
@@ -152,6 +153,7 @@
   .events-wrapper {
     grid-template-columns: 1fr;
     gap: 1rem;
+    margin-bottom: 13vh;
   }
 
   .event-card {
@@ -310,5 +312,6 @@
 
   .clear-filter {
     width: 100%; 
+    margin-top: auto;
   }
 }
