@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HomeService } from '../../services/home.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 export class AuthService {
   private apiUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private homeService: HomeService) {}
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, { username, password });
@@ -29,11 +30,11 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.getToken();
-    // return true;
   }
 
   logout(): void {
     sessionStorage.removeItem('token');
+    this.homeService.removeHomeId();
   }
 
   private decodeToken(): any {

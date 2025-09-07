@@ -5,6 +5,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
+import { HomeService } from '../../services/home.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,7 @@ import { AuthService } from '../../auth/serviceAuth/auth.service';
 })
 export class DashboardComponent implements OnInit {
 
-  consumoDia!: number;
+  consumoDia: number = 0;
   consumoColor!: string;
   medidoresConectados!: number;
   medidoresDesconectados!: number;
@@ -25,6 +26,8 @@ export class DashboardComponent implements OnInit {
   totalHogaresAdmin!: number;
   totalTriviasAdmin!: number;
   consumoPromedio!: number;
+  homeId!: number;
+  datosPrueba: any;
   
 
   public lineChartData: ChartData<'line'> = {
@@ -61,10 +64,23 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  constructor(private reporteService: ReporteService, private authService: AuthService) {}
+  constructor(private reporteService: ReporteService, private authService: AuthService, private homeService: HomeService) {}
 
   ngOnInit(): void {
-    const datos = this.reporteService.getConsumoPorHora();
+    this.homeService.initHomeId();
+    this.homeService.homeId$
+      .subscribe((id: number | null) => {
+        if (id !== null) {
+          this.homeId = id;
+          this.cargarDatos();
+        } else {
+          console.error('No se pudo obtener el homeId');
+        }
+      });
+    }
+
+    public cargarDatos(){
+            const datos = this.reporteService.getConsumoPorHora();
     const horas = datos.map(d => d.hora);
     const caudales = datos.map(d => d.caudal_m3 ?? null);
 
@@ -73,11 +89,10 @@ export class DashboardComponent implements OnInit {
     const caudalesTotales = datosAdmin.map(d => d.caudal_m3 ?? null);
 
     if (!this.isAdmin) {
-    this.consumoDia = this.reporteService.getConsumoUltimoDia();
+    this.getConsumoDiarioHogar();
     this.estadoMedidores = this.reporteService.getEstadoMedidores();
     this.medidoresConectados = this.estadoMedidores.conectados;
     this.medidoresDesconectados = this.estadoMedidores.desconectados;
-    this.setConsumoStatus();
     }
 
     if (this.isAdmin) {
@@ -120,6 +135,22 @@ export class DashboardComponent implements OnInit {
       ]
     };
 
+  }
+
+  getConsumoDiarioHogar() {
+   this.reporteService.getConsumoDiarioPorSector(this.homeId).subscribe({
+      next: (data) => {
+        this.datosPrueba = data;
+
+        if (data && data.length > 0) {
+        this.consumoDia = data.reduce((suma, item) => suma + item.consumo_total, 0);
+        this.setConsumoStatus()
+      }
+      },
+      error: (err) => {
+        console.error('Error obteniendo datos diarios', err);
+      }
+    });
   }
 
   setConsumoStatus() {

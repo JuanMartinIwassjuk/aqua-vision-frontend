@@ -11,7 +11,7 @@ export class HomeService {
   homeId$: Observable<number | null>;
 
   constructor(private userService: UserService) {
-    const storedHomeId = localStorage.getItem(this.STORAGE_KEY);
+    const storedHomeId = sessionStorage.getItem(this.STORAGE_KEY);
     const initialValue = storedHomeId ? Number(storedHomeId) : null;
 
     this.homeIdSubject = new BehaviorSubject<number | null>(initialValue);
@@ -39,8 +39,14 @@ export class HomeService {
     if (id !== null) {
       sessionStorage.setItem(this.STORAGE_KEY, String(id));
     } else {
-      sessionStorage.removeItem(this.STORAGE_KEY);
+      this.removeHomeId();
     }
     this.homeIdSubject.next(id);
   }
+
+
+  public removeHomeId(): void{
+    sessionStorage.removeItem(this.STORAGE_KEY);
+  }
+
 }
