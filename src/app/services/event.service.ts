@@ -114,4 +114,13 @@ export class EventService {
     }
     return of(undefined);
   }
+
+    updateEvent(updatedEvent: AquaEvent): Observable<AquaEvent | undefined> {
+    const index = this.events.findIndex(e => e.id === updatedEvent.id);
+    if (index !== -1) {
+      this.events[index] = { ...updatedEvent };
+      return of(this.events[index]);
+    }
+    return of(undefined);
+  }
 }

@@ -1,5 +1,7 @@
-<div class="wrapper-event">
 
+
+
+<div class="wrapper-event">
   <div class="filters">
 
     <div class="filter-tags" >
@@ -54,9 +56,15 @@
   </div>
 
   <div class="events-wrapper">
-    <div class="event-card" *ngFor="let event of filteredEvents">
+    <div
+      class="event-card"
+      *ngFor="let event of filteredEvents"
+      [ngStyle]="{'border-left': '6px solid ' + getStatusColor(event.status)}"
+    >
       <div class="event-header">
-        <h3 class="event-status">{{ event.status }}</h3>
+        <h3 class="event-status" [style.color]="getStatusColor(event.status)">
+          {{ event.status }}
+        </h3>
         <div class="actions">
           <button class="icon-button edit-button" (click)="editEvent(event.id)">
             <span class="material-icons">edit</span>
@@ -80,6 +88,13 @@
         >
           {{ tag.name }}
         </span>
+      </div>
+
+
+      <div *ngIf="event.status === 'En proceso'" class="finalize-wrapper">
+        <button class="finalize-btn" (click)="finalizeEvent(event)">
+          Finalizar proceso
+        </button>
       </div>
     </div>
   </div>
