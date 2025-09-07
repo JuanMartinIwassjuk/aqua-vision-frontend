@@ -103,21 +103,27 @@ export class EventListComponent implements OnInit {
     this.onDelete.emit(id);
   }
 
-
   getStatusColor(status: string): string {
     switch (status) {
-      case 'En proceso':
-        return '#f39c12'; 
-      case 'Finalizado':
-        return '#27ae60'; 
-      case 'Pendiente':
-        return '#2980b9';
-      case 'Cancelado':
-        return '#c0392b'; 
-      default:
-        return '#7f8c8d'; 
+      case 'En proceso': return '#f39c12'; 
+      case 'Finalizado': return '#27ae60'; 
+      case 'Pendiente':  return '#2980b9';
+      case 'Cancelado':  return '#c0392b'; 
+      default: return '#7f8c8d'; 
     }
   }
+
+  startEvent(event: AquaEvent) {
+  const confirmStart = confirm('¿Seguro que deseas comenzar este evento?');
+  if (confirmStart) {
+    event.status = 'En proceso';
+    event.startDate = new Date();
+
+    this.eventService.updateEvent(event).subscribe(() => {
+      this.loadEvents();
+    });
+  }
+}
 
 
   finalizeEvent(event: AquaEvent) {
@@ -125,7 +131,6 @@ export class EventListComponent implements OnInit {
     if (confirmFinish) {
       event.status = 'Finalizado';
       event.endDate = new Date();
-
 
       this.eventService.updateEvent(event).subscribe(() => {
         this.loadEvents();

@@ -1,8 +1,5 @@
-
-
-
 <div class="wrapper-event">
-  <div class="filters">
+<div class="filters">
 
     <div class="filter-tags" >
       <label for="tagFilter">Categorías:</label>
@@ -62,9 +59,7 @@
       [ngStyle]="{'border-left': '6px solid ' + getStatusColor(event.status)}"
     >
       <div class="event-header">
-        <h3 class="event-status" [style.color]="getStatusColor(event.status)">
-          {{ event.status }}
-        </h3>
+        <h3 class="event-title">{{ event.title }}</h3> <!-- 🆕 Título -->
         <div class="actions">
           <button class="icon-button edit-button" (click)="editEvent(event.id)">
             <span class="material-icons">edit</span>
@@ -74,6 +69,12 @@
           </button>
         </div>
       </div>
+
+      <p class="event-description">{{ event.description }}</p> <!-- 🆕 Descripción -->
+
+      <h4 class="event-status" [style.color]="getStatusColor(event.status)">
+        {{ event.status }}
+      </h4>
 
       <div class="event-dates">
         <span><strong>Inicio:</strong> {{ event.startDate | date:'short' }}</span>
@@ -90,10 +91,14 @@
         </span>
       </div>
 
-
       <div *ngIf="event.status === 'En proceso'" class="finalize-wrapper">
         <button class="finalize-btn" (click)="finalizeEvent(event)">
           Finalizar proceso
+        </button>
+      </div>
+      <div *ngIf="event.status === 'Pendiente'" class="start-wrapper">
+        <button class="start-btn" (click)="startEvent(event)">
+          Comenzar evento
         </button>
       </div>
     </div>

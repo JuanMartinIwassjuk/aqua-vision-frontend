@@ -59,6 +59,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.2rem;
+   margin-bottom: 10vh;
 }
 
 .event-card {
@@ -318,7 +319,7 @@
 
 .finalize-wrapper {
   margin-top: 1rem;
-  text-align: right;
+  text-align: center;
 }
 
 .finalize-btn {
@@ -329,8 +330,49 @@
   border-radius: 10px;
   cursor: pointer;
   transition: 0.3s;
+
 }
 
 .finalize-btn:hover {
   background-color: #1e8449;
+}
+
+.event-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.event-description {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0.5rem 0 0.8rem 0;
+  line-height: 1.4;
+}
+
+
+
+
+
+
+.start-wrapper {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.start-btn  {
+  background-color: #2980b9; 
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+
+}
+
+.start-btn:hover {
+   background-color: #1f6391;
 }
