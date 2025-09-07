@@ -315,3 +315,22 @@
     margin-top: auto;
   }
 }
+
+.finalize-wrapper {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.finalize-btn {
+  background-color: #27ae60;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.finalize-btn:hover {
+  background-color: #1e8449;
+}
