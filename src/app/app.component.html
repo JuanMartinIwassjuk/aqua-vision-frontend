@@ -39,7 +39,17 @@
               <li *ngIf="isUser"><a routerLink="/consumption-prediction">Predicción de Consumo</a></li>
               <li *ngIf="isUser"><a routerLink="/consumption-alerts">Alertas de Consumo</a></li>
               <li *ngIf="isUser"><a routerLink="/gamification">Trivias</a></li> 
-              <li *ngIf="isUser"><a routerLink="/events">Eventos</a></li>
+
+
+            <li class="submenu" *ngIf="!isAdmin">
+              <a (click)="toggleService(1)">Eventos ▾</a>
+              <ul *ngIf="expandedIndex === 1" class="submenu-list">
+                <li><a routerLink="/events" (click)="closeMenu()">▸Mis Eventos</a></li>
+                <li><a routerLink="/events/create" (click)="closeMenu()">▸Crear Evento</a></li>
+              </ul>
+            </li>
+
+
               <!-- TODO: Revisar si va a ser componente o calculado (ultimo sprint)-->
               <li *ngIf="isAdmin"><a routerLink="/data-export">Exportar Datos</a></li>
               <li *ngIf="isUser || isAdmin"><a routerLink="/account-settings">Mi Cuenta</a></li>
