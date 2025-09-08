@@ -7,7 +7,7 @@
 }
 
 .left-panel {
-  background-color: #fdfdfd;
+  background-color: #00bceb;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +21,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #00bceb;
+  background-color: #fdfdfd;
 }
 
 .login-form {
