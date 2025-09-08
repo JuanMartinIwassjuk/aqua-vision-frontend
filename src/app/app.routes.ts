@@ -53,9 +53,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/events/event-list/event-list.component').then(c => c.EventListComponent),
     canActivate: [AuthGuard] 
   },
-    {
+  {
     path: 'events/create',
     loadComponent: () => import('./components/events/event-form/event-form.component').then(c => c.EventFormComponent),
+    canActivate: [AuthGuard] 
+  },
+  {
+    path: 'events/edit/:id',
+    loadComponent: () => import('./components/events/edit-form/edit-form.component').then(c => c.EditFormComponent),
     canActivate: [AuthGuard] 
   },
   { path: '**', redirectTo: 'login' } 

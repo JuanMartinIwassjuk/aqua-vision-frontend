@@ -6,7 +6,7 @@ export interface AquaEvent {
   title: string;    
   description: string; 
   startDate: Date;
-  endDate?: Date;
+  endDate?: Date | null;
   status: 'En proceso' | 'Finalizado' | 'Pendiente' | 'Cancelado';
   tags: EventTag[];
   sector: Sector;         

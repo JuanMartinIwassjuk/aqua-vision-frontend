@@ -133,32 +133,38 @@ export class EventService {
 
 
 
-  constructor() {}
+constructor() {}
 
-  getEvents(): Observable<AquaEvent[]> {
-    return of(this.events);
-  }
+getEvents(): Observable<AquaEvent[]> {
+  return of(this.events);
+}
 
-  deleteEvent(id: number): Observable<void> {
-    this.events = this.events.filter(e => e.id !== id);
-    return of();
-  }
+getEventById(id: number): Observable<AquaEvent | undefined> {
+  const event = this.events.find(e => e.id === id);
+  return of(event);
+}
 
-  editEvent(id: number, updatedEvent: Partial<AquaEvent>): Observable<AquaEvent | undefined> {
-    const index = this.events.findIndex(e => e.id === id);
-    if (index !== -1) {
-      this.events[index] = { ...this.events[index], ...updatedEvent };
-      return of(this.events[index]);
-    }
-    return of(undefined);
-  }
+deleteEvent(id: number): Observable<void> {
+  this.events = this.events.filter(e => e.id !== id);
+  return of();
+}
 
-    updateEvent(updatedEvent: AquaEvent): Observable<AquaEvent | undefined> {
-    const index = this.events.findIndex(e => e.id === updatedEvent.id);
-    if (index !== -1) {
-      this.events[index] = { ...updatedEvent };
-      return of(this.events[index]);
-    }
-    return of(undefined);
+editEvent(id: number, updatedEvent: Partial<AquaEvent>): Observable<AquaEvent | undefined> {
+  const index = this.events.findIndex(e => e.id === id);
+  if (index !== -1) {
+    this.events[index] = { ...this.events[index], ...updatedEvent };
+    return of(this.events[index]);
   }
+  return of(undefined);
+}
+
+updateEvent(updatedEvent: AquaEvent): Observable<AquaEvent | undefined> {
+  const index = this.events.findIndex(e => e.id === updatedEvent.id);
+  if (index !== -1) {
+    this.events[index] = { ...updatedEvent };
+    return of(this.events[index]);
+  }
+  return of(undefined);
+}
+
 }
