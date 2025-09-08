@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AquaEvent } from '../../../models/aquaEvent';
 import { EventTag } from '../../../models/eventTag';
 import { EventService } from '../../../services/event.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class EventListComponent implements OnInit {
   selectedStatus: string = '';
   sortOrder: 'asc' | 'desc' = 'asc';
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService,  private router: Router) {}
 
   ngOnInit(): void {
     this.loadEvents();
@@ -93,15 +94,20 @@ export class EventListComponent implements OnInit {
   }
 
   editEvent(id: number) {
-    this.onEdit.emit(id);
+    this.router.navigate(['/events/edit', id]); 
   }
 
-  deleteEvent(id: number) {
+deleteEvent(id: number) {
+  const confirmDelete = confirm('¿Estás seguro de que deseas eliminar este evento?');
+  if (confirmDelete) {
     this.eventService.deleteEvent(id).subscribe(() => {
+      alert('Evento eliminado correctamente ✅');
       this.loadEvents();
     });
     this.onDelete.emit(id);
   }
+}
+
 
   getStatusColor(status: string): string {
     switch (status) {
