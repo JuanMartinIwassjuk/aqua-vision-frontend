@@ -4,7 +4,7 @@
   <form (ngSubmit)="saveChanges()" #editForm="ngForm">
     <div class="form-group">
       <label for="title">Título:</label>
-      <input type="text" id="title" [(ngModel)]="eventData.title" name="title" required />
+      <input type="text" id="title" [(ngModel)]="eventData.titulo" name="title" required />
     </div>
 
     <div class="form-group">
@@ -15,13 +15,13 @@
     <div class="form-group">
       <label for="sector">Sector:</label>
       <select id="sector" [(ngModel)]="eventData.sector" name="sector">
-        <option *ngFor="let s of availableSectors" [ngValue]="s">{{ s.name }}</option>
+        <option *ngFor="let s of availableSectors" [ngValue]="s">{{ s.nombre }}</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="status">Estado:</label>
-      <select id="status" [(ngModel)]="eventData.status" name="status">
+      <select id="status" [(ngModel)]="eventData.estado" name="status">
         <option *ngFor="let status of availableStatuses" [value]="status">{{ status }}</option>
       </select>
     </div>
@@ -35,7 +35,7 @@
           [ngStyle]="{'background-color': tag.color}"
           (click)="toggleTag(tag)"
           [class.selected]="isTagSelected(tag)">
-          {{ tag.name }}
+          {{ tag.nombre }}
         </span>
       </div>
     </div>

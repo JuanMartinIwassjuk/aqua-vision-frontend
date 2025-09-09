@@ -2,12 +2,12 @@ import { EventTag } from "./eventTag";
 import { Sector } from "./sector";
 
 export interface AquaEvent {
-  id: number;
-  title: string;    
+  id?: number ;
+  titulo: string;    
   description: string; 
   startDate: Date;
   endDate?: Date | null;
-  status: 'En proceso' | 'Finalizado' | 'Pendiente' | 'Cancelado';
+  estado: string;
   tags: EventTag[];
   sector: Sector;         
   litersConsumed?: number; 

@@ -1,5 +1,5 @@
 export interface EventTag {
   id: number;
-  name: string;
+  nombre: string;
   color: string;
 }

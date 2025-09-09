@@ -19,14 +19,14 @@ export class EditFormComponent implements OnInit {
   eventId!: number;
   eventData: AquaEvent = {
     id: 0,
-    title: '',
+    titulo: '',
     description: '',
-    status: 'Pendiente',
+    estado: 'Pendiente',
     startDate: new Date(),
     endDate: null,
     litersConsumed: 0,
     cost: 0,
-    sector: { id: 0, name: '' },
+    sector: { id: 0, nombre: '' },
     tags: []
   };
 
@@ -34,9 +34,9 @@ export class EditFormComponent implements OnInit {
   availableTags: EventTag[] = [];
 
   availableSectors: Sector[] = [
-    { id: 1, name: 'Cocina' },
-    { id: 2, name: 'Baño' },
-    { id: 3, name: 'Jardín' }
+    { id: 1, nombre: 'Cocina' },
+    { id: 2, nombre: 'Baño' },
+    { id: 3, nombre: 'Jardín' }
   ];
 
   constructor(
@@ -61,9 +61,9 @@ export class EditFormComponent implements OnInit {
   }
 
   toggleTag(tag: EventTag) {
-    const exists = this.eventData.tags.some(t => t.name === tag.name);
+    const exists = this.eventData.tags.some(t => t.nombre === tag.nombre);
     if (exists) {
-      this.eventData.tags = this.eventData.tags.filter(t => t.name !== tag.name);
+      this.eventData.tags = this.eventData.tags.filter(t => t.nombre !== tag.nombre);
     } else {
       this.eventData.tags.push(tag);
     }
@@ -81,7 +81,7 @@ export class EditFormComponent implements OnInit {
   }
 
   isTagSelected(tag: EventTag): boolean {
-  return this.eventData?.tags?.some(t => t.name === tag.name) ?? false;
+  return this.eventData?.tags?.some(t => t.nombre === tag.nombre) ?? false;
 }
 
 }

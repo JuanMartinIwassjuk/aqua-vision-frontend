@@ -3,7 +3,7 @@
 
   <div class="form-group">
     <label>Título:</label>
-    <input type="text" [(ngModel)]="newEvent.title" placeholder="Ingrese el título">
+    <input type="text" [(ngModel)]="newEvent.titulo" placeholder="Ingrese el título">
   </div>
 
   <div class="form-group">
@@ -15,13 +15,13 @@
     <label>Sector:</label>
     <select [(ngModel)]="newEvent.sector">
       <option [ngValue]="undefined" disabled selected>Selecciona un sector</option>
-      <option *ngFor="let s of sectors" [ngValue]="s">{{ s.name }}</option>
+      <option *ngFor="let s of sectors" [ngValue]="s">{{ s.nombre }}</option>
     </select>
   </div>
 
   <div class="form-group">
     <label>Estado:</label>
-    <select [(ngModel)]="newEvent.status">
+    <select [(ngModel)]="newEvent.estado">
       <option value="Pendiente">Pendiente</option>
       <option value="En proceso">En proceso</option>
       <option value="Cancelado">Cancelado</option>
@@ -33,11 +33,11 @@
     <div class="tag-select-wrapper">
       <select [(ngModel)]="tagToAdd" (change)="addTagToEvent()">
         <option [ngValue]="null" disabled selected>Selecciona un tag</option>
-        <option *ngFor="let t of availableTags" [ngValue]="t">{{ t.name }}</option>
+        <option *ngFor="let t of availableTags" [ngValue]="t">{{ t.nombre }}</option>
       </select>
       <div class="selected-tags">
         <span *ngFor="let t of newEvent.tags" [style.background-color]="t.color" class="tag-chip">
-          {{ t.name }} <span class="remove" (click)="removeTag(t)">×</span>
+          {{ t.nombre }} <span class="remove" (click)="removeTag(t)">×</span>
         </span>
       </div>
     </div>

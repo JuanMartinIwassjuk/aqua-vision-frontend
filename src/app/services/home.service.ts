@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserService } from './user.service';
+import { Sector } from '../models/sector';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +12,8 @@ export class HomeService {
   private homeIdSubject: BehaviorSubject<number | null>;
   homeId$: Observable<number | null>;
 
-  constructor(private userService: UserService) {
-    const storedHomeId = localStorage.getItem(this.STORAGE_KEY);
+  constructor(private userService: UserService,private http: HttpClient) {
+    const storedHomeId = sessionStorage.getItem(this.STORAGE_KEY);
     const initialValue = storedHomeId ? Number(storedHomeId) : null;
 
     this.homeIdSubject = new BehaviorSubject<number | null>(initialValue);
@@ -42,5 +44,9 @@ export class HomeService {
       sessionStorage.removeItem(this.STORAGE_KEY);
     }
     this.homeIdSubject.next(id);
+  }
+
+    getSectorsByHomeId(homeId: number): Observable<Sector[]> {
+    return this.http.get<Sector[]>(`http://localhost:8080/hogares/${homeId}/sectores`);
   }
 }
