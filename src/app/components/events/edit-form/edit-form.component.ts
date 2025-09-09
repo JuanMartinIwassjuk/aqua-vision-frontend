@@ -7,6 +7,7 @@ import { AquaEvent } from '../../../models/aquaEvent';
 import { EventTag } from '../../../models/eventTag';
 import { Sector } from '../../../models/sector';
 import { TagService } from '../../../services/tag.service';
+import { HomeService } from '../../../services/home.service';
 
 @Component({
   selector: 'app-edit-form',
@@ -32,21 +33,43 @@ export class EditFormComponent implements OnInit {
 
   availableStatuses: string[] = ['Pendiente', 'En proceso', 'Finalizado', 'Cancelado'];
   availableTags: EventTag[] = [];
+  availableSectors: Sector[] = []; 
 
-  availableSectors: Sector[] = [
-    { id: 1, nombre: 'Cocina' },
-    { id: 2, nombre: 'Baño' },
-    { id: 3, nombre: 'Jardín' }
-  ];
+  mapEstado: Record<string, string> = {
+  'Pendiente': 'PENDIENTE',
+  'En proceso': 'EN_PROCESO',
+  'Cancelado': 'CANCELADO',
+  'Finalizado': 'FINALIZADO'
+};
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
-    private tagService: TagService
+    private tagService: TagService,
+    private homeService: HomeService 
   ) {}
 
   ngOnInit(): void {
+    const homeId = this.homeService.getHomeId();
+
+
+    if (homeId !== null) {
+      this.homeService.getSectorsByHomeId(homeId).subscribe({
+        next: (sectores) => {
+          this.availableSectors = sectores;
+        },
+        error: (err) => console.error('Error obteniendo sectores', err)
+      });
+    }
+
+  
+    this.tagService.getTags().subscribe({
+      next: (tags) => this.availableTags = tags,
+      error: (err) => console.error('Error obteniendo tags', err)
+    });
+
+
     this.eventId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.eventId) {
       this.eventService.getEventById(this.eventId).subscribe(event => {
@@ -54,9 +77,6 @@ export class EditFormComponent implements OnInit {
           this.eventData = { ...event };
         }
       });
-      this.tagService.getTags().subscribe(tags => {
-        this.availableTags = tags;
-    });
     }
   }
 
@@ -69,19 +89,23 @@ export class EditFormComponent implements OnInit {
     }
   }
 
-  saveChanges() {
-    this.eventService.updateEvent(this.eventData).subscribe(() => {
-      alert('Evento actualizado correctamente ✅');
-      this.router.navigate(['/events']); 
-    });
-  }
+saveChanges() {
+  const payload = {
+    ...this.eventData,
+    estado: this.mapEstado[this.eventData.estado]
+  };
+
+  this.eventService.updateEvent(payload).subscribe(() => {
+    alert('Evento actualizado correctamente ✅');
+    this.router.navigate(['/events']); 
+  });
+}
 
   cancel() {
     this.router.navigate(['/events']);
   }
 
   isTagSelected(tag: EventTag): boolean {
-  return this.eventData?.tags?.some(t => t.nombre === tag.nombre) ?? false;
-}
-
+    return this.eventData?.tags?.some(t => t.nombre === tag.nombre) ?? false;
+  }
 }
