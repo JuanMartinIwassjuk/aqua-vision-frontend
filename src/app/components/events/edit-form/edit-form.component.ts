@@ -20,7 +20,7 @@ export class EditFormComponent implements OnInit {
   eventData: AquaEvent = {
     id: 0,
     titulo: '',
-    description: '',
+    descripcion: '',
     estado: 'Pendiente',
     startDate: new Date(),
     endDate: null,

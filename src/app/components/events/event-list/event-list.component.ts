@@ -25,6 +25,17 @@ export class EventListComponent implements OnInit {
   selectedStatus: string = '';
   sortOrder: 'asc' | 'desc' = 'asc';
 
+  mapEstado: Record<string, string> = {
+  'Pendiente': 'PENDIENTE',
+  'En proceso': 'EN_PROCESO',
+  'Cancelado': 'CANCELADO',
+  'Finalizado': 'FINALIZADO'
+};
+
+mapEstadoDisplay: Record<string, string> = Object.fromEntries(
+  Object.entries(this.mapEstado).map(([k, v]) => [v, k])
+);
+
   constructor(private eventService: EventService,  private router: Router) {}
 
   ngOnInit(): void {
@@ -108,16 +119,16 @@ deleteEvent(id: number) {
   }
 }
 
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'En proceso': return '#f39c12'; 
-      case 'Finalizado': return '#27ae60'; 
-      case 'Pendiente':  return '#2980b9';
-      case 'Cancelado':  return '#c0392b'; 
-      default: return '#7f8c8d'; 
-    }
+getStatusColor(status: string): string {
+  const displayStatus = this.mapEstadoDisplay[status] || status;
+  switch (displayStatus) {
+    case 'En proceso': return '#f39c12';
+    case 'Finalizado': return '#27ae60';
+    case 'Pendiente':  return '#2980b9';
+    case 'Cancelado':  return '#c0392b';
+    default: return '#7f8c8d';
   }
+}
 
   startEvent(event: AquaEvent) {
   const confirmStart = confirm('¿Seguro que deseas comenzar este evento?');

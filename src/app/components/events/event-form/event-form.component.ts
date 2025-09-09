@@ -29,7 +29,7 @@ export class EventFormComponent implements OnInit {
 
   newEvent: Partial<AquaEvent> = {
     titulo: '',
-    description: '',
+    descripcion: '',
     estado: 'Pendiente',
     tags: [],
     sector: undefined
@@ -85,14 +85,14 @@ export class EventFormComponent implements OnInit {
   }
 
   createEvent() {
-    if (!this.newEvent.titulo || !this.newEvent.description || !this.newEvent.sector) {
+    if (!this.newEvent.titulo || !this.newEvent.descripcion || !this.newEvent.sector) {
       alert('Por favor completa todos los campos obligatorios.');
       this.router.navigate(['/events']); 
     }
 
 const eventToSave: AquaEvent = {
   titulo: this.newEvent.titulo!,
-  description: this.newEvent.description!,
+  descripcion: this.newEvent.descripcion!,
   startDate: this.newEvent.startDate || new Date(),
   estado: this.mapEstado[this.newEvent.estado!],
   tags: this.newEvent.tags || [],
@@ -116,7 +116,7 @@ const eventToSave: AquaEvent = {
   resetForm() {
     this.newEvent = {
       titulo: '',
-      description: '',
+      descripcion: '',
       estado: 'Pendiente',
       tags: [],
       sector: undefined
