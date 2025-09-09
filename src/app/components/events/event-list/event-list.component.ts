@@ -25,6 +25,17 @@ export class EventListComponent implements OnInit {
   selectedStatus: string = '';
   sortOrder: 'asc' | 'desc' = 'asc';
 
+  mapEstado: Record<string, string> = {
+  'Pendiente': 'PENDIENTE',
+  'En proceso': 'EN_PROCESO',
+  'Cancelado': 'CANCELADO',
+  'Finalizado': 'FINALIZADO'
+};
+
+mapEstadoDisplay: Record<string, string> = Object.fromEntries(
+  Object.entries(this.mapEstado).map(([k, v]) => [v, k])
+);
+
   constructor(private eventService: EventService,  private router: Router) {}
 
   ngOnInit(): void {
@@ -40,13 +51,13 @@ export class EventListComponent implements OnInit {
   get availableTags(): EventTag[] {
     const tagMap = new Map<string, EventTag>();
     this.events.forEach(event => {
-      event.tags.forEach(tag => tagMap.set(tag.name, tag));
+      event.tags.forEach(tag => tagMap.set(tag.nombre, tag));
     });
     return Array.from(tagMap.values());
   }
 
   get availableStatuses(): string[] {
-    return Array.from(new Set(this.events.map(e => e.status)));
+    return Array.from(new Set(this.events.map(e => e.estado)));
   }
 
   get filteredEvents(): AquaEvent[] {
@@ -55,13 +66,13 @@ export class EventListComponent implements OnInit {
     if (this.selectedTags.length > 0) {
       filtered = filtered.filter(event =>
         this.selectedTags.every(selectedTag =>
-          event.tags.some(tag => tag.name === selectedTag.name)
+          event.tags.some(tag => tag.nombre === selectedTag.nombre)
         )
       );
     }
 
     if (this.selectedStatus) {
-      filtered = filtered.filter(event => event.status === this.selectedStatus);
+      filtered = filtered.filter(event => event.estado === this.selectedStatus);
     }
 
     filtered.sort((a, b) => {
@@ -74,14 +85,14 @@ export class EventListComponent implements OnInit {
   }
 
   addTagToSelection() {
-    if (this.tagToAdd && !this.selectedTags.find(t => t.name === this.tagToAdd!.name)) {
+    if (this.tagToAdd && !this.selectedTags.find(t => t.nombre === this.tagToAdd!.nombre)) {
       this.selectedTags.push(this.tagToAdd);
     }
     this.tagToAdd = null;
   }
 
   removeTag(tag: EventTag) {
-    this.selectedTags = this.selectedTags.filter(t => t.name !== tag.name);
+    this.selectedTags = this.selectedTags.filter(t => t.nombre !== tag.nombre);
   }
 
   clearFilter() {
@@ -108,21 +119,21 @@ deleteEvent(id: number) {
   }
 }
 
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'En proceso': return '#f39c12'; 
-      case 'Finalizado': return '#27ae60'; 
-      case 'Pendiente':  return '#2980b9';
-      case 'Cancelado':  return '#c0392b'; 
-      default: return '#7f8c8d'; 
-    }
+getStatusColor(status: string): string {
+  const displayStatus = this.mapEstadoDisplay[status] || status;
+  switch (displayStatus) {
+    case 'En proceso': return '#f39c12';
+    case 'Finalizado': return '#27ae60';
+    case 'Pendiente':  return '#2980b9';
+    case 'Cancelado':  return '#c0392b';
+    default: return '#7f8c8d';
   }
+}
 
   startEvent(event: AquaEvent) {
   const confirmStart = confirm('¿Seguro que deseas comenzar este evento?');
   if (confirmStart) {
-    event.status = 'En proceso';
+    event.estado = 'En proceso';
     event.startDate = new Date();
 
     this.eventService.updateEvent(event).subscribe(() => {
@@ -135,7 +146,7 @@ deleteEvent(id: number) {
   finalizeEvent(event: AquaEvent) {
     const confirmFinish = confirm('¿Seguro que deseas finalizar este proceso?');
     if (confirmFinish) {
-      event.status = 'Finalizado';
+      event.estado = 'Finalizado';
       event.endDate = new Date();
 
       this.eventService.updateEvent(event).subscribe(() => {
@@ -145,7 +156,7 @@ deleteEvent(id: number) {
   }
 
   getSectorName(event: AquaEvent): string {
-  return event.sector ? event.sector.name : 'Sin sector';
+  return event.sector ? event.sector.nombre : 'Sin sector';
 }
 
 }
