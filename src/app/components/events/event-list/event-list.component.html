@@ -1,7 +1,7 @@
 <div class="wrapper-event">
-<div class="filters">
+  <div class="filters">
 
-    <div class="filter-tags" >
+    <div class="filter-tags">
       <label for="tagFilter">Categorías:</label>
       <select
         id="tagFilter"
@@ -39,7 +39,6 @@
 
     <button class="clear-filter" (click)="clearFilter()">Limpiar</button>
 
- 
     <div class="selected-categories" *ngIf="selectedTags.length > 0">
       <div
         class="tag-chip"
@@ -53,7 +52,8 @@
   </div>
 
   <div class="events-wrapper">
-    <div class="event-card"
+    <div
+      class="event-card"
       *ngFor="let event of filteredEvents"
       [ngStyle]="{'border-left': '6px solid ' + getStatusColor(event.estado)}"
     >
@@ -71,30 +71,30 @@
 
       <p class="event-description">{{ event.descripcion }}</p>
 
- 
       <p class="event-sector">
         <strong>Sector:</strong> {{ event.sector.nombre }}
       </p>
 
       <h4 class="event-status" [style.color]="getStatusColor(event.estado)">
-          {{ mapEstadoDisplay[event.estado] || event.estado }}
+        {{ mapEstadoDisplay[event.estado] || event.estado }}
       </h4>
 
       <div class="event-dates">
-        <span><strong>Inicio:</strong> {{ event.startDate | date:'short' }}</span>
-        <span *ngIf="event.endDate"><br><strong>Fin:</strong> {{ event.endDate | date:'short' }}</span>
+        <span><strong>Inicio:</strong> {{ event.fechaInicio | date:'short' }}</span>
+        <span *ngIf="event.fechaFin"><br><strong>Fin:</strong> {{ event.fechaFin | date:'short' }}</span>
       </div>
 
-     
-      <div class="event-results" *ngIf="event.estado === 'Finalizado'">
-        <p><strong>Consumo:</strong> {{ event.litersConsumed }} litros</p>
-        <p><strong>Costo:</strong> ${{ event.cost }}</p>
+      <div class="event-results" *ngIf="event.estado === 'FINALIZADO'">
+        <p><strong>Consumo:</strong> {{ event.litrosConsumidos }} litros</p>
+        <p><strong>Costo:</strong> ${{ event.costo }}</p>
       </div>
 
       <div class="tags-container">
-        <span *ngFor="let tag of event.tags"
-              class="tag"
-              [ngStyle]="{'background-color': tag.color}">
+        <span
+          *ngFor="let tag of event.tags"
+          class="tag"
+          [ngStyle]="{'background-color': tag.color}"
+        >
           {{ tag.nombre }}
         </span>
       </div>
@@ -111,6 +111,5 @@
         </button>
       </div>
     </div>
-
   </div>
 </div>
