@@ -25,8 +25,8 @@ export class EditFormComponent implements OnInit {
     estado: 'Pendiente',
     fechaInicio: new Date(),
     fechaFin: null,
-    litersConsumed: 0,
-    cost: 0,
+    litrosConsumidos: 0,
+    costo: 0,
     sector: { id: 0, nombre: '' },
     tags: []
   };

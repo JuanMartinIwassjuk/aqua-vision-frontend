@@ -10,6 +10,6 @@ export interface AquaEvent {
   estado: string;
   tags: EventTag[];
   sector: Sector;         
-  litersConsumed?: number; 
-  cost?: number;           
+  litrosConsumidos?: number; 
+  costo?: number;           
 }
