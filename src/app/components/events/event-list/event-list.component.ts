@@ -85,8 +85,8 @@ export class EventListComponent implements OnInit {
     }
 
     filtered.sort((a, b) => {
-      const dateA = a.startDate ? new Date(a.startDate).getTime() : 0;
-      const dateB = b.startDate ? new Date(b.startDate).getTime() : 0;
+      const dateA = a.fechaInicio ? new Date(a.fechaInicio).getTime() : 0;
+      const dateB = b.fechaInicio ? new Date(b.fechaInicio).getTime() : 0;
       return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
 
@@ -162,8 +162,8 @@ export class EventListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        event.estado = 'En proceso';
-        event.startDate = new Date();
+        event.estado = 'EN_PROCESO';
+        event.fechaInicio = new Date();
 
         this.eventService.updateEvent(event).subscribe(() => {
           this.snackBar.open('Evento iniciado 🚀', 'Cerrar', { duration: 3000 });
@@ -184,8 +184,8 @@ export class EventListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        event.estado = 'Finalizado';
-        event.endDate = new Date();
+        event.estado = 'FINALIZADO';
+        event.fechaFin = new Date();
 
         this.eventService.updateEvent(event).subscribe(() => {
           this.snackBar.open('Evento finalizado ✅', 'Cerrar', { duration: 3000 });
