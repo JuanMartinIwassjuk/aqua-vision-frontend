@@ -163,8 +163,6 @@ export class EventListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         event.estado = 'EN_PROCESO';
-        event.fechaInicio = new Date();
-
         this.eventService.updateEvent(event).subscribe(() => {
           this.snackBar.open('Evento iniciado 🚀', 'Cerrar', { duration: 3000 });
           this.loadEvents();
