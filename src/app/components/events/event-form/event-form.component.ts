@@ -93,7 +93,6 @@ export class EventFormComponent implements OnInit {
 const eventToSave: AquaEvent = {
   titulo: this.newEvent.titulo!,
   descripcion: this.newEvent.descripcion!,
-  fechaInicio: this.newEvent.fechaInicio,
   estado: this.mapEstado[this.newEvent.estado!],
   tags: this.newEvent.tags || [],
   sector: this.newEvent.sector!,
