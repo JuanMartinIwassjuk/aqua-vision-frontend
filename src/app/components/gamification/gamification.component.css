@@ -254,3 +254,48 @@ button:disabled {
 .next-btn-container {
   margin-top: 1rem;
 }
+
+
+.game-start-screen {
+  width: 500px;         
+  height: 400px;         
+  border: 2px solid #007bff;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e0f7fa, #b3e5fc);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+}
+
+.game-start-screen h3 {
+  font-size: 1.8rem;
+  color: #01579b;
+  margin-bottom: 1rem;
+}
+
+.game-start-screen p {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  max-width: 80%;
+}
+
+.game-start-screen button {
+  font-size: 1.2rem;
+  padding: 0.8rem 2rem;
+  border-radius: 10px;
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.game-start-screen button:hover {
+  transform: scale(1.05);
+  background: #0056b3;
+}

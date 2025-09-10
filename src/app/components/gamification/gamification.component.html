@@ -58,12 +58,20 @@
 </div>
 
 <div *ngIf="mode === 'game'" class="game-container">
-  <div class="score">💧 Puntos: {{ scoreGame }}</div>
-  <div class="arena" #gameContainer>
-    <div class="drop" *ngFor="let drop of drops" 
-         [style.left.px]="drop.x" 
-         [style.top.px]="drop.y">💧</div>
-    <div class="bucket" [style.left.px]="bucketX">🪣</div>
+  <div *ngIf="!gameStarted" class="game-start-screen">
+    <h3>🎮 Minijuego AquaSave</h3>
+    <p>Mové el balde con el mouse y atrapá la mayor cantidad de gotas posible.</p>
+    <button (click)="startGame()">Comenzar</button>
+  </div>
+
+  <div *ngIf="gameStarted">
+    <div class="score">💧 Puntos: {{ scoreGame }}</div>
+    <div class="arena" #gameContainer>
+      <div class="drop" *ngFor="let drop of drops" 
+           [style.left.px]="drop.x" 
+           [style.top.px]="drop.y">💧</div>
+      <div class="bucket" [style.left.px]="bucketX">🪣</div>
+    </div>
   </div>
 </div>
 

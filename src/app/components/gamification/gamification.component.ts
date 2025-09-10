@@ -15,6 +15,7 @@ export class GamificationComponent implements OnDestroy {
   score = 0;
   answered = false;
   triviaFinished = false;
+  gameStarted = false;
 
   questions: Question[] = [
     { question: '¿Cuántos litros de agua gasta una ducha promedio de 10 minutos?', options: ['20 litros', '50 litros', '100 litros', '150 litros'], correctAnswer: 2 },
@@ -53,18 +54,20 @@ export class GamificationComponent implements OnDestroy {
   scoreGame = 0;
 
   startGame() {
-    this.stopGame();
-    this.drops = [];
-    this.bucketX = 150;
-    this.scoreGame = 0;
+  this.gameStarted = true;
+  this.stopGame();
+  this.drops = [];
+  this.bucketX = 150;
+  this.scoreGame = 0;
 
-    this.intervalId = window.setInterval(() => {
-      if (this.mode === 'game') {
-        const arenaWidth = this.gameContainer?.nativeElement?.clientWidth ?? 350;
-        const x = Math.random() * (arenaWidth - 30);
-        this.drops.push({ x, y: 0 });
-      }
-    }, 1200);
+  this.intervalId = window.setInterval(() => {
+    if (this.mode === 'game' && this.gameStarted) {
+      const arenaWidth = this.gameContainer?.nativeElement?.clientWidth ?? 350;
+      const x = Math.random() * (arenaWidth - 30);
+      this.drops.push({ x, y: 0 });
+    }
+  }, 1200);
+
     this.gameLoop();
   }
 
@@ -152,21 +155,20 @@ export class GamificationComponent implements OnDestroy {
     }
   }
 
-  setMode(m: 'menu' | 'trivia' | 'game' | 'memory' | 'history') {
-    if (this.mode === 'game' && m !== 'game') {
-      this.stopGame();
-    }
-    this.mode = m;
-    if (m === 'game') {
-      this.startGame();
-    }
-    if (m === 'trivia') {
-      this.triviaFinished = false;
-      this.currentIndex = 0;
-      this.answered = false;
-    }
-    if (m === 'memory') this.resetMemory();
+setMode(m: 'menu' | 'trivia' | 'game' | 'memory' | 'history') {
+  if (this.mode === 'game' && m !== 'game') {
+    this.stopGame();
+    this.gameStarted = false; 
   }
+  this.mode = m;
+
+  if (m === 'trivia') {
+    this.triviaFinished = false;
+    this.currentIndex = 0;
+    this.answered = false;
+  }
+  if (m === 'memory') this.resetMemory();
+}
 
   ngOnDestroy(): void {
     this.stopGame();
