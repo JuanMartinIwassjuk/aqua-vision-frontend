@@ -99,13 +99,13 @@
         </span>
       </div>
 
-      <div *ngIf="event.estado === 'En proceso'" class="finalize-wrapper">
+      <div *ngIf="event.estado === 'EN_PROCESO'" class="finalize-wrapper">
         <button class="finalize-btn" (click)="finalizeEvent(event)">
           Finalizar evento
         </button>
       </div>
 
-      <div *ngIf="event.estado === 'Pendiente'" class="start-wrapper">
+      <div *ngIf="event.estado === 'PENDIENTE'" class="start-wrapper">
         <button class="start-btn" (click)="startEvent(event)">
           Comenzar evento
         </button>
