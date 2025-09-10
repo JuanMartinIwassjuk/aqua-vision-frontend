@@ -5,6 +5,10 @@ import { AquaEvent } from '../../../models/aquaEvent';
 import { EventTag } from '../../../models/eventTag';
 import { EventService } from '../../../services/event.service';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../../../utils/confirm-dialog';
+
 
 
 @Component({
@@ -26,17 +30,22 @@ export class EventListComponent implements OnInit {
   sortOrder: 'asc' | 'desc' = 'asc';
 
   mapEstado: Record<string, string> = {
-  'Pendiente': 'PENDIENTE',
-  'En proceso': 'EN_PROCESO',
-  'Cancelado': 'CANCELADO',
-  'Finalizado': 'FINALIZADO'
-};
+    'Pendiente': 'PENDIENTE',
+    'En proceso': 'EN_PROCESO',
+    'Cancelado': 'CANCELADO',
+    'Finalizado': 'FINALIZADO'
+  };
 
-mapEstadoDisplay: Record<string, string> = Object.fromEntries(
-  Object.entries(this.mapEstado).map(([k, v]) => [v, k])
-);
+  mapEstadoDisplay: Record<string, string> = Object.fromEntries(
+    Object.entries(this.mapEstado).map(([k, v]) => [v, k])
+  );
 
-  constructor(private eventService: EventService,  private router: Router) {}
+  constructor(
+    private eventService: EventService,
+    private router: Router,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.loadEvents();
@@ -108,55 +117,85 @@ mapEstadoDisplay: Record<string, string> = Object.fromEntries(
     this.router.navigate(['/events/edit', id]); 
   }
 
-deleteEvent(id: number) {
-  const confirmDelete = confirm('¿Estás seguro de que deseas eliminar este evento?');
-  if (confirmDelete) {
-    this.eventService.deleteEvent(id).subscribe(() => {
-      alert('Evento eliminado correctamente ✅');
-      this.loadEvents();
+  deleteEvent(id: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Eliminar evento',
+        message: '¿Estás seguro de que deseas eliminar este evento?'
+      }
     });
-    this.onDelete.emit(id);
-  }
-}
 
-getStatusColor(status: string): string {
-  const displayStatus = this.mapEstadoDisplay[status] || status;
-  switch (displayStatus) {
-    case 'En proceso': return '#f39c12';
-    case 'Finalizado': return '#27ae60';
-    case 'Pendiente':  return '#2980b9';
-    case 'Cancelado':  return '#c0392b';
-    default: return '#7f8c8d';
-  }
-}
-
-  startEvent(event: AquaEvent) {
-  const confirmStart = confirm('¿Seguro que deseas comenzar este evento?');
-  if (confirmStart) {
-    event.estado = 'En proceso';
-    event.startDate = new Date();
-
-    this.eventService.updateEvent(event).subscribe(() => {
-      this.loadEvents();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.eventService.deleteEvent(id).subscribe(() => {
+          this.snackBar.open('Evento eliminado correctamente ✅', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snackbar-success']
+          });
+          this.loadEvents();
+          this.onDelete.emit(id);
+        });
+      }
     });
   }
-}
 
-
-  finalizeEvent(event: AquaEvent) {
-    const confirmFinish = confirm('¿Seguro que deseas finalizar este proceso?');
-    if (confirmFinish) {
-      event.estado = 'Finalizado';
-      event.endDate = new Date();
-
-      this.eventService.updateEvent(event).subscribe(() => {
-        this.loadEvents();
-      });
+  getStatusColor(status: string): string {
+    const displayStatus = this.mapEstadoDisplay[status] || status;
+    switch (displayStatus) {
+      case 'En proceso': return '#f39c12';
+      case 'Finalizado': return '#27ae60';
+      case 'Pendiente':  return '#2980b9';
+      case 'Cancelado':  return '#c0392b';
+      default: return '#7f8c8d';
     }
   }
 
-  getSectorName(event: AquaEvent): string {
-  return event.sector ? event.sector.nombre : 'Sin sector';
-}
+  startEvent(event: AquaEvent) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Comenzar evento',
+        message: '¿Seguro que deseas comenzar este evento?'
+      }
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        event.estado = 'En proceso';
+        event.startDate = new Date();
+
+        this.eventService.updateEvent(event).subscribe(() => {
+          this.snackBar.open('Evento iniciado 🚀', 'Cerrar', { duration: 3000 });
+          this.loadEvents();
+        });
+      }
+    });
+  }
+
+  finalizeEvent(event: AquaEvent) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Finalizar evento',
+        message: '¿Seguro que deseas finalizar este proceso?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        event.estado = 'Finalizado';
+        event.endDate = new Date();
+
+        this.eventService.updateEvent(event).subscribe(() => {
+          this.snackBar.open('Evento finalizado ✅', 'Cerrar', { duration: 3000 });
+          this.loadEvents();
+        });
+      }
+    });
+  }
+
+  getSectorName(event: AquaEvent): string {
+    return event.sector ? event.sector.nombre : 'Sin sector';
+  }
 }
