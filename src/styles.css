@@ -77,5 +77,13 @@ html, body {
   animation: slideInBottom 0.8s ease-out forwards;
 }
 
+:root {
+  --azul-oscuro: #0c4d6f;
+  --verde-oscuro: #0b6649;
+  --gris-blanco: #dbdbdb;
+  --verde-agua: #008c9e;
+  --verde-fondo: #ddf7fa;
+  --verde-completado: #dafdc2f0;
+}
 html, body { height: 100%; }
 body { margin: 0;  }
