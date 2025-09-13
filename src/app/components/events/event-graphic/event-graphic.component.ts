@@ -59,7 +59,6 @@ onChartClick(event: { event?: ChartEvent; active?: any[] }, chartData: ChartData
   if (event.active && event.active.length > 0) {
     const dataIndex = event.active[0].index;
 
-    // 🔧 casteamos labels a string[]
     const labels = chartData.labels as string[];
     const hora = labels[dataIndex];
 

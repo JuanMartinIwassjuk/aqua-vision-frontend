@@ -94,6 +94,7 @@ nav ul li a:hover,
 
 .submenu {
   position: relative;
+
 }
 
 .submenu-list {
@@ -111,6 +112,7 @@ nav ul li a:hover,
   border-radius: 4px;
   animation: fadeIn 0.25s ease-out;
   z-index: 1500;
+
 }
 
 @keyframes fadeIn {
@@ -178,6 +180,7 @@ nav ul li a:hover,
   .submenu-list li a {
     padding-left: 1rem;
     width: 100%;
+
   }
 
   #logo {
@@ -289,4 +292,5 @@ box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
 
 
 }
+
 
