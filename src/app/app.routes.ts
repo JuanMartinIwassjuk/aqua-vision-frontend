@@ -63,5 +63,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/events/edit-form/edit-form.component').then(c => c.EditFormComponent),
     canActivate: [AuthGuard] 
   },
+    {
+    path: 'events/graphics',
+    loadComponent: () => import('./components/events/event-graphic/event-graphic.component').then(c => c.EventGraphicComponent),
+    canActivate: [AuthGuard] 
+  },
   { path: '**', redirectTo: 'login' } 
 ];

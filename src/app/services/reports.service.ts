@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -83,9 +84,9 @@ getConsumoDiarioPorSector(id: number): Observable<ReporteDiario[]> {
     { hora: '07:00', caudal_m3: 8.3 },
     { hora: '08:00', caudal_m3: 10 },
     { hora: '09:00', caudal_m3: 12 },
-    { hora: '10:00', caudal_m3: 15 },
-    { hora: '11:00', caudal_m3: 8 },
-    { hora: '12:00', caudal_m3: 2 },
+    { hora: '10:00', caudal_m3: 0 },
+    { hora: '11:00', caudal_m3: 0 },
+    { hora: '12:00', caudal_m3: 0 },
     { hora: '13:00', caudal_m3: 3 },
     { hora: '14:00', caudal_m3: 8 },
     { hora: '15:00', caudal_m3: 9 },
