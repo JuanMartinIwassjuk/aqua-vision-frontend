@@ -42,10 +42,11 @@
 
 
             <li class="submenu" *ngIf="!isAdmin">
-              <a (click)="toggleService(1)">Eventos ▾</a>
+              <a (click)="toggleService(1)">Mis Actividades ▾</a>
               <ul *ngIf="expandedIndex === 1" class="submenu-list">
-                <li><a routerLink="/events" (click)="closeMenu()">▸Mis Eventos</a></li>
-                <li><a routerLink="/events/create" (click)="closeMenu()">▸Crear Evento</a></li>
+                <li><a routerLink="/events/graphics" (click)="closeMenu()">▸Resumen</a></li>
+                <li><a routerLink="/events" (click)="closeMenu()">▸Detalle</a></li>
+                <li><a routerLink="/events/create" (click)="closeMenu()">▸Nueva Actividad</a></li>
               </ul>
             </li>
 

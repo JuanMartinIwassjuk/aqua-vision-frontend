@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartData, ChartOptions } from 'chart.js';
+import { ChartData, ChartEvent, ChartOptions } from 'chart.js';
 import { ReporteService } from '../../services/reports.service';
 import { NgChartsModule } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -61,7 +63,7 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  constructor(private reporteService: ReporteService, private authService: AuthService) {}
+  constructor(private reporteService: ReporteService, private authService: AuthService,  private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     const datos = this.reporteService.getConsumoPorHora();
@@ -139,4 +141,32 @@ export class DashboardComponent implements OnInit {
   get isUser(): boolean {
     return this.authService.isUser();
   }
+
+onChartClick(event: { event?: ChartEvent, active?: any[] }) {
+  if (event.active && event.active.length > 0) {
+    const element = event.active[0];
+    const datasetIndex = element.datasetIndex;
+    const dataIndex = element.index;
+
+    const labels = this.isAdmin ? this.lineChartDataAdmin.labels : this.lineChartData.labels;
+    const datasets = this.isAdmin ? this.lineChartDataAdmin.datasets : this.lineChartData.datasets;
+
+    const hora = labels?.[dataIndex];
+    const valor = datasets[datasetIndex].data[dataIndex] as number;
+
+    console.log(`Click detectado → Hora: ${hora}, Consumo: ${valor}`);
+
+    if (hora !== undefined && valor !== undefined && valor !== null) {
+      this.snackBar.open(
+        `Hora ${hora} → Consumo: ${valor} m³`,
+        'Cerrar',
+        { duration: 3000 }
+      );
+    }
+  } else {
+    console.log('Click detectado en el gráfico, pero no en un punto de datos.');
+  }
+}
+
+
 }
