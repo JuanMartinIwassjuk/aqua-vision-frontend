@@ -242,7 +242,9 @@ h2 {
   padding: 15px 5px;
   text-decoration: none;
   transition: opacity .2s;
+  transition: transform .2s;
   display: flex;
+  cursor: pointer;
 }
 
 .trivia-modal:hover {
@@ -268,17 +270,22 @@ h2 {
   padding: 15px 5px;
   text-decoration: none;
   display: flex;
+  position: relative;
+  overflow: hidden;
 }
 
 .image-14 {
   filter: blur(2px);
 }
 
-.image-13 {
-  min-width: 60px;
-  max-width: 0%;
-  min-height: 60px;
-  position:relative;
+.image-13{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 60px;
+  height: 60px;
+  z-index: 2;
 }
 
 .trivia-completado {
@@ -319,7 +326,9 @@ h2 {
   padding: 15px 5px;
   text-decoration: none;
   transition: opacity .2s;
+  transition: transform .2s;
   display: flex;
+  cursor: pointer;
 }
 
 .minijuego-modal:hover {
@@ -334,12 +343,23 @@ h2 {
 .desafios-list {
   max-height: 50vh;
   overflow: auto;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.container-desafios{
+}
+
+.ranking-list{
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .titulo-desafios {
   border-bottom: 4px solid #fff;
   justify-content: space-between;
   display: flex;
+  padding: 1rem;
 }
 
 .item-desafio {
@@ -348,6 +368,7 @@ h2 {
   padding-top: 15px;
   padding-bottom: 15px;
   display: flex;
+  padding: 1rem;
 }
 
 .item-desafio.item-desafio-completado {
@@ -360,12 +381,14 @@ h2 {
   grid-row-gap: 3rem;
   justify-content: space-around;
   display: flex;
+  align-items: center;
 }
 
 .estado-desafio {
   margin-right: .5rem;
   padding-left: 5rem;
   padding-right: 5rem;
+  padding-top: .5rem;
 }
 
 .numero-desafio {
@@ -382,6 +405,7 @@ h2 {
   border-bottom: 4px solid #fff;
   justify-content: space-between;
   display: flex;
+  padding: 1rem;
 }
 
 .user-ranking {
@@ -390,6 +414,8 @@ h2 {
   padding-top: 15px;
   padding-bottom: 15px;
   display: flex;
+  padding:1rem;
+  align-items: center;
 }
 
 .user-container-ranking {
@@ -397,6 +423,7 @@ h2 {
   grid-row-gap: 3rem;
   justify-content: space-around;
   display: flex;
+  align-items: center;
 }
 
 .user-posicion-rank {
@@ -409,6 +436,7 @@ h2 {
   grid-row-gap: 3rem;
   padding-right: 8rem;
   display: flex;
+  align-items: center;
 }
 
 .user-puntos-rank {
@@ -421,6 +449,7 @@ h2 {
   justify-content: center;
   align-items: center;
   display: flex;
+  margin:1rem;
 }
 
 .vermas-rank {
