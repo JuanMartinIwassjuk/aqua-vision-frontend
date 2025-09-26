@@ -1,6 +1,6 @@
 .reportes-container {
   padding: 2rem;
-  background-color: #DDF7FA;
+  background-color: #F4F4F4;
   color: #3A3A3A;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -8,7 +8,7 @@
 }
 
 h2 {
-  color: #008C9E;
+  color: #001F3F;
   text-align: center;
   grid-column: span 2;
   margin-bottom: 0rem;
@@ -115,7 +115,7 @@ h2 {
 }
 
 .sector-nombre {
-  color: #008C9E;
+  color: #001F3F;
 }
 
 .costo-precio {
@@ -131,7 +131,7 @@ h2 {
 
 
 h3, h4 {
-  color: #3A3A3A;
+  color: #001F3F;
   margin-bottom: 1rem;
   text-align: center;
 }

@@ -4,7 +4,7 @@ body, html {
   padding: 0;
   height: 100%;
   font-family: 'Roboto', sans-serif;
-  background-color: #DDF7FA; 
+  background-color: #2C2C2C ; 
   color: #3a3a3a; 
 }
 body {
@@ -21,7 +21,7 @@ main {
 
 
 .container-header {
-  background-color: #008C9E; 
+  background-color: #001F3F; 
   display: grid;
   grid-template-columns: 2fr 5fr;
   align-items: center;
@@ -102,7 +102,7 @@ nav ul li a:hover,
   top: 100%;
   left: -10%;
   width: 15vw;   
-  background-color: #007987;
+  background-color: #001F3F;
   padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
@@ -144,7 +144,7 @@ nav ul li a:hover,
     top: 60px;
     left: 0;
     width: 100%;
-    background-color: #008C9E;
+    background-color: #001F3F;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -203,7 +203,7 @@ nav ul li a:hover,
 
 
 footer {
-background: #008c9e;
+background: #001F3F;
 padding: 1rem;
 display: flex;
 justify-content: center;

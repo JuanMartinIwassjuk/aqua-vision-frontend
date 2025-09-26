@@ -7,7 +7,7 @@
 }
 
 .left-panel {
-  background-color: #00bceb;
+  background-color: #001F3F;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +52,7 @@
 button {
   width: 100%;
   padding: 12px;
-  background-color: #00d4ff;
+  background-color: #001F3F;
   color: white;
   border: none;
   border-radius: 6px;
@@ -76,7 +76,7 @@ button:hover {
 }
 
 .register-link:hover {
-  color: #00bceb;
+  color: #008c9e;
   text-decoration: underline;
 }
 

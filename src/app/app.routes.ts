@@ -64,7 +64,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard] 
   },
     {
-    path: 'events/graphics',
+    path: 'events/summary',
     loadComponent: () => import('./components/events/event-graphic/event-graphic.component').then(c => c.EventGraphicComponent),
     canActivate: [AuthGuard] 
   },

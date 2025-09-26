@@ -27,10 +27,10 @@
     </div>
 
     <div class="resumen-global">
-      <p><strong class="blue_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
-      <p><strong class="blue_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
-      <p><strong class="blue_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
-      <p><strong class="blue_effect">Costo total:</strong> {{ costoGlobal | currency:'USD':'symbol':'1.0-2' }}</p> <!-- 🔹 Nuevo -->
+      <p><strong class="blue_marine_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_marine_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_marine_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
+      <p><strong class="blue_marine_effect">Costo total:</strong> {{ costoGlobal | currency:'USD':'symbol':'1.0-2' }}</p> <!-- 🔹 Nuevo -->
     </div>
 
   </div>
@@ -47,7 +47,7 @@
 
 
   <div class="grafico-contenedor slide-bottom">
-    <h3>Histórico de valores</h3>
+    <h3 class="blue_marine_effect">Histórico de valores</h3>
     <canvas baseChart
             [data]="barChartData"
             [options]="barChartOptions"

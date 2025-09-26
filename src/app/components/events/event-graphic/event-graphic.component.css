@@ -1,13 +1,17 @@
 .event-graphic-container {
   padding: 2rem;
-  background-color: #F8FDFE;
+  background-color: #F4F4F4;
   color: #3A3A3A;
 }
 
 h2 {
   text-align: center;
-  color: #008C9E;
+  color: #001F3F;
   margin-bottom: 2rem;
+}
+
+h3{
+  color: #001F3F;
 }
 
 .sector-charts {
