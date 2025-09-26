@@ -86,7 +86,7 @@
 .event-status {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #007c91;
+  color: #001F3F;
 }
 
 .actions {
@@ -202,7 +202,7 @@
 }
 
 .sort-button {
-  background-color: #007c91;
+  background-color: #001F3F;
   border: none;
   color: white;
   padding: 0.5rem 1rem;
@@ -212,7 +212,7 @@
 }
 
 .sort-button:hover {
-  background-color: #005f6b;
+  background-color: #0754a1;
 }
 
 @media (max-width: 600px) {
@@ -390,7 +390,7 @@
 .event-results {
   margin-top: 0.6rem;
   padding: 0.6rem;
-  background-color: #f4f9f9;
+  background-color: #000000;
   border-radius: 8px;
   font-size: 0.9rem;
   color: #2c3e50;

@@ -9,7 +9,7 @@ html, body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background-color: #DDF7FA;
+  background-color: #001F3F;
 }
 
 @keyframes slideInLeft {

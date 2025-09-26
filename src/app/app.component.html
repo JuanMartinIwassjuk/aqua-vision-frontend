@@ -10,7 +10,7 @@
   
   
   
-  <main [ngStyle]="{ 'background-color': isLoggedIn ? '#DDF7FA' : '#fdfdfd' }">
+  <main [ngStyle]="{ 'background-color': isLoggedIn ? '#F4F4F4' : '#fdfdfd' }">
    
     <div class="container-header" *ngIf="isLoggedIn">
                 <div class="logo">
@@ -44,7 +44,7 @@
             <li class="submenu" *ngIf="!isAdmin">
               <a (click)="toggleService(1)">Mis Actividades ▾</a>
               <ul *ngIf="expandedIndex === 1" class="submenu-list">
-                <li><a routerLink="/events/graphics" (click)="closeMenu()">▸Resumen</a></li>
+                <li><a routerLink="/events/summary" (click)="closeMenu()">▸Resumen</a></li>
                 <li><a routerLink="/events" (click)="closeMenu()">▸Detalle</a></li>
                 <li><a routerLink="/events/create" (click)="closeMenu()">▸Nueva Actividad</a></li>
               </ul>

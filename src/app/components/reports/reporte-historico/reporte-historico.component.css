@@ -4,8 +4,8 @@
   max-width: 1200px;
   margin: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  background-color: #DDF7FA;
+  color: #2C2C2C;
+  background-color: #F4F4F4;
 }
 
 .filtros-generales {
@@ -47,7 +47,7 @@
 
 .inputs-fecha button {
   padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #001F3F;
   border: none;
   border-radius: 6px;
   color: white;
@@ -111,6 +111,10 @@
     color: #007bff;
 }
 
+.blue_marine_effect{
+    color: #001F3F;
+}
+
 .sectores-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -132,7 +136,7 @@
 
 .card-sector h3 {
   margin-top: 0;
-  color: #007bff;
+  color: #001F3F;
 }
 
 .grafico-contenedor {
