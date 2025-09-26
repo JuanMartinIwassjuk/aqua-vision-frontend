@@ -76,3 +76,6 @@ html, body {
 .slide-bottom {
   animation: slideInBottom 0.8s ease-out forwards;
 }
+
+html, body { height: 100%; }
+body { margin: 0;  }

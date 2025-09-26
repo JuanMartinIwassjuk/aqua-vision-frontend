@@ -5,74 +5,116 @@
 
   <div class="cards-row slide-left">
 
+    <!-- Card Consumo Promedio (Admin) -->
     <ng-container *ngIf="isAdmin; else userCard1">
-      <div class="card small-card consumo-flex large-text">
-        Consumo promedio por Hogar
-        <span class="large-text">{{ consumoPromedio }} m³</span>
+      <div class="card consumo-card">
+        <div class="consumo-main">
+          <span class="consumo-title">Consumo promedio por Hogar</span>
+          <span class="consumo-value">{{ consumoPromedio }} m³</span>
+        </div>
+
+        <div class="consumo-indicador" [ngClass]="{ 'positivo': consumoDiff < 0, 'negativo': consumoDiff > 0 }">
+          <ng-container *ngIf="consumoDiff < 0">
+            <mat-icon>arrow_downward</mat-icon>
+            <span>{{ consumoDiffAbs }}% menor que ayer</span>
+          </ng-container>
+          <ng-container *ngIf="consumoDiff > 0">
+            <mat-icon>arrow_upward</mat-icon>
+            <span>{{ consumoDiffAbs }}% mayor que ayer</span>
+          </ng-container>
+          <span *ngIf="consumoDiff === 0">= igual que ayer</span>
+        </div>
       </div>
     </ng-container>
+
+    <!-- Card Consumo Diario (Usuario) -->
     <ng-template #userCard1>
-      <a routerLink="/reportes/diario" class="card small-card consumo-flex large-text">
-        Consumo en lo que va del día: 
-        <span [style.color]="consumoColor" class="large-text">{{ consumoDia }} m³</span>
+      <a routerLink="/reportes/diario" class="card consumo-card">
+        <div class="consumo-main">
+          <span class="consumo-title">Consumo en lo que va del día:</span>
+          <span [style.color]="consumoColor" class="consumo-value">{{ consumoDia }} m³</span>
+        </div>
+
+        <div class="consumo-indicador" [ngClass]="{ 'positivo': consumoDiff < 0, 'negativo': consumoDiff > 0 }">
+          <ng-container *ngIf="consumoDiff < 0">
+            <mat-icon>arrow_downward</mat-icon>
+            <span>{{ consumoDiffAbs }}% menor que ayer</span>
+          </ng-container>
+          <ng-container *ngIf="consumoDiff > 0">
+            <mat-icon>arrow_upward</mat-icon>
+            <span>{{ consumoDiffAbs }}% mayor que ayer</span>
+          </ng-container>
+          <span *ngIf="consumoDiff === 0">= igual que ayer</span>
+        </div>
       </a>
     </ng-template>
 
+    <!-- Card Medidores (Admin) -->
     <ng-container *ngIf="isAdmin; else userCard2">
-      <div class="card small-card large-text">
-        <div>
-          ✅ <strong>Total de medidores conectados:</strong> {{ medidoresConectadosAdmin }}
+      <div class="card info-card">
+        <div class="icon-row">
+          <mat-icon class="ok-icon">check_circle</mat-icon>
+          <span>Total de medidores conectados: <strong>{{ medidoresConectadosAdmin }}</strong></span>
         </div>
-        <div>
-          ⚠️ <strong>Total de medidores desconectados:</strong> {{ medidoresDesconectadosAdmin }}
+        <div class="icon-row">
+          <mat-icon class="warn-icon">error</mat-icon>
+          <span>Total de medidores desconectados: <strong>{{ medidoresDesconectadosAdmin }}</strong></span>
         </div>
       </div>
     </ng-container>
+
+    <!-- Card Medidores (Usuario) -->
     <ng-template #userCard2>
-      <a routerLink="/account-settings" class="card small-card large-text">
-        <div>
-          ✅ <strong>Medidores conectados:</strong> {{ medidoresConectados }}
+      <a routerLink="/account-settings" class="card info-card">
+        <div class="icon-row">
+          <mat-icon class="ok-icon">check_circle</mat-icon>
+          <span>Medidores conectados: <strong>{{ medidoresConectados }}</strong></span>
         </div>
-        <div>
-          ⚠️ <strong>Medidores desconectados:</strong> {{ medidoresDesconectados }}
+        <div class="icon-row">
+          <mat-icon class="warn-icon">error</mat-icon>
+          <span>Medidores desconectados: <strong>{{ medidoresDesconectados }}</strong></span>
         </div>
       </a>
     </ng-template>
 
+    <!-- Card Hogares y Trivias (Admin) -->
     <ng-container *ngIf="isAdmin; else userCard3">
-      <div class="card small-card large-text">
-        <div>
-          🏠 <strong>Total de Hogares:</strong> {{ totalHogaresAdmin }}
+      <div class="card info-card">
+        <div class="icon-row">
+          <mat-icon>home</mat-icon>
+          <span>Total de Hogares: <strong>{{ totalHogaresAdmin }}</strong></span>
         </div>
-        <div>
-          🎉 <strong>Total de Trivias completadas:</strong> {{ totalTriviasAdmin }}
+        <div class="icon-row">
+          <mat-icon>celebration</mat-icon>
+          <span>Total de Trivias completadas: <strong>{{ totalTriviasAdmin }}</strong></span>
         </div>
       </div>
     </ng-container>
+
+    <!-- Card Alertas (Usuario) -->
     <ng-template #userCard3>
-      <a routerLink="/consumption-alerts" class="card small-card large-text">
-        <div class="info-icon">
-          <span class="icon-circle">i</span> Tenés nuevas Alertas de Consumo
+      <a routerLink="/consumption-alerts" class="card info-card">
+        <div class="icon-row">
+          <mat-icon>info</mat-icon>
+          <span><strong>Tenés nuevas Alertas de Consumo</strong></span>
         </div>
       </a>
     </ng-template>
-
   </div>
 
-<div class="chart-card chart-fullwidth slide-bottom">
-  <div class="chart-wrapper">
-    <h4 class="consumption-hours-title">
-      {{ isAdmin ? 'Consumo total de hogares por hora' : 'Tus consumos por hora' }}
-    </h4>
-    <canvas
-      baseChart
-      [data]="isAdmin ? lineChartDataAdmin : lineChartData"
-      [options]="lineChartOptions"
-      type="line"
-      (chartClick)="onChartClick($event)"
-      >
-      
-    </canvas>
+  <!-- Gráfico -->
+  <div class="chart-card chart-fullwidth slide-bottom">
+    <div class="chart-wrapper">
+      <h4 class="consumption-hours-title">
+        {{ isAdmin ? 'Consumo total de hogares por hora' : 'Tus consumos por hora' }}
+      </h4>
+      <canvas
+        baseChart
+        [data]="isAdmin ? lineChartDataAdmin : lineChartData"
+        [options]="lineChartOptions"
+        type="line"
+        (chartClick)="onChartClick($event)">
+      </canvas>
+    </div>
   </div>
-</div>
 </div>

@@ -205,3 +205,191 @@ a.card:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
   cursor: pointer;
 }
+.consumo-indicador {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.consumo-indicador.positivo {
+  color: #4caf50;
+}
+
+.consumo-indicador.negativo {
+  color: #e53935; 
+}
+
+
+.consumo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.consumo-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.consumo-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.consumo-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #001F3F;
+}
+
+
+.consumo-indicador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.consumo-indicador mat-icon {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+
+.consumo-indicador.positivo {
+  color: #4caf50;
+}
+
+.consumo-indicador.negativo {
+  color: #e53935; 
+}
+
+
+@media (max-width: 992px) {
+  .consumo-card {
+    align-items: center;
+  }
+  .consumo-indicador {
+    margin-top: 0.5rem;
+  }
+}
+
+
+.icon-row {
+  display: flex;
+  align-items: center; 
+  gap: 6px;           
+  margin: 4px 0;
+}
+
+mat-icon {
+  font-size: 22px;     
+  vertical-align: middle;
+}
+
+.ok-icon {
+  color: #4caf50; 
+}
+
+.warn-icon {
+  color: #f44336; 
+}
+
+.cards-row {
+  grid-column: span 2;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.card {
+  background-color: #FDFDFD;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+  cursor: pointer;
+}
+
+/* Consumo */
+.consumo-card {
+  gap: 0.75rem;
+}
+
+.consumo-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.consumo-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.consumo-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 0.25rem;
+}
+
+.consumo-indicador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.consumo-indicador mat-icon {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+.consumo-indicador.positivo {
+  color: #4caf50;
+}
+.consumo-indicador.negativo {
+  color: #e53935;
+}
+
+
+.info-card {
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 1.05rem;
+  margin: 4px 0;
+}
+
+.ok-icon {
+  color: #4caf50;
+}
+.warn-icon {
+  color: #f44336;
+}

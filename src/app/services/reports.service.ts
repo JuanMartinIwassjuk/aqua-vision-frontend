@@ -205,5 +205,13 @@ getConsumoMensualAgrupado(id: number, fechaDesde: string | Date, fechaHasta: str
   );
 }
 
+  getConsumoPromedioAnterior(): number {
+    return 10;
+  }
+
+  getConsumoDiaAnterior(): number {
+    return 62;
+  }
+
 
 }

@@ -6,11 +6,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+
 
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NgChartsModule, CommonModule, RouterModule],
+  imports: [NgChartsModule, CommonModule, RouterModule,MatIconModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -27,6 +29,11 @@ export class DashboardComponent implements OnInit {
   totalHogaresAdmin!: number;
   totalTriviasAdmin!: number;
   consumoPromedio!: number;
+
+
+  consumoPromedioAnterior!: number;
+  consumoDiff!: number;
+  consumoDiffAbs!: number;
   
 
   public lineChartData: ChartData<'line'> = {
@@ -65,64 +72,89 @@ export class DashboardComponent implements OnInit {
 
   constructor(private reporteService: ReporteService, private authService: AuthService,  private snackBar: MatSnackBar) {}
 
-  ngOnInit(): void {
-    const datos = this.reporteService.getConsumoPorHora();
-    const horas = datos.map(d => d.hora);
-    const caudales = datos.map(d => d.caudal_m3 ?? null);
+ngOnInit(): void {
 
-    const datosAdmin = this.reporteService.getConsumoTotalHogaresPorHora();
-    const horasTotales = datosAdmin.map(d => d.hora);
-    const caudalesTotales = datosAdmin.map(d => d.caudal_m3 ?? null);
+  const datos = this.reporteService.getConsumoPorHora();
+  const horas = datos.map(d => d.hora);
+  const caudales = datos.map(d => d.caudal_m3 ?? null);
 
-    if (!this.isAdmin) {
+  const datosAdmin = this.reporteService.getConsumoTotalHogaresPorHora();
+  const horasTotales = datosAdmin.map(d => d.hora);
+  const caudalesTotales = datosAdmin.map(d => d.caudal_m3 ?? null);
+
+  if (!this.isAdmin) {
+
     this.consumoDia = this.reporteService.getConsumoUltimoDia();
+    const consumoDiaAnterior = this.reporteService.getConsumoDiaAnterior();
+
     this.estadoMedidores = this.reporteService.getEstadoMedidores();
     this.medidoresConectados = this.estadoMedidores.conectados;
     this.medidoresDesconectados = this.estadoMedidores.desconectados;
+
     this.setConsumoStatus();
-    }
 
-    if (this.isAdmin) {
-      this.medidoresConectadosAdmin = this.reporteService.getTotalMedidoresConectados();
-      this.medidoresDesconectadosAdmin = this.reporteService.getTotalMedidoresDesconectados();
-      this.totalHogaresAdmin = this.reporteService.getTotalHogares();
-      this.totalTriviasAdmin = this.reporteService.getTotalTriviasCompletadas();
-      this.consumoPromedio = this.reporteService.getConsumoPromedio();
-    }
 
-    this.lineChartData = {
-      labels: horas,
-      datasets: [
-        {
-          label: 'Caudal medido',
-          data: caudales,
-          fill: false,
-          borderColor: '#36A2EB',
-          backgroundColor: '#36A2EB',
-          tension: 0.3, 
-          pointRadius: 3,
-          pointBackgroundColor: '#008C9E'
-        }
-      ]
-    };
-
-    this.lineChartDataAdmin = {
-      labels: horasTotales,
-      datasets: [
-        {
-          label: 'Caudal medido',
-          data: caudalesTotales,
-          fill: false,
-          borderColor: '#f25932ff',
-          backgroundColor: '#f25932ff',
-          tension: 0.3, 
-          pointRadius: 3,
-          pointBackgroundColor: '#f04318ff'
-        }
-      ]
-    };
-
+    this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
   }
+
+  if (this.isAdmin) {
+
+    this.medidoresConectadosAdmin = this.reporteService.getTotalMedidoresConectados();
+    this.medidoresDesconectadosAdmin = this.reporteService.getTotalMedidoresDesconectados();
+    this.totalHogaresAdmin = this.reporteService.getTotalHogares();
+    this.totalTriviasAdmin = this.reporteService.getTotalTriviasCompletadas();
+
+    this.consumoPromedio = this.reporteService.getConsumoPromedio();
+    this.consumoPromedioAnterior = this.reporteService.getConsumoPromedioAnterior();
+
+    this.calcularDiferencia(this.consumoPromedio, this.consumoPromedioAnterior);
+  }
+
+
+  this.lineChartData = {
+    labels: horas,
+    datasets: [
+      {
+        label: 'Caudal medido',
+        data: caudales,
+        fill: false,
+        borderColor: '#36A2EB',
+        backgroundColor: '#36A2EB',
+        tension: 0.3, 
+        pointRadius: 3,
+        pointBackgroundColor: '#008C9E'
+      }
+    ]
+  };
+
+
+  this.lineChartDataAdmin = {
+    labels: horasTotales,
+    datasets: [
+      {
+        label: 'Caudal medido',
+        data: caudalesTotales,
+        fill: false,
+        borderColor: '#f25932ff',
+        backgroundColor: '#f25932ff',
+        tension: 0.3, 
+        pointRadius: 3,
+        pointBackgroundColor: '#f04318ff'
+      }
+    ]
+  };
+}
+
+
+  calcularDiferencia(actual: number = this.consumoPromedio, anterior: number = this.consumoPromedioAnterior): void {
+  if (!anterior || anterior === 0) {
+    this.consumoDiff = 0;
+    this.consumoDiffAbs = 0;
+    return;
+  }
+  this.consumoDiff = ((actual - anterior) / anterior) * 100;
+  this.consumoDiffAbs = Math.abs(Math.round(this.consumoDiff));
+}
 
   setConsumoStatus() {
     if (this.consumoDia <= 60) {
