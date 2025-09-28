@@ -73,17 +73,20 @@ export class DashboardComponent implements OnInit {
   constructor(private reporteService: ReporteService, private authService: AuthService,  private snackBar: MatSnackBar) {}
 
 ngOnInit(): void {
-
   const datos = this.reporteService.getConsumoPorHora();
+  const datosAnterior = this.reporteService.getConsumoPorHoraDiaAnterior();
+  const datosMensual = this.reporteService.getConsumoPromedioPorHoraMensual();
+
   const horas = datos.map(d => d.hora);
   const caudales = datos.map(d => d.caudal_m3 ?? null);
+  const caudalesAnterior = datosAnterior.map(d => d.caudal_m3 ?? null);
+  const caudalesMensual = datosMensual.map(d => d.caudal_m3 ?? null);
 
   const datosAdmin = this.reporteService.getConsumoTotalHogaresPorHora();
   const horasTotales = datosAdmin.map(d => d.hora);
   const caudalesTotales = datosAdmin.map(d => d.caudal_m3 ?? null);
 
   if (!this.isAdmin) {
-
     this.consumoDia = this.reporteService.getConsumoUltimoDia();
     const consumoDiaAnterior = this.reporteService.getConsumoDiaAnterior();
 
@@ -92,13 +95,10 @@ ngOnInit(): void {
     this.medidoresDesconectados = this.estadoMedidores.desconectados;
 
     this.setConsumoStatus();
-
-
     this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
   }
 
   if (this.isAdmin) {
-
     this.medidoresConectadosAdmin = this.reporteService.getTotalMedidoresConectados();
     this.medidoresDesconectadosAdmin = this.reporteService.getTotalMedidoresDesconectados();
     this.totalHogaresAdmin = this.reporteService.getTotalHogares();
@@ -112,38 +112,60 @@ ngOnInit(): void {
 
 
   this.lineChartData = {
-    labels: horas,
-    datasets: [
-      {
-        label: 'Caudal medido',
-        data: caudales,
-        fill: false,
-        borderColor: '#36A2EB',
-        backgroundColor: '#36A2EB',
-        tension: 0.3, 
-        pointRadius: 3,
-        pointBackgroundColor: '#008C9E'
-      }
-    ]
-  };
+  labels: horas,
+  datasets: [
+    {
+      label: 'Hoy',
+      data: caudales,
+      fill: false,
+      borderColor: '#2563eb',
+      tension: 0.3,
+      borderWidth: 3,
+      pointRadius: 3,
+      pointBackgroundColor: '#2563eb'
+    },
+    {
+      label: 'Ayer',
+      data: caudalesAnterior,
+      fill: false,
+      borderColor: '#16a34a',
+      tension: 0.3,
+      borderWidth: 2,
+      borderDash: [6, 6],
+      pointRadius: 3,
+      pointBackgroundColor: '#16a34a'
+    },
+    {
+      label: 'Promedio mensual',
+      data: caudalesMensual,
+      fill: false,
+      borderColor: '#9333ea',
+      tension: 0.3,
+      borderWidth: 2,
+      borderDash: [2, 4], 
+      pointRadius: 3,
+      pointBackgroundColor: '#9333ea'
+    }
+  ]
+};
+
 
 
   this.lineChartDataAdmin = {
     labels: horasTotales,
     datasets: [
       {
-        label: 'Caudal medido',
+        label: 'Consumo total hogares',
         data: caudalesTotales,
-        fill: false,
         borderColor: '#f25932ff',
-        backgroundColor: '#f25932ff',
-        tension: 0.3, 
-        pointRadius: 3,
-        pointBackgroundColor: '#f04318ff'
+        backgroundColor: 'rgba(242,89,50,0.3)',
+        tension: 0.3,
+        pointRadius: 3
       }
     ]
   };
 }
+
 
 
   calcularDiferencia(actual: number = this.consumoPromedio, anterior: number = this.consumoPromedioAnterior): void {

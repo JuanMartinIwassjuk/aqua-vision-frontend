@@ -131,6 +131,65 @@ getConsumoTotalHogaresPorHora(): { hora: string; caudal_m3?: number }[] {
     ];
   }
 
+  getConsumoPorHoraDiaAnterior(): { hora: string; caudal_m3?: number }[] {
+  return [
+    { hora: '00:00', caudal_m3: 4 },
+    { hora: '01:00', caudal_m3: 3.5 },
+    { hora: '02:00', caudal_m3: 3 },
+    { hora: '03:00', caudal_m3: 3.2 },
+    { hora: '04:00', caudal_m3: 4 },
+    { hora: '05:00', caudal_m3: 4.5 },
+    { hora: '06:00', caudal_m3: 6 },
+    { hora: '07:00', caudal_m3: 7.5 },
+    { hora: '08:00', caudal_m3: 9 },
+    { hora: '09:00', caudal_m3: 11 },
+    { hora: '10:00', caudal_m3: 10 },
+    { hora: '11:00', caudal_m3: 9 },
+    { hora: '12:00', caudal_m3: 8 },
+    { hora: '13:00', caudal_m3: 7 },
+    { hora: '14:00', caudal_m3: 6 },
+    { hora: '15:00', caudal_m3: 7 },
+    { hora: '16:00', caudal_m3: 9 },
+    { hora: '17:00', caudal_m3: 12 },
+    { hora: '18:00', caudal_m3: 14 },
+    { hora: '19:00', caudal_m3: 15 },
+    { hora: '20:00' },
+    { hora: '21:00' },
+    { hora: '22:00' },
+    { hora: '23:00' }
+  ];
+}
+
+getConsumoPromedioPorHoraMensual(): { hora: string; caudal_m3?: number }[] {
+  return [
+    { hora: '00:00', caudal_m3: 5 },
+    { hora: '01:00', caudal_m3: 5 },
+    { hora: '02:00', caudal_m3: 4.5 },
+    { hora: '03:00', caudal_m3: 4.7 },
+    { hora: '04:00', caudal_m3: 4.9 },
+    { hora: '05:00', caudal_m3: 5.3 },
+    { hora: '06:00', caudal_m3: 6 },
+    { hora: '07:00', caudal_m3: 7 },
+    { hora: '08:00', caudal_m3: 9 },
+    { hora: '09:00', caudal_m3: 10 },
+    { hora: '10:00', caudal_m3: 11 },
+    { hora: '11:00', caudal_m3: 11.5 },
+    { hora: '12:00', caudal_m3: 12 },
+    { hora: '13:00', caudal_m3: 10 },
+    { hora: '14:00', caudal_m3: 9 },
+    { hora: '15:00', caudal_m3: 8 },
+    { hora: '16:00', caudal_m3: 10 },
+    { hora: '17:00', caudal_m3: 12 },
+    { hora: '18:00', caudal_m3: 13 },
+    { hora: '19:00', caudal_m3: 14 },
+    { hora: '20:00' },
+    { hora: '21:00' },
+    { hora: '22:00' },
+    { hora: '23:00' }
+  ];
+}
+
+
 
   getConsumoUltimoDia(): number {
     return 68;
