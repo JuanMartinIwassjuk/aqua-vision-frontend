@@ -393,3 +393,46 @@ mat-icon {
 .warn-icon {
   color: #f44336;
 }
+
+.card-header-link {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.3rem;
+}
+
+.small-link {
+  font-size: 0.8rem;
+  color: #0077cc;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.small-link:hover {
+  text-decoration: underline;
+  color: #005fa3;
+}
+
+.card {
+  position: relative; 
+}
+
+.card-hint {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 0.75rem;
+  color: #0077cc;
+  font-weight: 500;
+  opacity: 0.85;
+  pointer-events: none; 
+}
+
+
+@media (max-width: 992px) {
+  .icon-row,.consumo-main{
+    padding-top: 0.32rem;
+  }
+
+}
