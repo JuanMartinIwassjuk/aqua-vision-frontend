@@ -5,6 +5,10 @@ import { CommonModule } from '@angular/common';
 import { ConsumoService, ConsumoSector } from '../../../services/consumo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDialogComponent } from './dialog/event-dialog.component';
+import { Chart } from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
+
+Chart.register(annotationPlugin);
 
 @Component({
   selector: 'app-event-graphic',
@@ -16,15 +20,38 @@ import { EventDialogComponent } from './dialog/event-dialog.component';
 export class EventGraphicComponent implements OnInit {
   sectores: { sector: ConsumoSector; chartData: ChartData<'line'> }[] = [];
 
-  public lineChartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom' } },
-    scales: {
-      y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
-      x: { title: { display: true, text: 'Hora' } }
+public lineChartOptions: ChartOptions<'line'> = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { position: 'bottom' },
+    annotation: {
+      annotations: {
+        eventoBanio: {
+          type: 'label',
+          xValue: '08:00',
+          yValue: 10,
+          backgroundColor: 'rgba(255,255,0,0.9)',
+          borderColor: 'black',
+          borderWidth: 1,
+          content: ['Bañarse', '08:00'], 
+          font: { size: 12, weight: 'bold' },
+          color: 'black',
+          padding: 6,
+          position: 'center'
+        } as any
+      }
     }
-  };
+  },
+  scales: {
+    y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
+    x: { title: { display: true, text: 'Hora' } }
+  }
+};
+
+
+
+
 
   private colores = ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40', '#9966FF', '#C9CBCF'];
 
