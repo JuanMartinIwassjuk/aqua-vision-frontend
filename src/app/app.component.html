@@ -18,45 +18,57 @@
                   <img id="logo" class="logo_img" src="/logonav.png?v=3" alt="Logo">
                 </a>
               </div>
-        <header>
+    <header>
+      <div class="menu-toggle" (click)="toggleMenu()">
+        <span class="span_nav" *ngIf="!isMenuActive">☰</span>
+        <span class="span_nav" *ngIf="isMenuActive">✖</span>
+      </div> 
 
-          <div class="menu-toggle" (click)="toggleMenu()">
-            <span class="span_nav" *ngIf="!isMenuActive">☰</span>
-            <span class="span_nav" *ngIf="isMenuActive">✖</span>
-          </div> 
+      <nav id="menu" [ngClass]="{ 'active': isMenuActive }">
+        <ul class="un-header">
+ 
+          <li *ngIf="isUser || isAdmin">
+            <a routerLink="/dashboard" (click)="closeMenu()">Inicio</a>
+          </li>
 
-          <nav  id="menu" [ngClass]="{ 'active': isMenuActive }">
-            <ul class="un-header">
-              <li *ngIf="isUser || isAdmin"><a routerLink="/dashboard">Inicio</a></li>
-              <li class="submenu" *ngIf="!isAdmin">
-                <a (click)="toggleService(0)">Reportes ▾</a>
-              <ul *ngIf="expandedIndex === 0" class="submenu-list">
-                <li><a routerLink="/reportes/diario" (click)="closeMenu()">▸Consumo diario</a></li>
-                <li><a routerLink="/reportes/historico" (click)="closeMenu()">▸Consumo histórico</a></li>
-              </ul>
-            </li>
-
-              <li *ngIf="isUser"><a routerLink="/consumption-prediction">Predicción de Consumo</a></li>
-              <li *ngIf="isUser"><a routerLink="/consumption-alerts">Alertas de Consumo</a></li>
-              <li *ngIf="isUser"><a routerLink="/gamification">Trivias</a></li> 
-
-
-            <li class="submenu" *ngIf="!isAdmin">
-              <a (click)="toggleService(1)">Mis Actividades ▾</a>
-              <ul *ngIf="expandedIndex === 1" class="submenu-list">
-                <li><a routerLink="/events/summary" (click)="closeMenu()">▸Resumen</a></li>
-                <li><a routerLink="/events" (click)="closeMenu()">▸Detalle</a></li>
-                <li><a routerLink="/events/create" (click)="closeMenu()">▸Nueva Actividad</a></li>
-              </ul>
-            </li>
-
-
-              <!-- TODO: Revisar si va a ser componente o calculado (ultimo sprint)-->
-              <li *ngIf="isAdmin"><a routerLink="/data-export">Exportar Datos</a></li>
-              <li *ngIf="isUser || isAdmin"><a routerLink="/account-settings">Mi Cuenta</a></li>
+      
+          <li class="submenu" *ngIf="isUser">
+            <a (click)="toggleService(0)">Consumo ▾</a>
+            <ul *ngIf="expandedIndex === 0" class="submenu-list">
+              <li><a routerLink="/reportes/diario" (click)="closeMenu()">▸ Reporte diario</a></li>
+              <li><a routerLink="/reportes/historico" (click)="closeMenu()">▸ Reporte histórico</a></li>
+              <li><a routerLink="/consumption-prediction" (click)="closeMenu()">▸ Predicción</a></li>
+              <li><a routerLink="/consumption-alerts" (click)="closeMenu()">▸ Alertas</a></li>
             </ul>
-          </nav>
-        </header>
+          </li>
+
+          <li class="submenu" *ngIf="isUser">
+            <a (click)="toggleService(1)">Mis Actividades ▾</a>
+            <ul *ngIf="expandedIndex === 1" class="submenu-list">
+              <li><a routerLink="/events/summary" (click)="closeMenu()">▸ Resumen</a></li>
+              <li><a routerLink="/events" (click)="closeMenu()">▸ Detalle</a></li>
+              <li><a routerLink="/events/create" (click)="closeMenu()">▸ Nueva Actividad</a></li>
+            </ul>
+          </li>
+
+
+          <li *ngIf="isUser">
+            <a routerLink="/gamification" (click)="closeMenu()">Trivias</a>
+          </li>
+
+          <li *ngIf="isAdmin">
+            <a routerLink="/data-export" (click)="closeMenu()">Exportar Datos</a>
+          </li>
+
+
+          <li *ngIf="isUser || isAdmin">
+            <a routerLink="/account-settings" (click)="closeMenu()">Mi Cuenta</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+
 
     </div>
     <app-loader></app-loader>
