@@ -48,7 +48,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/privacidad/privacidad.component').then(c => c.PrivacidadComponent),
     canActivate: [AuthGuard] 
   },
-    {
+  {
+    path: 'terminos',
+    loadComponent: () => import('./components/terminos/terminos.component').then(c => c.TerminosComponent),
+    canActivate: [AuthGuard] 
+  },
+  {
     path: '404',
     loadComponent: () => import('./utils/not-found/not-found.component').then(c => c.NotFoundComponent),
     canActivate: [AuthGuard] 
