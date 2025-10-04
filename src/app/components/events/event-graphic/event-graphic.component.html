@@ -8,10 +8,18 @@
         <canvas
           baseChart
           [data]="item.chartData"
-          [options]="lineChartOptions"
+          [options]="item.chartOptions"   
           type="line"
           (chartClick)="onChartClick($event, item.chartData)">
         </canvas>
+      </div>
+
+
+      <div class="event-cards">
+        <div *ngFor="let ev of item.eventos" class="event-card">
+          <strong style="padding-right: 5px;">{{ ev.descripcion }}</strong>
+          <span class="ev-time">{{ ev.hora }}</span>
+        </div>
       </div>
     </div>
   </div>
