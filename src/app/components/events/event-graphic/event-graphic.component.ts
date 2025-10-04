@@ -18,93 +18,121 @@ Chart.register(annotationPlugin);
   styleUrl: './event-graphic.component.css'
 })
 export class EventGraphicComponent implements OnInit {
-  sectores: { sector: ConsumoSector; chartData: ChartData<'line'> }[] = [];
 
-public lineChartOptions: ChartOptions<'line'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { position: 'bottom' },
-    annotation: {
-      annotations: {
-        eventoBanio: {
-          type: 'label',
-          xValue: '08:00',
-          yValue: 10,
-          backgroundColor: 'rgba(255,255,0,0.9)',
-          borderColor: 'black',
-          borderWidth: 1,
-          content: ['Bañarse', '08:00'], 
-          font: { size: 12, weight: 'bold' },
-          color: 'black',
-          padding: 6,
-          position: 'center'
-        } as any
-      }
-    }
-  },
-  scales: {
-    y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
-    x: { title: { display: true, text: 'Hora' } }
-  }
-};
+  sectores: {
+    sector: ConsumoSector;
+    chartData: ChartData<'line'>;
+    chartOptions: ChartOptions<'line'>;
+    eventos: { hora: string; descripcion: string }[];
+  }[] = [];
 
-
-
-
-
-  private colores = ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40', '#9966FF', '#C9CBCF'];
+  private colores = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'];
 
   constructor(private consumoService: ConsumoService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    const sectores = this.consumoService.getConsumosPorHoraPorSector();
-    this.sectores = sectores.map((sector, index) => {
+    const sectoresData = this.consumoService.getConsumosPorHoraPorSector();
+    const eventosPorSectores = this.consumoService.getEventosDeLosSectores();
+
+    this.sectores = sectoresData.map((sector, index) => {
       const horas = sector.consumos.map(c => c.hora);
       const caudales = sector.consumos.map(c => c.caudal_m3 ?? null);
-      return {
-        sector,
-        chartData: {
-          labels: horas,
-          datasets: [
-            {
-              label: `Consumo ${sector.nombre}`,
-              data: caudales,
-              borderColor: this.colores[index % this.colores.length],
-              backgroundColor: this.colores[index % this.colores.length],
-              fill: false,
-              tension: 0.3,
-              pointRadius: 3
-            }
-          ]
+
+
+      const eventosEntry = eventosPorSectores.find(e => e.id === sector.id);
+      const eventos = eventosEntry?.eventos ?? [];
+
+
+      const numericCaudales = caudales.filter(v => v !== null) as number[];
+      const maxY = (numericCaudales.length > 0) ? Math.max(...numericCaudales) : 10;
+
+      const annotations: Record<string, any> = {};
+      eventos.forEach((ev, i) => {
+
+        const matching = sector.consumos.find(c => c.hora === ev.hora);
+        let yValue: number;
+        if (matching && (matching.caudal_m3 !== undefined)) {
+          if (matching.caudal_m3 > maxY * 0.8) {
+          
+            yValue = matching.caudal_m3 - Math.round(maxY * 0.1);
+          } else {
+
+            yValue = matching.caudal_m3 + Math.round(maxY * 0.05);
+          }
+        } else {
+          yValue = Math.round(maxY * 0.75);
+        }
+
+
+        annotations[`evento_${sector.id}_${i}`] = {
+          type: 'label',         
+          xValue: ev.hora,
+          yValue: yValue,
+          backgroundColor: 'rgba(255, 205, 0, 0.95)',
+          borderColor: '#333',
+          borderWidth: 1,
+          content: [ev.descripcion, ev.hora],
+          font: { size: 11, weight: '600' },
+          color: '#000',
+          padding: 6,
+          position: 'center'
+        } as any; 
+      });
+
+      const chartData: ChartData<'line'> = {
+        labels: horas,
+        datasets: [
+          {
+            label: `Consumo ${sector.nombre}`,
+            data: caudales,
+            borderColor: this.colores[index % this.colores.length],
+            backgroundColor: this.colores[index % this.colores.length],
+            fill: false,
+            tension: 0.3,
+            pointRadius: 3,
+            borderWidth: 2
+          }
+        ]
+      };
+
+      const chartOptions: ChartOptions<'line'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' },
+
+          annotation: { annotations: annotations as any } as any
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
+          x: { title: { display: true, text: 'Hora' } }
         }
       };
+
+      return { sector, chartData, chartOptions, eventos };
     });
   }
 
-onChartClick(event: { event?: ChartEvent; active?: any[] }, chartData: ChartData<'line'>) {
-  if (event.active && event.active.length > 0) {
-    const dataIndex = event.active[0].index;
+  onChartClick(event: { event?: ChartEvent; active?: any[] }, chartData: ChartData<'line'>) {
+    if (event.active && event.active.length > 0) {
+      const dataIndex = event.active[0].index;
+      const labels = chartData.labels as string[];
+      const hora = labels[dataIndex];
+      if (!hora) return;
 
-    const labels = chartData.labels as string[];
-    const hora = labels[dataIndex];
+      const [h, m] = hora.split(':').map(Number);
+      const base = new Date();
+      base.setHours(h, m, 0, 0);
 
-    if (!hora) return;
+      const start = new Date(base.getTime() - 5 * 60000);
+      const end = new Date(base.getTime() + 5 * 60000);
 
-    const [h, m] = hora.split(':').map(Number);
-    const base = new Date();
-    base.setHours(h, m, 0, 0);
-
-    const start = new Date(base.getTime() - 5 * 60000);
-    const end = new Date(base.getTime() + 5 * 60000);
-
-    this.dialog.open(EventDialogComponent, {
-      data: {
-        start: start.toTimeString().slice(0, 5),
-        end: end.toTimeString().slice(0, 5)
-      }
-    });
+      this.dialog.open(EventDialogComponent, {
+        data: {
+          start: start.toTimeString().slice(0, 5),
+          end: end.toTimeString().slice(0, 5)
+        }
+      });
+    }
   }
-}
-
 }

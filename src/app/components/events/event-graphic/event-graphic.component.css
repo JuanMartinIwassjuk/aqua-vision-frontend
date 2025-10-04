@@ -31,3 +31,42 @@ h3{
 .chart-wrapper {
   height: 300px;
 }
+
+
+.sector-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.chart-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease-in-out;
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-header {
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+.event-list {
+  margin-top: 15px;
+}
+
+.event-list h4 {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
