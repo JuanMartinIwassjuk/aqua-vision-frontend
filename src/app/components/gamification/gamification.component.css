@@ -543,3 +543,96 @@ h2 {
 #w-node-a4303d0c-eadb-ec37-7932-dae34b1af9ab-efeeccf7 {
   grid-area: 2 / 1 / 3 / 3;
 }
+
+.modal-popup {
+  z-index: 90;
+  --background-color: #0006;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  position: fixed;
+  inset: 0%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  backdrop-filter: blur(2px); /* aplica el blur al fondo */
+}
+
+.modal-popup-medallas {
+  z-index: 201;
+  background-color: #fff;
+  border-radius: 15px;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 70%;
+  padding: 2rem;
+  position: relative;
+  overflow: auto;
+}
+
+.cross-icon {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  inset: 20px 35px auto auto;
+}
+
+.container-modal-medallas {
+  align-self: center;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  text-decoration: none;
+}
+
+.div-block-4 {
+  z-index: 1;
+  position: fixed;
+  inset: 0%;
+}
+
+.grid-medallas {
+  grid-row-gap: 16px;
+  grid-column-gap: 16px;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: grid;
+}
+
+.grid {
+  grid-column-gap: 2.5rem;
+  grid-row-gap: 3.5rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: stretch;
+}
+
+.title-medallas{
+  text-align: left;
+}
+
+.descr-medallas{
+  text-align: left;
+}
+
+.medalla{
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.prueba{
+  min-width: 8vw;
+  min-height: 8vh;
+  max-width: 0%;
+}
+
+.nombre-medalla{
+  font-weight: 700;
+  font-size: 18px;
+  height: 24px;
+}
