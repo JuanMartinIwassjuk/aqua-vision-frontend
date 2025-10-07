@@ -30,32 +30,6 @@ export class AccountSettingsComponent {
 
   constructor(private authService: AuthService, private router: Router){  }
 
-  @ViewChild('personalModal') personalModal!: TemplateRef<any>;
-  @ViewChild('homeModal') homeModal!: TemplateRef<any>;
-  @ViewChild('billingModal') billingModal!: TemplateRef<any>;
-  @ViewChild('sensor1Modal') sensor1Modal!: TemplateRef<any>;
-  @ViewChild('sensor2Modal') sensor2Modal!: TemplateRef<any>;
-  @ViewChild('plusModal') plusModal!: TemplateRef<any>;
-
-  modalTemplates: { [key: string]: TemplateRef<any> } = {};
-
-  ngAfterViewInit(): void {
-    // prevenir navegación en los anchors
-    const anchors = document.querySelectorAll('a[href="#"]');
-    anchors.forEach(anchor => {
-      anchor.addEventListener('click', (event) => event.preventDefault());
-    });
-
-    this.modalTemplates = {
-      personal: this.personalModal,
-      home: this.homeModal,
-      billing: this.billingModal,
-      sensor1: this.sensor1Modal,
-      sensor2: this.sensor2Modal,
-      plus: this.plusModal
-    };
-  }
-
    logout(){
     this.authService.logout();
     this.router.navigate(['/login']);
