@@ -1295,12 +1295,14 @@
 .heading-2 {
   color: var(--azul-oscuro);
   width: auto;
+  text-align: left;
 }
 
 .bio-micuenta {
   color: var(--azul-oscuro);
   width: 50%;
   font-size: 18px;
+  text-align: left;
 }
 
 .grid {
@@ -1496,15 +1498,18 @@
 }
 
 .modal-popup2 {
-  z-index: 200;
-  background-color: #0006;
+  z-index: 90;
+  --background-color: #0006;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  backdrop-filter: blur(2px); /* aplica el blur al fondo */
 }
 
 .modal-popup2.moda-hogar {
@@ -1545,14 +1550,17 @@
 
 .modal-popup3 {
   z-index: 90;
-  background-color: #0006;
+  --background-color: #0006;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  backdrop-filter: blur(2px); /* aplica el blur al fondo */
 }
 
 .modal-popup3.moda-hogar {
@@ -1593,14 +1601,17 @@
 
 .modal-popup4 {
   z-index: 90;
-  background-color: #0006;
+  --background-color: #0006;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  backdrop-filter: blur(2px); /* aplica el blur al fondo */
 }
 
 .modal-popup4.moda-hogar {
@@ -1641,14 +1652,17 @@
 
 .modal-popup5 {
   z-index: 90;
-  background-color: #0006;
+  --background-color: #0006;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  backdrop-filter: blur(2px); /* aplica el blur al fondo */
 }
 
 .modal-popup5.moda-hogar {
@@ -1689,14 +1703,17 @@
 
 .modal-popup6 {
   z-index: 90;
-  background-color: #0006;
+  --background-color: #0006;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  backdrop-filter: blur(2px); /* aplica el blur al fondo */
 }
 
 .modal-popup6.moda-hogar {

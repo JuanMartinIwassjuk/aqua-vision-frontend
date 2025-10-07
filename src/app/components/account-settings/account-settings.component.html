@@ -35,9 +35,23 @@
     </div>
   </div>
 
+  <div class="modal-popup2" *ngIf="activeModal === 'home'" (click)="closeModal()">
+    <div class="modal-popup-item" (click)="$event.stopPropagation()">
+      <img src="images/x.png" loading="lazy" data-w-id="72db08c7-a6fc-ee50-8ca3-99ba177584a0" alt="cross-icon" class="cross-icon" (click)="closeModal()">
+      <h1>Tu hogar</h1>
+      <div class="div-block-2">
+        <h4>&lt;Nombre hogar&gt;</h4>
+        <p>Dirección, tipo de vivienda y ambiente</p>
+      </div>
+    </div>
+    <div data-w-id="72db08c7-a6fc-ee50-8ca3-99ba177584a8" class="div-block-4">
+      
+    </div>
+  </div>
 
-  <div class="modal-popup4">
-    <div class="modal-popup-item"><img src="images/x.png" loading="lazy" data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da37" alt="cross-icon" class="cross-icon">
+  <div class="modal-popup4" *ngIf="activeModal === 'billing'" (click)="closeModal()">
+    <div class="modal-popup-item" (click)="$event.stopPropagation()">
+      <img src="images/x.png" loading="lazy" data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da37" alt="cross-icon" class="cross-icon" (click)="closeModal()">
       <h1>Facturación</h1>
       <div class="div-block-2">
         <h4>Tu facturación</h4>
@@ -46,18 +60,10 @@
     </div>
     <div data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da3f" class="div-block-4"></div>
   </div>
-  <div class="modal-popup2">
-    <div class="modal-popup-item"><img src="images/x.png" loading="lazy" data-w-id="72db08c7-a6fc-ee50-8ca3-99ba177584a0" alt="cross-icon" class="cross-icon">
-      <h1>Tu hogar</h1>
-      <div class="div-block-2">
-        <h4>&lt;Nombre hogar&gt;</h4>
-        <p>Dirección, tipo de vivienda y ambiente</p>
-      </div>
-    </div>
-    <div data-w-id="72db08c7-a6fc-ee50-8ca3-99ba177584a8" class="div-block-4"></div>
-  </div>
-  <div class="modal-popup5">
-    <div class="modal-popup-item"><img src="images/x.png" loading="lazy" data-w-id="d1894b6f-801c-7159-f7fa-26f447befa29" alt="cross-icon" class="cross-icon">
+
+  <div class="modal-popup5" *ngIf="activeModal === 'sensor1'" (click)="closeModal()">
+    <div class="modal-popup-item" (click)="$event.stopPropagation()">
+      <img src="images/x.png" loading="lazy" data-w-id="d1894b6f-801c-7159-f7fa-26f447befa29" alt="cross-icon" class="cross-icon" (click)="closeModal()">
       <h1>Sensor / 1</h1>
       <div class="div-block-2">
         <h4>&lt;ID sensor&gt;</h4>
@@ -66,8 +72,9 @@
     </div>
     <div data-w-id="d1894b6f-801c-7159-f7fa-26f447befa31" class="div-block-4"></div>
   </div>
-  <div class="modal-popup6">
-    <div class="modal-popup-item"><img src="images/x.png" loading="lazy" data-w-id="d7201bf6-d84f-7ad4-ce90-f12ac6e8c707" alt="cross-icon" class="cross-icon">
+  <div class="modal-popup6" *ngIf="activeModal === 'sensor2'" (click)="closeModal()">
+    <div class="modal-popup-item" (click)="$event.stopPropagation()">
+      <img src="images/x.png" loading="lazy" data-w-id="d7201bf6-d84f-7ad4-ce90-f12ac6e8c707" alt="cross-icon" class="cross-icon" (click)="closeModal()">
       <h1>Sensor / 2</h1>
       <div class="div-block-2">
         <h4>&lt;ID sensor&gt;</h4>
@@ -78,27 +85,6 @@
   </div>
 
   <!--FIN DE MODALS ORIGINALES-->
-
-  <!-- Modal flotante -->
-<div class="modal-popup" *ngIf="activeModal" [@modalAnimation]="activeModal ? 'open' : 'closed'"
-style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:999; display:flex; justify-content:center; align-items:center;"-->
-  <div class="overlay" (click)="closeModal()"></div>
-  <div class="modal-popup-item" style="background:white; padding:20px; border-radius:8px; max-width:400px; width:100%;">
-    <ng-container [ngTemplateOutlet]="modalTemplates[activeModal]"></ng-container>
-    <img src="images/x.png" alt="cerrar" class="cross-icon" (click)="closeModal()" style="position:absolute; top:10px; right:10px; cursor:pointer;">
-  </div>
-</div>
-
-<!-- Templates de cada modal -->
-<ng-template #personalModal>
-  <div class="modal-popup-item"><img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon">
-      <h1>Datos personales</h1>
-      <div class="div-block-2">
-        <h4>Datos personales</h4>
-        <p>Nombre, correo y opciones de cuenta</p>
-      </div>
-    </div>
-</ng-template>
 
   <!--ACA EMPIEZA LA GRILLA-->
   <div class="div-block">
@@ -115,32 +101,37 @@ style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba
             </div>
         </div>
 
-        <div data-w-id="eac918c1-580d-3f50-ca69-b7bc2f8e0017" class="modal-block2 w-inline-block" (click)="openModal('home')">
-        <img src="images/house.png" loading="lazy" alt="house-icon" class="image-3">
-        <div class="div-block-2">
-          <h4 class="micuenta-modal-title">Tu hogar</h4>
-          <p class="paragraph-2">Dirección, tipo de vivienda y ambiente</p>
+        
+        <div class="modal-block2 w-inline-block" (click)="openModal('home')">
+          <img src="images/house.png" alt="house-icon" class="image-3">
+          <div class="div-block-2">
+            <h4 class="micuenta-modal-title">Tu hogar</h4>
+            <p class="paragraph-2">Dirección, tipo de vivienda y ambiente</p>
+          </div>
         </div>
-    </div>
-      <div data-w-id="0f4fe727-a0dd-3531-c6ee-b0344cff5d0c" class="modal-block3 w-inline-block"><img src="images/credit-card.png" loading="lazy" alt="creditcard-icon" class="image-3">
+      <div data-w-id="0f4fe727-a0dd-3531-c6ee-b0344cff5d0c" class="modal-block3 w-inline-block" (click)="openModal('billing')">
+        <img src="images/credit-card.png" loading="lazy" alt="creditcard-icon" class="image-3">
         <div class="div-block-2">
           <h4 class="micuenta-modal-title">Facturación</h4>
           <p class="paragraph-2">Métodos de pago, ciclo de facturación</p>
         </div>
     </div>
-      <div data-w-id="c0fc98e8-a192-c32a-3af1-373e67541366" class="modal-block4 w-inline-block"><img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
+      <div data-w-id="c0fc98e8-a192-c32a-3af1-373e67541366" class="modal-block4 w-inline-block" (click)="openModal('sensor1')">
+        <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
         <div class="div-block-2">
           <h4 class="micuenta-modal-title">Sensor / 1</h4>
           <p class="paragraph-2">Estado actual: Conectado</p>
         </div>
     </div>
-      <div data-w-id="d887608c-89d2-fa88-2b16-c05d52332187" href="#" class="modal-block5 w-inline-block"><img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
+      <div data-w-id="d887608c-89d2-fa88-2b16-c05d52332187" href="#" class="modal-block5 w-inline-block" (click)="openModal('sensor2')">
+        <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
         <div class="div-block-2">
           <h4 class="micuenta-modal-title">Sensor / 2</h4>
           <p class="paragraph-2">Estado actual: Desconectado</p>
         </div>
     </div>
-      <a href="https://aquavision-registro.webflow.io" class="modal-block modal-plus w-inline-block"><img src="images/circle-fading-plus.png" loading="lazy" alt="plus-icon" class="image-3 modal-plus">
+      <a href="https://aquavision-registro.webflow.io" class="modal-block modal-plus w-inline-block">
+        <img src="images/circle-fading-plus.png" loading="lazy" alt="plus-icon" class="image-3 modal-plus">
         <div class="div-block-2 modal-plus">
           <h5 class="micuenta-modal-title modal-plus">Solicitar un nuevo sensor</h5>
         </div>
