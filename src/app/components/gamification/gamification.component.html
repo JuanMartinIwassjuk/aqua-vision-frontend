@@ -19,6 +19,85 @@
   <link href="images/webclip.png" rel="apple-touch-icon">
 </head>
 <body class="body-4">
+
+  <div class="modal-popup" *ngIf="activeModal === 'medallas'" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+        <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
+        (click)="closeModal()">
+      <h1 class="title-medallas">Mis medallas</h1>
+      <div class="container-modal-medallas">
+        <p class="descr-medallas">En este apartado podrás ver todas tus medallas conseguidas, las medallas oscurecidas se podrán ver una vez las desbloquees.</p>
+        <div class="grid-medallas grid">
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+          <div class="medalla">
+            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
+            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
+        
+    </div>
+  </div>
+
+  <!--ACA EMPIEZA PAGINA EN SI-->
+
   <div class="div-block">
     <h2 class="heading-2">Convertí tu consumo en un juego</h2>
     <p class="bio-micuenta">Aprendé, competí y descubrí formas de ahorrar agua mientras te divertís.</p>
@@ -37,7 +116,7 @@
             <h4 class="logros">Mis logros</h4>
           </div>
         </div>
-        <div class="medallas">
+        <div data-w-id="a1b73ec8-d98a-c8c8-77d5-0bd64f309b33" class="medallas" (click)="openModal('medallas')">
           <div class="medallas-modal w-inline-block">
             <img src="images/sports_medal.png" loading="lazy" alt="" class="image-11">
             <h4 class="medallas">Mis medallas</h4>
