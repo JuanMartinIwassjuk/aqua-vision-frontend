@@ -3,7 +3,6 @@ import { AuthService } from '../../auth/serviceAuth/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
