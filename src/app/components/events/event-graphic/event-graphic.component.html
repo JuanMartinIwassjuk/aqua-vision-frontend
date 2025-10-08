@@ -8,10 +8,11 @@
         <canvas
           baseChart
           [data]="item.chartData"
-          [options]="item.chartOptions"   
+          [options]="item.chartOptions"
           type="line"
-          (chartClick)="onChartClick($event, item.chartData)">
+          (chartClick)="onChartClick($event, item)">
         </canvas>
+
       </div>
 
 

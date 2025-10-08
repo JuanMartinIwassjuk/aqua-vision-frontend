@@ -113,26 +113,36 @@ export class EventGraphicComponent implements OnInit {
     });
   }
 
-  onChartClick(event: { event?: ChartEvent; active?: any[] }, chartData: ChartData<'line'>) {
-    if (event.active && event.active.length > 0) {
-      const dataIndex = event.active[0].index;
-      const labels = chartData.labels as string[];
-      const hora = labels[dataIndex];
-      if (!hora) return;
+onChartClick(event: { event?: ChartEvent; active?: any[] }, item: { chartData: ChartData<'line'>; sector: ConsumoSector }) {
+  if (event.active && event.active.length > 0) {
+    const dataIndex = event.active[0].index;
+    const labels = item.chartData.labels as string[];
+    const dataValues = item.chartData.datasets[0].data as number[];
+    const hora = labels[dataIndex];
+    const litros = dataValues[dataIndex]; 
 
-      const [h, m] = hora.split(':').map(Number);
-      const base = new Date();
-      base.setHours(h, m, 0, 0);
+    if (!hora || litros == null) return;
 
-      const start = new Date(base.getTime() - 5 * 60000);
-      const end = new Date(base.getTime() + 5 * 60000);
+    const [h, m] = hora.split(':').map(Number);
+    const base = new Date();
+    base.setHours(h, m, 0, 0);
 
-      this.dialog.open(EventDialogComponent, {
-        data: {
-          start: start.toTimeString().slice(0, 5),
-          end: end.toTimeString().slice(0, 5)
-        }
-      });
-    }
+    const start = new Date(base.getTime() - 5 * 60000);
+    const end = new Date(base.getTime() + 5 * 60000);
+
+    const costoPorLitro = 0.24;
+    const costo = litros * costoPorLitro;
+
+    this.dialog.open(EventDialogComponent, {
+      data: {
+        start: start.toTimeString().slice(0, 5),
+        end: end.toTimeString().slice(0, 5),
+        litros,
+        costo,
+        sector: item.sector
+      }
+    });
   }
+}
+
 }

@@ -78,25 +78,31 @@ import {  Sector } from '../../../../models/sector';
   styleUrls: ['./event-dialog.component.css']
 })
 export class EventDialogComponent implements OnInit {
-  start: string;
-  end: string;
+      start: string;
+      end: string;
+      litrosConsumidos: number;
+      costo: number;
+      sector: Sector; 
 
-  availableTags: EventTag[] = [];
-  selectedTags: EventTag[] = [];
-  tagToAdd: EventTag | null = null;
+      availableTags: EventTag[] = [];
+      selectedTags: EventTag[] = [];
+      tagToAdd: EventTag | null = null;
 
-  constructor(
-    public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { start: string; end: string },
-    private tagService: TagService,
-    private eventService: EventService
-  ) {
-    this.start = data.start;
-    this.end = data.end;
-  }
+      constructor(
+        public dialogRef: MatDialogRef<EventDialogComponent>,
+        @Inject(MAT_DIALOG_DATA)
+        public data: { start: string; end: string; litros: number; costo: number; sector: any },
+        private tagService: TagService,
+        private eventService: EventService
+      ) {
+        this.start = data.start;
+        this.end = data.end;
+        this.litrosConsumidos = data.litros;
+        this.costo = data.costo;
+        this.sector = data.sector;
+      }
 
   ngOnInit(): void {
-    // Cargar tags disponibles
     this.tagService.getTags().subscribe({
       next: tags => (this.availableTags = tags),
       error: err => console.error('Error cargando tags', err)
@@ -130,26 +136,41 @@ export class EventDialogComponent implements OnInit {
     this.selectedTags = this.selectedTags.filter(t => t.nombre !== tag.nombre);
   }
 
-  confirm() {
- 
-    const eventToSave: Partial<AquaEvent> = {
-      titulo: `Evento rápido ${this.start}-${this.end}`,
-      descripcion: 'Creado desde gráfico',
-      tags: this.selectedTags,
-      estado: 'PENDIENTE'
-    };
+confirm() {
+  const now = new Date();
+  const [startHour, startMin] = this.start.split(':').map(Number);
+  const [endHour, endMin] = this.end.split(':').map(Number);
 
-    this.eventService.createEvent(eventToSave as AquaEvent).subscribe({
-      next: savedEvent => {
-        console.log('✅ Evento rápido creado:', savedEvent);
-        this.dialogRef.close(savedEvent);
-      },
-      error: err => {
-        console.error('Error creando evento rápido', err);
-        this.dialogRef.close(false);
-      }
-    });
-  }
+  const fechaInicio = new Date(now);
+  fechaInicio.setHours(startHour, startMin, 0, 0);
+
+  const fechaFin = new Date(now);
+  fechaFin.setHours(endHour, endMin, 0, 0);
+
+  const eventToSave: Partial<AquaEvent> = {
+    titulo: `Evento rápido ${this.start}-${this.end}`,
+    descripcion: 'Creado desde gráfico',
+    tags: this.selectedTags,
+    estado: 'FINALIZADO',
+    fechaInicio,
+    fechaFin,
+    litrosConsumidos: this.litrosConsumidos,
+    costo: this.costo,
+    sector: this.sector
+  };
+
+  this.eventService.createEvent(eventToSave as AquaEvent).subscribe({
+    next: savedEvent => {
+      console.log('✅ Evento rápido creado:', savedEvent);
+      this.dialogRef.close(savedEvent);
+    },
+    error: err => {
+      console.error('Error creando evento rápido', err);
+      this.dialogRef.close(false);
+    }
+  });
+}
+
 
   cancel() {
     this.dialogRef.close(false);
