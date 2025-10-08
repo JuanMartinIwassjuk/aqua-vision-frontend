@@ -636,3 +636,24 @@ h2 {
   font-size: 18px;
   height: 24px;
 }
+
+.container-canjea-puntos{
+  margin-top: -2rem;
+  color: var(--azul-oscuro);
+  cursor: pointer;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  display: flex;
+  grid-column: 1 / -1;
+}
+
+.texto-canjea-puntos{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.texto-canjea-puntos:hover{
+  text-decoration: underline;
+}
