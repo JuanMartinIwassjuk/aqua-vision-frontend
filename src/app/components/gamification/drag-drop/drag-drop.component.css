@@ -1,0 +1,81 @@
+.match-container {
+  position: relative;
+  width: 700px;     
+  height: 500px;      
+  margin: 20px auto;  
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 50px;
+}
+
+.card {
+  position: absolute;
+  width: 280px;      
+  height: 120px;      
+  background-color: #87cefa;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;            
+  justify-content: center;   
+  align-items: center;     
+  text-align: center;
+  padding: 10px;
+  overflow-wrap: break-word;
+}
+
+.card.grayed {
+  background-color: rgb(96, 255, 146);
+  cursor: default;
+}
+
+.card.dragging {
+  opacity: 0.7;
+  background-color: #aaa;
+}
+
+
+.left-card { 
+    left: 50px; 
+}
+.right-card { 
+    left: 450px; 
+}
+
+.card.matched {
+  background-color: #4CAF50; 
+  color: white;
+  cursor: default;
+  z-index: 100; 
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+}
+
+.drag-drop-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.drag-drop-header h2 {
+  color: #001F3F;
+  font-size: 1.8rem;
+  text-align: center;
+  flex-grow: 1;
+}

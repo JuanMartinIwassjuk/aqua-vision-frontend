@@ -1,0 +1,69 @@
+.trivia-card {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 2rem;
+  text-align: center;
+}
+
+.trivia-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #01579b;
+}
+
+.trivia-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.trivia-options button {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  background: #008C9E;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.3s ease;
+}
+
+.trivia-options button:hover:enabled {
+  transform: scale(1.05);
+  background: #00748a;
+}
+
+.trivia-options button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.trivia-score {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #01579b;
+}
+
+.next-btn-container {
+  margin-top: 1rem;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

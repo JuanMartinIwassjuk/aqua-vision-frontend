@@ -1,6 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth';
 import { LoginGuard } from './auth/guards/login';
+import { GamificationComponent } from './components/gamification/gamification.component';
+import { TriviaComponent } from './components/gamification/trivia/trivia.component';
+import { AquaSaveComponent } from './components/gamification/aquasave/aquasave.component';
+import { MemoryGameComponent } from './components/gamification/memory-test/memory-test.component';
+import { DragDropComponent } from './components/gamification/drag-drop/drag-drop.component';
 
 export const routes: Routes = [
   {
@@ -68,5 +73,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/events/event-graphic/event-graphic.component').then(c => c.EventGraphicComponent),
     canActivate: [AuthGuard] 
   },
+  { path: 'gamification', component: GamificationComponent },
+  { path: 'gamification/trivia', component: TriviaComponent },
+  { path: 'gamification/aquasave', component: AquaSaveComponent },
+  { path: 'gamification/memory-test', component: MemoryGameComponent },
+  { path: 'gamification/drag-drop', component: DragDropComponent },
+  { path: '', redirectTo: 'gamification', pathMatch: 'full' },
+  { path: '**', redirectTo: 'gamification' },
   { path: '**', redirectTo: 'login' } 
 ];

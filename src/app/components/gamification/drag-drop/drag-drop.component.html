@@ -1,0 +1,26 @@
+<div class="drag-drop-header">
+  <button class="back-btn" routerLink="/gamificacion">⬅ Volver</button>
+  <h2>Uní y aprende con AquaVision</h2>
+</div>
+
+<div #container class="match-container" 
+     (mousemove)="onMouseMove($event)" 
+     (mouseup)="onMouseUp()">
+
+<div *ngFor="let card of leftCards" 
+     class="card left-card" 
+     [style.left.px]="card.x" 
+     [style.top.px]="card.y" 
+     [class.grayed]="card.matched"
+     (mousedown)="startDrag($event, card)">
+  {{ card.text }}
+</div>
+
+<div *ngFor="let card of rightCards" 
+     class="card right-card" 
+     [style.left.px]="card.x"
+     [style.top.px]="card.y"
+     [class.grayed]="card.matched">
+  {{ card.text }}
+</div>
+</div>
