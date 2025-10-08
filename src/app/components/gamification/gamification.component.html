@@ -1,96 +1,26 @@
-<div class="gamification-container">
-
 <div class="gamification-header">
-    <button *ngIf="mode !== 'menu'" class="back-btn" (click)="setMode('menu')">⬅ Volver</button>
-    <h2>
-      <ng-container [ngSwitch]="mode">
-        <span *ngSwitchCase="'menu'">Trivias y Juegos</span>
-        <span *ngSwitchCase="'trivia'">Cuestionario Diario</span>
-        <span *ngSwitchCase="'game'"> Minijuego: AquaSave </span>
-        <span *ngSwitchCase="'memory'">Memory test</span>
-        <span *ngSwitchCase="'history'">Mi Puntaje Histórico</span>
-      </ng-container>
-    </h2>
-  </div>
+  <h2>Todo - Integracion pantalla gamificacion</h2>
+</div>
 
-<div *ngIf="mode === 'menu'" class="gamification-cards">
-  <div class="gamification-card" (click)="setMode('trivia')">
+<div class="gamification-cards">
+  <div class="gamification-card" routerLink="/gamification/trivia">
     <div class="icon-circle">❓</div>
     <span>Minijuego: AquaTest</span>
   </div>
 
-  <div class="gamification-card" (click)="setMode('game')">
+  <div class="gamification-card" routerLink="/gamification/aquasave">
     <div class="icon-circle">🪣</div>
     <span>Minijuego: AquaSave</span>
   </div>
 
-  <div class="gamification-card" (click)="setMode('memory')">
+  <div class="gamification-card" routerLink="/gamification/memory-test">
     <div class="icon-circle">🧠</div>
     <span>Memory Test</span>
   </div>
 
-  <div class="gamification-card full-width" (click)="setMode('history')">
+  <div class="gamification-card full-width">
     <div class="icon-circle">🏆</div>
     <span>Mi Puntaje Histórico</span>
   </div>
 </div>
 
-
-<div *ngIf="mode === 'trivia'" class="trivia-card">
-  <h3>{{ questions[currentIndex].question }}</h3>
-  <div class="trivia-options">
-    <div *ngFor="let option of questions[currentIndex].options; let i = index">
-      <button [disabled]="answered" (click)="checkAnswer(i)">
-        {{ option }}
-      </button>
-      <p *ngIf="answered && questions[currentIndex].correctAnswer === i">✅ Correcto!</p>
-    </div>
-  </div>
-
-  <div class="next-btn-container">
-    <button *ngIf="answered && currentIndex < questions.length - 1" (click)="nextQuestion()">Siguiente</button>
-    <div *ngIf="answered && currentIndex === (questions.length - 1)">
-      <button (click)="finishTrivia()">Finalizar</button>
-    </div>
-  </div>
-
-  <p class="trivia-score">Puntaje Trivia: {{ score }}</p>
-</div>
-
-<div *ngIf="mode === 'game'" class="game-container">
-  <div *ngIf="!gameStarted" class="game-start-screen">
-    <h3>🎮 Minijuego AquaSave</h3>
-    <p>Mové el balde con el mouse y atrapá la mayor cantidad de gotas posible.</p>
-    <button (click)="startGame()">Comenzar</button>
-  </div>
-
-  <div *ngIf="gameStarted">
-    <div class="score">💧 Puntos: {{ scoreGame }}</div>
-    <div class="arena" #gameContainer>
-      <div class="drop" *ngFor="let drop of drops" 
-           [style.left.px]="drop.x" 
-           [style.top.px]="drop.y">💧</div>
-      <div class="bucket" [style.left.px]="bucketX">🪣</div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="mode === 'memory'" class="memory-container">
-  <div class="memory-board">
-    <div class="card" *ngFor="let card of cards" (click)="flipCard(card)">
-      <div class="card-inner" [class.flipped]="card.flipped || card.matched">
-        <div class="card-front">❓</div>
-        <div class="card-back">{{ card.icon }}</div>
-      </div>
-    </div>
-  </div>
-
-  <p class="memory-score">Puntos Memoria: {{ scoreCards }}</p>
-</div>
-
-<div *ngIf="mode === 'history'">
-  <h2>Puntaje Histórico</h2>
-  <p>(To do, ver integracion con back tambien)</p>
-</div>
-
-</div>
