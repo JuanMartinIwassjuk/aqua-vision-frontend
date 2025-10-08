@@ -5,7 +5,12 @@
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin: 40px;
+  --margin: 40px;
   border:transparent;
   border-radius: 5px;
+  width: 10rem;
+  position: fixed;
+  bottom: 5rem;   /* separación desde el footer o borde inferior */
+  left: 50%;      /* lo llevás al centro */
+  transform: translateX(-50%); /* corrección para que quede centrado de verdad */
 }
