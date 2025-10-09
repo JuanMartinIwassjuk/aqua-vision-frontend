@@ -22,7 +22,6 @@ export class AuthService {
 
   getToken(): string | null {
     const token = sessionStorage.getItem('token');
-    console.log('Token obtenido:', token);  
     return token;
 
   }

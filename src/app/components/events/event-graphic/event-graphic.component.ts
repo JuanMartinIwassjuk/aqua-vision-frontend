@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EventDialogComponent } from './dialog/event-dialog.component';
 import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { HomeService } from '../../../services/home.service';
 
 Chart.register(annotationPlugin);
 
@@ -28,44 +29,49 @@ export class EventGraphicComponent implements OnInit {
 
   private colores = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'];
 
-  constructor(private consumoService: ConsumoService, private dialog: MatDialog) {}
+  constructor(private consumoService: ConsumoService, private dialog: MatDialog,private homeService: HomeService) {
 
-  ngOnInit(): void {
-    const sectoresData = this.consumoService.getConsumosPorHoraPorSector();
-    const eventosPorSectores = this.consumoService.getEventosDeLosSectores();
+  }
+
+ngOnInit(): void {
+  const sectoresData = this.consumoService.getConsumosPorHoraPorSector();
+
+  this.consumoService.getEventosDeLosSectores(this.homeService.getHomeId()).subscribe(eventosPorSectores => {
+  console.log('📦 Eventos por sectores (raw):', JSON.stringify(eventosPorSectores, null, 2));
+});
+
+  this.consumoService.getEventosDeLosSectores(this.homeService.getHomeId()).subscribe(eventosPorSectores => {
 
     this.sectores = sectoresData.map((sector, index) => {
       const horas = sector.consumos.map(c => c.hora);
       const caudales = sector.consumos.map(c => c.caudal_m3 ?? null);
+      console.log('Eventos del backend:', eventosPorSectores);
+      console.log('Sectores del consumo:', sectoresData);
 
+      const eventosEntry = eventosPorSectores.find(e => Number(e.id) === Number(sector.id));
+      console.log(`Buscando eventos para sector ${sector.nombre} (id=${sector.id}) →`, eventosEntry);
 
-      const eventosEntry = eventosPorSectores.find(e => e.id === sector.id);
       const eventos = eventosEntry?.eventos ?? [];
-
 
       const numericCaudales = caudales.filter(v => v !== null) as number[];
       const maxY = (numericCaudales.length > 0) ? Math.max(...numericCaudales) : 10;
 
       const annotations: Record<string, any> = {};
       eventos.forEach((ev, i) => {
-
         const matching = sector.consumos.find(c => c.hora === ev.hora);
         let yValue: number;
         if (matching && (matching.caudal_m3 !== undefined)) {
           if (matching.caudal_m3 > maxY * 0.8) {
-          
             yValue = matching.caudal_m3 - Math.round(maxY * 0.1);
           } else {
-
             yValue = matching.caudal_m3 + Math.round(maxY * 0.05);
           }
         } else {
           yValue = Math.round(maxY * 0.75);
         }
-
-
+        console.log(`Evento para ${sector.nombre}:`, ev.hora, 'Horas en labels:', horas);
         annotations[`evento_${sector.id}_${i}`] = {
-          type: 'label',         
+          type: 'label',
           xValue: ev.hora,
           yValue: yValue,
           backgroundColor: 'rgba(255, 205, 0, 0.95)',
@@ -76,7 +82,7 @@ export class EventGraphicComponent implements OnInit {
           color: '#000',
           padding: 6,
           position: 'center'
-        } as any; 
+        } as any;
       });
 
       const chartData: ChartData<'line'> = {
@@ -100,7 +106,6 @@ export class EventGraphicComponent implements OnInit {
         maintainAspectRatio: false,
         plugins: {
           legend: { position: 'bottom' },
-
           annotation: { annotations: annotations as any } as any
         },
         scales: {
@@ -111,7 +116,9 @@ export class EventGraphicComponent implements OnInit {
 
       return { sector, chartData, chartOptions, eventos };
     });
-  }
+  });
+}
+
 
 onChartClick(event: { event?: ChartEvent; active?: any[] }, item: { chartData: ChartData<'line'>; sector: ConsumoSector }) {
   if (event.active && event.active.length > 0) {
