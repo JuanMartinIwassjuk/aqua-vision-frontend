@@ -96,6 +96,74 @@
     </div>
   </div>
 
+  <div class="modal-popup" *ngIf="activeModal === 'logros'" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+        <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
+        (click)="closeModal()">
+      <h1 class="title-medallas">Mis loros</h1>
+      <div class="container-modal-medallas">
+        <p class="descr-medallas">En este apartado podrás ver todas tus logros conseguidas y más información de cada uno. Algunos logros solo mostrarán información una vez conseguidos.</p>
+      </div>
+    </div>
+    <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
+        
+    </div>
+  </div>
+
+  <div class="modal-popup" *ngIf="activeModal === 'avatar'" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+        <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
+        (click)="closeModal()">
+      <h1 class="title-medallas">Personaliza tu avatar</h1>
+      <div class="container-modal-medallas">
+      </div>
+    </div>
+    <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
+        
+    </div>
+  </div>
+
+  <div class="modal-popup" *ngIf="activeModal === 'trivia'" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+        <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
+        (click)="closeModal()">
+      <h1 class="title-medallas">Trivia #</h1>
+      <div class="container-modal-medallas">
+      </div>
+    </div>
+    <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
+        
+    </div>
+  </div>
+
+  <div class="modal-popup" *ngIf="activeModal === 'ranking'" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+        <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
+        (click)="closeModal()">
+      <h1 class="title-medallas">Ranking completo de hogares</h1>
+      <div class="container-modal-medallas">
+        <p class="descr-medallas">Acá podes ver todas las posiciones del ranking de hogares. ¿En qué posición estás hoy?</p>
+      </div>
+    </div>
+    <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
+        
+    </div>
+  </div>
+
+  <div class="modal-popup" *ngIf="activeModal === 'recompensas'" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+        <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
+        (click)="closeModal()">
+      <h1 class="title-medallas">Recompensas</h1>
+      <div class="container-modal-medallas">
+        <p class="descr-medallas">Acá podes ver todas las recompensas disponibles para canjear usando tus puntos.</p>
+      </div>
+    </div>
+    <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
+        
+    </div>
+  </div>
+  
   <!--ACA EMPIEZA PAGINA EN SI-->
 
   <div class="div-block">
@@ -106,13 +174,13 @@
     <div class="container-coleccionables">
       <div class="container-avatar">
         <img src="images/avatar-gotita.png" loading="lazy" sizes="(max-width: 1024px) 100vw, 1024px" srcset="images/avatar-gotita-p-500.png 500w, images/avatar-gotita-p-800.png 800w, images/avatar-gotita.png 1024w" alt="" class="avatar">
-        <img src="images/pencil.png" loading="lazy" alt="" class="lapiz_editar">
+        <img src="images/pencil.png" loading="lazy" alt="" class="lapiz_editar" (click)="openModal('avatar')">
         <h1 class="nombre_avatar">&lt;nombre_user&gt;</h1>
       </div>
       <div class="coleccionables">
         <div class="logros">
           <div class="logros-modal w-inline-block">
-            <img src="images/trophy.png" loading="lazy" alt="" class="image-10">
+            <img src="images/trophy.png" loading="lazy" alt="" class="image-10" (click)="openModal('logros')">
             <h4 class="logros">Mis logros</h4>
           </div>
         </div>
@@ -128,6 +196,9 @@
             <h1 class="container-puntos">99.999</h1>
           </div>
         </div>
+        <div class="container-canjea-puntos">
+          <h4 class="texto-canjea-puntos" (click)="openModal('recompensas')">Canjea tus puntos acá</h4>
+        </div>
       </div>
     </div>
   </div>
@@ -141,19 +212,19 @@
         <img src="images/check.png" loading="lazy" sizes="(max-width: 512px) 100vw, 512px" srcset="images/check-p-500.png 500w, images/check.png 512w" alt="" class="image-13">
         <h4 class="trivia-completado">Trivia 1: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block">
+      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
         <img src="images/circle-user.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 2: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block">
+      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
         <img src="images/circle-user.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 3: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block">
+      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
         <img src="images/circle-user.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 4: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block">
+      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
         <img src="images/circle-user.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 5: &quot;nombre&quot;</h4>
       </div>
@@ -410,7 +481,7 @@
           </div>
         </li>
         <li class="vertodo-ranking">
-          <div class="vermas-rank">
+          <div class="vermas-rank" (click)="openModal('ranking')">
             <h3 class="heading-4">Ver todas las posiciones del ranking</h3>
           </div>
         </li>
