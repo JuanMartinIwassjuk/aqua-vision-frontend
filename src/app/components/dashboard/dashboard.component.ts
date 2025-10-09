@@ -121,8 +121,9 @@ ngOnInit(): void {
       borderColor: '#2563eb',
       tension: 0.3,
       borderWidth: 3,
-      pointRadius: 3,
-      pointBackgroundColor: '#2563eb'
+      pointRadius: 5,
+      pointBackgroundColor: '#2563eb',
+      backgroundColor: '#fff'
     },
     {
       label: 'Ayer',
@@ -133,7 +134,8 @@ ngOnInit(): void {
       borderWidth: 2,
       borderDash: [6, 6],
       pointRadius: 3,
-      pointBackgroundColor: '#16a34a'
+      pointBackgroundColor: '#16a34a',
+      backgroundColor: '#fff'
     },
     {
       label: 'Promedio mensual',
@@ -144,7 +146,8 @@ ngOnInit(): void {
       borderWidth: 2,
       borderDash: [2, 4], 
       pointRadius: 3,
-      pointBackgroundColor: '#9333ea'
+      pointBackgroundColor: '#9333ea',
+      backgroundColor: '#fff'
     }
   ]
 };
