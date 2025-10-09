@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 export interface ConsumoPorHora {
   hora: string;
@@ -26,12 +28,12 @@ export interface EventoSector {
   providedIn: 'root'
 })
 export class ConsumoService {
-  constructor() {}
+    constructor(private http: HttpClient) {}
 
   getConsumosPorHoraPorSector(): ConsumoSector[] {
     return [
       {
-        id: 1,
+        id: 16,
         nombre: 'Sector A',
         consumos: [
           { hora: '00:00', caudal_m3: 5 },
@@ -62,7 +64,7 @@ export class ConsumoService {
         ]
       },
       {
-        id: 2,
+        id: 13,
         nombre: 'Sector B',
         consumos: [
           { hora: '00:00', caudal_m3: 2 },
@@ -92,24 +94,12 @@ export class ConsumoService {
     ];
   }
 
-  getEventosDeLosSectores(): EventoSector[] {
-    return [
-      {
-        id: 1,
-        nombre: 'Sector A',
-        eventos: [
-          { hora: '08:00', descripcion: 'Bañarse' },
-          { hora: '18:00', descripcion: 'Lavado ropa' }
-        ]
-      },
-      {
-        id: 2,
-        nombre: 'Sector B',
-        eventos: [
-          { hora: '07:00', descripcion: 'Riego' },
-          { hora: '19:00', descripcion: 'Llenado tanque' }
-        ]
-      }
-    ];
-  }
+getEventosDeLosSectores(hogarId: number | null): Observable<EventoSector[]> {
+  return this.http.get<EventoSector[]>(`http://localhost:8080/eventos/hogar/${hogarId}`).pipe(
+    tap(response => {
+      console.log('📦 Respuesta del backend (eventos por sectores):', response);
+    })
+  );
+}
+
 }

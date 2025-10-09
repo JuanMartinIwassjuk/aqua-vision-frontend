@@ -5,13 +5,13 @@
     <div class="chart-card" *ngFor="let item of sectores">
       <h3>{{ item.sector.nombre }}</h3>
       <div class="chart-wrapper">
-        <canvas
-          baseChart
-          [data]="item.chartData"
-          [options]="item.chartOptions"
-          type="line"
-          (chartClick)="onChartClick($event, item)">
-        </canvas>
+      <canvas
+        baseChart
+        [data]="item.chartData"
+        [options]="item.chartOptions"
+        type="line"
+        (chartClick)="onChartClick($event, item)">
+      </canvas>
 
       </div>
 
