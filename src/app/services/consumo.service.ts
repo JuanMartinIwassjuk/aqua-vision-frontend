@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { PrediccionPorDia } from '../models/prediction/prediccionPorDia';
+import { SectorProyeccion } from '../models/prediction/sectorProyeccion';
+import { environment } from '../../environments/environment';
 
 export interface ConsumoPorHora {
   hora: string;
@@ -28,6 +31,8 @@ export interface EventoSector {
   providedIn: 'root'
 })
 export class ConsumoService {
+
+  private readonly baseUrl = environment.apiUrl + '/reportes';
     constructor(private http: HttpClient) {}
 
   getConsumosPorHoraPorSector(): ConsumoSector[] {
@@ -98,6 +103,39 @@ getEventosDeLosSectores(hogarId: number | null): Observable<EventoSector[]> {
   return this.http.get<EventoSector[]>(`http://localhost:8080/eventos/hogar/${hogarId}`).pipe(
     tap(response => {
       console.log('📦 Respuesta del backend (eventos por sectores):', response);
+    })
+  );
+}
+getPrediccionPorDia(id: number): Observable<PrediccionPorDia> {
+  const url = `${this.baseUrl}/1/proyeccion-grafico`;
+  return this.http.get<PrediccionPorDia>(url);
+}
+
+getPrediccionConsumoPorDia(hogarId: number): Observable<PrediccionPorDia[]> {
+  const url = `${this.baseUrl}/${hogarId}/proyeccion-grafico`;
+
+  return this.http.get<Record<string, SectorProyeccion>>(url).pipe(
+    map((response) => {
+      if (!response) return [];
+
+      return Object.entries(response).map(([nombre_sector, sector]) => {
+        const puntos = sector.puntos ?? [];
+
+        return {
+          nombre_sector,
+          dias: puntos.map((p) => p.dia), 
+          consumoHistorico: puntos.map((p) => p.consumoHistorico ?? 0),
+          consumoActual: puntos.map((p) => p.consumoActual ?? 0),
+          consumoProyectado: puntos.map((p) => p.consumoProyectado ?? 0),
+          tendenciaMin: puntos.map((p) => p.tendenciaMin ?? 0),
+          tendenciaMax: puntos.map((p) => p.tendenciaMax ?? 0),
+          hallazgosClave: sector.hallazgosClave ?? [],
+        };
+      });
+    }),
+    catchError((err) => {
+      console.error('Error en getPrediccionConsumoPorDia:', err);
+      return of([]);
     })
   );
 }

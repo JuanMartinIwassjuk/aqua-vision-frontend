@@ -1,45 +1,28 @@
 <div class="reportes-container">
-  <h2>Predicción de Consumo</h2>  
+  <h2 class="titulo-principal">Predicción de Consumo</h2>
 
-  <div class="chart-card slide-left">
-    <h3>Evolución del Consumo</h3>
+  <div *ngFor="let sector of sectores" class="chart-card slide-left">
+    <h3 class="sector-titulo">{{ sector.nombre }}</h3>
+
     <div class="chart-wrapper">
-      <canvas baseChart
-        [data]="lineChartData"
+      <canvas
+        baseChart
+        [data]="sector.lineChartData"
         [options]="lineChartOptions"
         [type]="'line'">
       </canvas>
     </div>
-  </div>
 
-  <div class="chart-card slide-right">
-    <h3>Proyección de Costos</h3>
-    <div class="chart-wrapper">
-      <canvas baseChart
-        [data]="costChartData"
-        [options]="costChartOptions"
-        [type]="'bar'">
-      </canvas>
+    <div class="card-resumen">
+      <p><strong>💧 Gasto actual:</strong> ${{ sector.costoActual }}</p>
+      <p><strong>📈 Gasto proyectado (fin de mes):</strong> ${{ sector.costoProyectado }}</p>
     </div>
-  </div>
 
-  <div class="costos slide-bottom">
-    <h4>Detalle por Sector</h4>
-    <div class="costos-2">
-      <div class="costo-card" *ngFor="let sector of sectoresPrediccion">
-        <div class="costo-header">
-          <span class="sector-nombre">{{ sector.nombre_sector }}</span>
-          <span class="costo-precio">
-            {{ sector.costo_proyectado | currency:'USD':'symbol':'1.0-2' }}
-          </span>
-        </div>
-        <div class="costo-detalle">
-          Actual: {{ sector.consumo_actual }} L — Proyectado: {{ sector.consumo_proyectado }} L
-        </div>
-        <div class="costo-detalle">
-          Tendencia: {{ sector.tendencia }} — Estado: {{ sector.estadoConsumo }}
-        </div>
-      </div>
+    <div class="costo-hallazgos" *ngIf="sector.hallazgosClave.length > 0">
+      <strong>Hallazgos clave:</strong>
+      <ul>
+        <li *ngFor="let hallazgo of sector.hallazgosClave">{{ hallazgo }}</li>
+      </ul>
     </div>
   </div>
 </div>
