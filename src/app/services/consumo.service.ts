@@ -38,7 +38,7 @@ export class ConsumoService {
   getConsumosPorHoraPorSector(): ConsumoSector[] {
     return [
       {
-        id: 16,
+        id: 15,
         nombre: 'Sector A',
         consumos: [
           { hora: '00:00', caudal_m3: 5 },
@@ -69,7 +69,7 @@ export class ConsumoService {
         ]
       },
       {
-        id: 13,
+        id: 15,
         nombre: 'Sector B',
         consumos: [
           { hora: '00:00', caudal_m3: 2 },
@@ -100,7 +100,7 @@ export class ConsumoService {
   }
 
 getEventosDeLosSectores(hogarId: number | null): Observable<EventoSector[]> {
-  return this.http.get<EventoSector[]>(`http://localhost:8080/eventos/hogar/${hogarId}`).pipe(
+  return this.http.get<EventoSector[]>(`http://localhost:8080/hogares/${hogarId}/sectores-eventos`).pipe(
     tap(response => {
       console.log('📦 Respuesta del backend (eventos por sectores):', response);
     })
