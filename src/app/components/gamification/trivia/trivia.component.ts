@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Question } from '../../../models/question';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-trivia',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './trivia.component.html',
   styleUrls: ['./trivia.component.css']
 })

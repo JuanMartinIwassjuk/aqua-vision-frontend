@@ -156,7 +156,7 @@
         (click)="closeModal()">
       <h1 class="title-medallas">Recompensas</h1>
       <div class="container-modal-medallas">
-        <p class="descr-medallas">Acá podes ver todas las recompensas disponibles para canjear usando tus puntos.</p>
+        <p class="descr-medallas">Acá podes ver todas las recompensas disponibles para canjear usando tus AquaPuntos.</p>
       </div>
     </div>
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
@@ -197,7 +197,7 @@
           </div>
         </div>
         <div class="container-canjea-puntos">
-          <h4 class="texto-canjea-puntos" (click)="openModal('recompensas')">Canjea tus puntos acá</h4>
+          <h4 class="texto-canjea-puntos" (click)="openModal('recompensas')">Canjea tus AquaPuntos acá</h4>
         </div>
       </div>
     </div>
@@ -235,11 +235,21 @@
     <p class="bio-micuenta">Poné a prueba tu agilidad y memoria mientras aprendés a cuidar el agua.</p>
     <div class="spacer-40"></div>
     <div class="container-minijuegos">
-      <div class="minijuego-modal w-inline-block"><img src="images/bucket.png" loading="lazy" alt="" class="image-7">
+      <div [routerLink]="['/gamificacion/aquasave']" class="minijuego-modal w-inline-block">
+        <img src="images/bucket.png" loading="lazy" alt="" class="image-7">
         <h4 class="minijuego">AquaSave</h4>
       </div>
-      <div class="minijuego-modal w-inline-block"><img src="images/brain.png" loading="lazy" alt="" class="image-7">
+      <div [routerLink]="['/gamificacion/memory-test']" class="minijuego-modal w-inline-block">
+        <img src="images/brain.png" loading="lazy" alt="" class="image-7">
         <h4 class="minijuego">Memory Test</h4>
+      </div>
+      <div [routerLink]="['/gamificacion/drag-drop']" class="minijuego-modal w-inline-block">
+        <img src="images/drag-drop-img.png" loading="lazy" alt="" class="image-7">
+        <h4 class="minijuego">Drag & Drop</h4>
+      </div>
+      <div class="minijuego-modal w-inline-block">
+        <img src="images/coming-soon.png" loading="lazy" alt="" class="image-7">
+        <h4 class="minijuego">Nuevo juego próximamente</h4>
       </div>
     </div>
   </div>

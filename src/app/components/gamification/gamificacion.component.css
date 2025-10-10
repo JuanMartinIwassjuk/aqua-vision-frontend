@@ -311,6 +311,7 @@ h2 {
 
 .minijuego {
   color: var(--azul-fondo);
+  padding-top: 0.75rem;
 }
 
 .image-7 {
