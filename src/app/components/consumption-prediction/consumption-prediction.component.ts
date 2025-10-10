@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
-import { ChartData, ChartOptions, ChartType  } from 'chart.js';
-import { ReporteService } from '../../services/reports.service';
 import { HomeService } from '../../services/home.service';
-import { PuntoConsumo } from '../../models/prediction/puntoConsumo';
-
 import { ChartConfiguration } from 'chart.js';
 import { ConsumoService } from '../../services/consumo.service';
-import { SectorProyeccion } from '../../models/prediction/sectorProyeccion';
-import { PrediccionPorDia } from '../../models/prediction/prediccionPorDia';
+
 
 
 @Component({
@@ -20,6 +15,10 @@ import { PrediccionPorDia } from '../../models/prediction/prediccionPorDia';
   styleUrls: ['./consumption-prediction.component.css']
 })
 export class ConsumptionPredictionComponent implements OnInit {
+
+  mostrarFiltros: boolean = false;
+
+
 
   sectores: any[] = [];
 
@@ -42,21 +41,29 @@ export class ConsumptionPredictionComponent implements OnInit {
     }
   };
 
-  constructor(private consumoService: ConsumoService) {}
+  constructor(private consumoService: ConsumoService,private homeService: HomeService) {}
 
-  ngOnInit(): void {
+nombresSectores: string[] = [];
+sectoresFiltrados: string[] = [];
+sectoresFiltradosData: any[] = [];
+hogarId: number | null = null;
+
+ngOnInit(): void {
+  this.hogarId = this.homeService.getHomeId();
+  if (this.hogarId !== null && this.hogarId > 0) {
     this.cargarPrediccion();
+  } else {
+    console.warn('⚠️ No valid home found, prediction will not load.');
   }
+}
 
-  cargarPrediccion(): void {
-    const hogarId = 1;
+cargarPrediccion(): void {
+    if (this.hogarId === null) return;
 
-
-this.consumoService.getPrediccionConsumoPorDia(hogarId).subscribe({
-  next: (response) => {
-    this.sectores = Object.entries(response).map(
-      ([nombreSector, datosSector]) => {
-        const labels = datosSector.dias.map(d => d.toString());
+  this.consumoService.getPrediccionConsumoPorDia(this.hogarId).subscribe({
+    next: (sectores) => {
+      this.sectores = sectores.map((datosSector) => {
+        const labels = datosSector.dias.map((d) => d.toString());
         const consumoHistorico = datosSector.consumoHistorico ?? [];
         const consumoActual = datosSector.consumoActual ?? [];
         const consumoProyectado = datosSector.consumoProyectado ?? [];
@@ -64,11 +71,15 @@ this.consumoService.getPrediccionConsumoPorDia(hogarId).subscribe({
         const tendenciaMax = datosSector.tendenciaMax ?? [];
 
         const costoPorLitro = 3;
-        const costoActual = (consumoActual.reduce((a, b) => a + b, 0) * costoPorLitro).toFixed(2);
-        const costoProyectado = (consumoProyectado.reduce((a, b) => a + b, 0) * costoPorLitro).toFixed(2);
+        const costoActual = (
+          consumoActual.reduce((a, b) => a + b, 0) * costoPorLitro
+        ).toFixed(2);
+        const costoProyectado = (
+          consumoProyectado.reduce((a, b) => a + b, 0) * costoPorLitro
+        ).toFixed(2);
 
         return {
-          nombre: nombreSector,
+          nombre: datosSector.nombre_sector,
           lineChartData: {
             labels,
             datasets: [
@@ -83,12 +94,31 @@ this.consumoService.getPrediccionConsumoPorDia(hogarId).subscribe({
           costoProyectado,
           hallazgosClave: datosSector.hallazgosClave ?? []
         };
-      }
-    );
-  },
-  error: (err) => console.error('Error al obtener predicción:', err)
-});
+      });
 
 
+      this.nombresSectores = this.sectores.map((s) => s.nombre);
+      this.sectoresFiltrados = [...this.nombresSectores];
+      this.actualizarFiltro();
+    },
+    error: (err) => console.error('Error al obtener predicción:', err),
+  });
+}
+
+toggleFiltro(nombre: string): void {
+  if (this.sectoresFiltrados.includes(nombre)) {
+    this.sectoresFiltrados = this.sectoresFiltrados.filter((s) => s !== nombre);
+  } else {
+    this.sectoresFiltrados.push(nombre);
   }
+  this.actualizarFiltro();
+}
+
+actualizarFiltro(): void {
+  this.sectoresFiltradosData = this.sectores.filter((s) =>
+    this.sectoresFiltrados.includes(s.nombre)
+  );
+}
+
+
 }

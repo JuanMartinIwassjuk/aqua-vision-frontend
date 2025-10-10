@@ -114,23 +114,24 @@ getPrediccionPorDia(id: number): Observable<PrediccionPorDia> {
 getPrediccionConsumoPorDia(hogarId: number): Observable<PrediccionPorDia[]> {
   const url = `${this.baseUrl}/${hogarId}/proyeccion-grafico`;
 
-  return this.http.get<Record<string, SectorProyeccion>>(url).pipe(
+  return this.http.get<{ hogarId: number; proyeccionSectores: any[] }>(url).pipe(
     map((response) => {
-      if (!response) return [];
+      if (!response?.proyeccionSectores) return [];
 
-      return Object.entries(response).map(([nombre_sector, sector]) => {
+      return response.proyeccionSectores.map((sector) => {
         const puntos = sector.puntos ?? [];
 
         return {
-          nombre_sector,
-          dias: puntos.map((p) => p.dia), 
-          consumoHistorico: puntos.map((p) => p.consumoHistorico ?? 0),
-          consumoActual: puntos.map((p) => p.consumoActual ?? 0),
-          consumoProyectado: puntos.map((p) => p.consumoProyectado ?? 0),
-          tendenciaMin: puntos.map((p) => p.tendenciaMin ?? 0),
-          tendenciaMax: puntos.map((p) => p.tendenciaMax ?? 0),
+          nombre_sector: sector.nombreSector,
+          dias: (puntos as any[]).map((p: any) => p.dia),
+          consumoHistorico: (puntos as any[]).map((p: any) => p.consumoHistorico ?? 0),
+          consumoActual: (puntos as any[]).map((p: any) => p.consumoActual ?? 0),
+          consumoProyectado: (puntos as any[]).map((p: any) => p.consumoProyectado ?? 0),
+          tendenciaMin: (puntos as any[]).map((p: any) => p.tendenciaMin ?? 0),
+          tendenciaMax: (puntos as any[]).map((p: any) => p.tendenciaMax ?? 0),
           hallazgosClave: sector.hallazgosClave ?? [],
         };
+
       });
     }),
     catchError((err) => {
@@ -139,5 +140,6 @@ getPrediccionConsumoPorDia(hogarId: number): Observable<PrediccionPorDia[]> {
     })
   );
 }
+
 
 }
