@@ -6,10 +6,10 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-gamification',
+  selector: 'app-gamificacion',
   imports: [CommonModule],
-  templateUrl: './gamification.component.html',
-  styleUrl: './gamification.component.css',
+  templateUrl: './gamificacion.component.html',
+  styleUrl: './gamificacion.component.css',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
   animations: [
@@ -21,7 +21,7 @@ import { RouterModule } from '@angular/router';
     ])]
 })
 
-export class GamificationComponent {
+export class GamificacionComponent {
 
   activeModal: string | null = null;
   

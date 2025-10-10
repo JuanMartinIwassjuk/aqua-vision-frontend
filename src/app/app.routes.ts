@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth';
 import { LoginGuard } from './auth/guards/login';
-import { GamificationComponent } from './components/gamification/gamification.component';
-import { TriviaComponent } from './components/gamification/trivia/trivia.component';
-import { AquaSaveComponent } from './components/gamification/aquasave/aquasave.component';
-import { MemoryGameComponent } from './components/gamification/memory-test/memory-test.component';
-import { DragDropComponent } from './components/gamification/drag-drop/drag-drop.component';
+import { GamificacionComponent } from './components/gamificacion/gamificacion.component';
+import { TriviaComponent } from './components/gamificacion/trivia/trivia.component';
+import { AquaSaveComponent } from './components/gamificacion/aquasave/aquasave.component';
+import { MemoryGameComponent } from './components/gamificacion/memory-test/memory-test.component';
+import { DragDropComponent } from './components/gamificacion/drag-drop/drag-drop.component';
 
 export const routes: Routes = [
   {
@@ -39,8 +39,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard] 
   },
   {
-    path: 'gamification',
-    loadComponent: () => import('./components/gamification/gamification.component').then(c => c.GamificationComponent),
+    path: 'gamificacion',
+    loadComponent: () => import('./components/gamificacion/gamificacion.component').then(c => c.GamificacionComponent),
     canActivate: [AuthGuard] 
   },
   {
@@ -83,12 +83,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/events/event-graphic/event-graphic.component').then(c => c.EventGraphicComponent),
     canActivate: [AuthGuard] 
   },
-  { path: 'gamification', component: GamificationComponent },
-  { path: 'gamification/trivia', component: TriviaComponent },
-  { path: 'gamification/aquasave', component: AquaSaveComponent },
-  { path: 'gamification/memory-test', component: MemoryGameComponent },
-  { path: 'gamification/drag-drop', component: DragDropComponent },
-  { path: '', redirectTo: 'gamification', pathMatch: 'full' },
-  { path: '**', redirectTo: 'gamification' },
+  { path: 'gamificacion', component: GamificacionComponent },
+  { path: 'gamificacion/trivia', component: TriviaComponent },
+  { path: 'gamificacion/aquasave', component: AquaSaveComponent },
+  { path: 'gamificacion/memory-test', component: MemoryGameComponent },
+  { path: 'gamificacion/drag-drop', component: DragDropComponent },
+  { path: '', redirectTo: 'gamificacion', pathMatch: 'full' },
+  { path: '**', redirectTo: 'gamificacion' },
   { path: '**', redirectTo: 'login' } 
 ];

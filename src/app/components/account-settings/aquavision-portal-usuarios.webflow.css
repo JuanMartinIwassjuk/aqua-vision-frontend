@@ -1284,6 +1284,7 @@
   flex: 0 0 auto;
   width: 100%;
   padding: 2rem 4rem 1rem;
+  background-color: var(--gris-fondo);
 }
 
 .paragraph {
@@ -1320,7 +1321,7 @@
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   cursor: pointer;
-  background-color: #008c9e;
+  background-color: var(--azul-fondo);
   border-radius: 15px;
   width: 100%;
   height: 7rem;
@@ -1343,7 +1344,7 @@
 .modal-block.modal-plus {
   grid-column-gap: .75rem;
   grid-row-gap: .75rem;
-  border: 5px dashed var(--verde-agua);
+  border: 5px dashed var(--azul-fondo);
   background-color: #008c9e00;
   flex-flow: column;
 }
@@ -1520,7 +1521,7 @@
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   cursor: pointer;
-  background-color: #008c9e;
+  background-color: var(--azul-fondo);
   border-radius: 15px;
   width: 100%;
   height: 7rem;
@@ -1543,7 +1544,7 @@
 .modal-block2.modal-plus {
   grid-column-gap: .75rem;
   grid-row-gap: .75rem;
-  border: 5px dashed var(--verde-agua);
+  border: 5px dashed var(--azul-fondo);
   background-color: #008c9e00;
   flex-flow: column;
 }
@@ -1622,7 +1623,7 @@
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   cursor: pointer;
-  background-color: #008c9e;
+  background-color: var(--azul-fondo);
   border-radius: 15px;
   width: 100%;
   height: 7rem;
@@ -1645,7 +1646,7 @@
 .modal-block3.modal-plus {
   grid-column-gap: .75rem;
   grid-row-gap: .75rem;
-  border: 5px dashed var(--verde-agua);
+  border: 5px dashed var(--azul-fondo);
   background-color: #008c9e00;
   flex-flow: column;
 }
@@ -1673,7 +1674,7 @@
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   cursor: pointer;
-  background-color: #008c9e;
+  background-color: var(--azul-fondo);
   border-radius: 15px;
   width: 100%;
   height: 7rem;
@@ -1696,7 +1697,7 @@
 .modal-block4.modal-plus {
   grid-column-gap: .75rem;
   grid-row-gap: .75rem;
-  border: 5px dashed var(--verde-agua);
+  border: 5px dashed var(--azul-fondo);
   background-color: #008c9e00;
   flex-flow: column;
 }
@@ -1724,7 +1725,7 @@
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   cursor: pointer;
-  background-color: #008c9e;
+  background-color: var(--azul-fondo);
   border-radius: 15px;
   width: 100%;
   height: 7rem;
@@ -1747,7 +1748,7 @@
 .modal-block5.modal-plus {
   grid-column-gap: .75rem;
   grid-row-gap: .75rem;
-  border: 5px dashed var(--verde-agua);
+  border: 5px dashed var(--azul-fondo);
   background-color: #008c9e00;
   flex-flow: column;
 }

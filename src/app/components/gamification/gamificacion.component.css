@@ -8,90 +8,20 @@
 }
 
 /*
-.gamification-container {
+.gamificacion-container {
   padding: 2rem;
-  background-color: #f4f4f4;
-  color: #3a3a3a;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.gamification-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.gamification-header h2 {
-  color: #001f3f;
-  font-size: 1.8rem;
-  text-align: center;
-  flex-grow: 1;
-}
-
-.back-btn {
-  position: absolute;
-  left: 0;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  color: #007bff;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-}
-
-.gamification-cards {
+  background-color: #DDF7FA;
+  color: #3A3A3A;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 1.5rem;
-  flex-grow: 1;
+  gap: 2rem;
 }
 
-.gamification-card {
-  background-color: #fdfdfd;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 2rem 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+h2 {
+  color: #008C9E;
   text-align: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.gamification-card:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-  cursor: pointer;
-}
-
-.icon-circle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 1rem;
-  border-radius: 50%;
-  background-color: #008c9e;
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-@media (max-width: 768px) {
-  .gamification-cards {
-    grid-template-columns: 1fr;
-  }
+  grid-column: span 2;
+  margin-bottom: 2rem;
 }
 */
 
@@ -103,7 +33,7 @@
 }
 
 .heading-2 {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
   width: auto;
   font-weight: bold;
   margin-bottom: 10px;
@@ -114,7 +44,7 @@
 }
 
 .bio-micuenta {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
   width: 50%;
   font-size: 18px;
   text-align: left;
@@ -122,7 +52,7 @@
 }
 
 .seccion-gamificacion {
-  background-color: #ddf7fa;
+  background-color: var(--gris-fondo);
   flex: 1;
   align-items: stretch;
   width: 100%;
@@ -197,7 +127,7 @@
 }
 
 .logros-modal {
-  background-color: var(--verde-agua);
+  background-color: var(--azul-fondo);
   cursor: pointer;
   border-radius: 20px;
   flex-flow: column;
@@ -238,7 +168,7 @@
 }
 
 .medallas-modal {
-  background-color: var(--verde-agua);
+  background-color: var(--azul-fondo);
   border-radius: 20px;
   flex-flow: column;
   justify-content: center;
@@ -263,7 +193,7 @@
 }
 
 .container-puntos {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
   cursor: default;
   justify-content: center;
   align-self: center;
@@ -327,7 +257,7 @@
 }
 
 .trivia {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
 }
 
 .trivia-modal-completado {
@@ -360,11 +290,11 @@
 
 .trivia-completado {
   filter: blur(2px);
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
 }
 
 .seccion-minijuegos {
-  background-color: var(--verde-fondo);
+  background-color: var(--gris-fondo);
   flex: 1;
   width: 100%;
   padding: 2rem 4rem 1rem;
@@ -380,7 +310,7 @@
 }
 
 .minijuego {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
 }
 
 .image-7 {
@@ -415,6 +345,9 @@
   overflow: auto;
   margin-left: 2rem;
   margin-right: 2rem;
+}
+
+.container-desafios{
 }
 
 .ranking-list{
@@ -524,7 +457,7 @@
 }
 
 .div-block {
-  background-color: var(--verde-fondo);
+  background-color: var(--gris-fondo);
   flex: 1;
   width: 100%;
   padding: 2rem 4rem 1rem;
@@ -543,7 +476,7 @@
 }
 
 .heading-5, .heading-6, .heading-7 {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
 }
 
 .div-block-10 {
@@ -598,7 +531,7 @@
 }
 
 .heading-4 {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -702,4 +635,25 @@
   font-weight: 700;
   font-size: 18px;
   height: 24px;
+}
+
+.container-canjea-puntos{
+  margin-top: -2rem;
+  color: var(--azul-fondo);
+  cursor: pointer;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  display: flex;
+  grid-column: 1 / -1;
+}
+
+.texto-canjea-puntos{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.texto-canjea-puntos:hover{
+  text-decoration: underline;
 }

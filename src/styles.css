@@ -82,8 +82,10 @@ html, body {
   --verde-oscuro: #0b6649;
   --gris-blanco: #dbdbdb;
   --verde-agua: #008c9e;
-  --verde-fondo: #ddf7fa;
+  --verde-fondo-viejo: #ddf7fa;
   --verde-completado: #dafdc2f0;
+  --azul-fondo: #001F3F;
+  --gris-fondo: #F4F4F4;
 }
 html, body { height: 100%; }
 body { margin: 0;  }
