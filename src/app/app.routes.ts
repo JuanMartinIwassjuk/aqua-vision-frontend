@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth';
 import { LoginGuard } from './auth/guards/login';
-import { GamificacionComponent } from './components/gamification/gamificacion.component';
-import { TriviaComponent } from './components/gamification/trivia/trivia.component';
-import { AquaSaveComponent } from './components/gamification/aquasave/aquasave.component';
-import { MemoryGameComponent } from './components/gamification/memory-test/memory-test.component';
-import { DragDropComponent } from './components/gamification/drag-drop/drag-drop.component';
+import { GamificacionComponent } from './components/gamificacion/gamificacion.component';
+import { TriviaComponent } from './components/gamificacion/trivia/trivia.component';
+import { AquaSaveComponent } from './components/gamificacion/aquasave/aquasave.component';
+import { MemoryGameComponent } from './components/gamificacion/memory-test/memory-test.component';
+import { DragDropComponent } from './components/gamificacion/drag-drop/drag-drop.component';
 
 export const routes: Routes = [
   {
@@ -40,7 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'gamificacion',
-    loadComponent: () => import('./components/gamification/gamificacion.component').then(c => c.GamificacionComponent),
+    loadComponent: () => import('./components/gamificacion/gamificacion.component').then(c => c.GamificacionComponent),
     canActivate: [AuthGuard] 
   },
   {
