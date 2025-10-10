@@ -1,7 +1,36 @@
 <div class="reportes-container">
   <h2 class="titulo-principal">Predicción de Consumo</h2>
 
-  <div *ngFor="let sector of sectores" class="chart-card slide-left">
+  <div class="acciones-superiores">
+        <button class="btn-filtro" (click)="mostrarFiltros = !mostrarFiltros">
+          <i class="fa-solid fa-filter"></i>
+          Filtros
+          <i 
+            class="fa-solid"
+            [ngClass]="mostrarFiltros ? 'fa-chevron-up' : 'fa-chevron-down'">
+          </i>
+        </button>
+
+
+  </div>
+
+  <!-- Filtros por sector -->
+  <div class="filtros-sectores slide-down" *ngIf="mostrarFiltros">
+    <h4>Filtrar por sector</h4>
+    <div class="checkbox-grid">
+      <label *ngFor="let sector of sectores">
+        <input
+          type="checkbox"
+          [checked]="sectoresFiltrados.includes(sector.nombre)"
+          (change)="toggleFiltro(sector.nombre)"
+        />
+        {{ sector.nombre }}
+      </label>
+    </div>
+  </div>
+
+  <!-- Renderizado de sectores filtrados -->
+  <div *ngFor="let sector of sectoresFiltradosData" class="chart-card fade-in">
     <h3 class="sector-titulo">{{ sector.nombre }}</h3>
 
     <div class="chart-wrapper">
@@ -15,7 +44,7 @@
 
     <div class="card-resumen">
       <p><strong>💧 Gasto actual:</strong> ${{ sector.costoActual }}</p>
-      <p><strong>📈 Gasto proyectado (fin de mes):</strong> ${{ sector.costoProyectado }}</p>
+      <p><strong>📈 Gasto proyectado:</strong> ${{ sector.costoProyectado }}</p>
     </div>
 
     <div class="costo-hallazgos" *ngIf="sector.hallazgosClave.length > 0">

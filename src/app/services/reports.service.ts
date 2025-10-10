@@ -232,34 +232,7 @@ getConsumoPromedioPorHoraMensual(): { hora: string; caudal_m3?: number }[] {
 
 
 
-getPrediccionConsumoPorDia(hogarId: number): Observable<PrediccionPorDia[]> {
-  const url = `${this.baseUrl}/${hogarId}/proyeccion-grafico`;
 
-  return this.http.get<Record<string, SectorProyeccion>>(url).pipe(
-    map((response) => {
-      if (!response) return [];
-
-      return Object.entries(response).map(([nombre_sector, sector]) => {
-        const puntos = sector.puntos ?? [];
-
-        return {
-          nombre_sector,
-          dias: puntos.map((p) => p.dia), // eje X
-          consumoHistorico: puntos.map((p) => p.consumoHistorico ?? 0),
-          consumoActual: puntos.map((p) => p.consumoActual ?? 0),
-          consumoProyectado: puntos.map((p) => p.consumoProyectado ?? 0),
-          tendenciaMin: puntos.map((p) => p.tendenciaMin ?? 0),
-          tendenciaMax: puntos.map((p) => p.tendenciaMax ?? 0),
-          hallazgosClave: sector.hallazgosClave ?? [],
-        };
-      });
-    }),
-    catchError((err) => {
-      console.error('Error en getPrediccionConsumoPorDia:', err);
-      return of([]);
-    })
-  );
-}
 
 
 
