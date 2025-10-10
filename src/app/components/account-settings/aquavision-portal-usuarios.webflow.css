@@ -1294,13 +1294,13 @@
 }
 
 .heading-2 {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
   width: auto;
   text-align: left;
 }
 
 .bio-micuenta {
-  color: var(--azul-oscuro);
+  color: var(--azul-fondo);
   width: 50%;
   font-size: 18px;
   text-align: left;

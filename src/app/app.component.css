@@ -285,7 +285,7 @@ box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
 }
 
 .footer-link:hover {
-  color: #00d4ff;
+  text-decoration: underline;
 }
 
 .footer-divider {
