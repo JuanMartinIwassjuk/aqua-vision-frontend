@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 interface Card {
   id: number;
@@ -15,7 +16,7 @@ interface Card {
 @Component({
   selector: 'app-drag-drop',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './drag-drop.component.html',
   styleUrls: ['./drag-drop.component.css']
 })

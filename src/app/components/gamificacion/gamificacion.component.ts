@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-gamificacion',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './gamificacion.component.html',
   styleUrl: './gamificacion.component.css',
   standalone: true,
