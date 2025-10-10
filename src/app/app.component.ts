@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { AuthService } from './auth/serviceAuth/auth.service'; 
 import { filter } from 'rxjs';
+<<<<<<< HEAD
+import { GamificacionComponent } from './components/gamificacion/gamificacion.component';
+=======
 import { GamificacionComponent } from './components/gamification/gamificacion.component';
+>>>>>>> origin/main
 import { LoaderComponent } from './utils/loader/loader.component';
 
 @Component({
