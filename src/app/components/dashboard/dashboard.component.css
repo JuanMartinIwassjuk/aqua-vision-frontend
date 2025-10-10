@@ -436,3 +436,138 @@ mat-icon {
   }
 
 }
+
+
+/* --- Animación de parpadeo (titileo) --- */
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.05); }
+}
+
+.blink {
+  animation: blink 1.2s infinite;
+}
+
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(229,57,53, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(229,57,53, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(229,57,53, 0); }
+}
+
+.pulse-alert {
+  animation: pulse 1.8s infinite;
+}
+
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  animation: slideInUp 0.6s ease forwards;
+}
+
+.pulse-green {
+  animation: pulse-green 1.8s infinite;
+}
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(76,175,80,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(76,175,80,0); }
+  100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); }
+}
+
+/* --- EFECTOS DE PULSO --- */
+.pulse-alert {
+  animation: pulseRed 1.4s infinite;
+}
+
+.pulse-green {
+  animation: pulseGreen 1.4s infinite;
+}
+
+@keyframes pulseRed {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(220, 53, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+  }
+}
+
+@keyframes pulseGreen {
+  0% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(40, 167, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+/* --- Opcional: mejora visual general --- */
+.card.pulse-alert, 
+.card.pulse-green {
+  transition: transform 0.3s ease;
+}
+
+.card.pulse-alert:hover, 
+.card.pulse-green:hover {
+  transform: translateY(-3px);
+}
+/* --- TITILEO DEL TEXTO --- */
+@keyframes blink-red {
+  0%, 100% { color: #e53935; opacity: 1; }
+  50% { color: #ff6b6b; opacity: 0.4; }
+}
+
+@keyframes blink-green {
+  0%, 100% { color: #4caf50; opacity: 1; }
+  50% { color: #81c784; opacity: 0.4; }
+}
+
+.blink-red {
+  animation: blink-red 1.2s infinite ease-in-out;
+}
+
+.blink-green {
+  animation: blink-green 1.2s infinite ease-in-out;
+}
+
+/* Asegura que no afecte al resto */
+.consumo-indicador span,
+.icon-row span {
+  display: inline-block;
+}
+
+/* --- Animación de parpadeo --- */
+@keyframes blink-red {
+  0%, 100% { color: #e53935; opacity: 1; }
+  50% { color: #ff6b6b; opacity: 0.4; }
+}
+
+.blink-red {
+  animation: blink-red 1.2s infinite ease-in-out;
+}
+
+/* --- Colores y ajustes visuales --- */
+.ok-icon {
+  color: #4caf50;
+}
+
+.notif-count {
+  font-weight: bold;
+}
+
+/* Íconos alineados correctamente */
+.icon-row mat-icon {
+  vertical-align: middle;
+  margin-right: 4px;
+  font-size: 22px;
+}

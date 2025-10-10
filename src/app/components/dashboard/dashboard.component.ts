@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   medidoresConectados!: number;
   medidoresDesconectados!: number;
   estadoMedidores: {conectados: number, desconectados: number} | undefined
+  cantidadNotificaciones = 3; 
 
   medidoresConectadosAdmin!: number;
   medidoresDesconectadosAdmin!: number;
