@@ -96,7 +96,6 @@ export class HomeService {
 
 
 getNotifications(homeId: number): Observable<Notification[]> {
-  console.log('Trayendo notificaciones (sin filtrar por homeId)');
 
   const allNotifications = this.mockNotifications.map(n => ({ ...n }));
 

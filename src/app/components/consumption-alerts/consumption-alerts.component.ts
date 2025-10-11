@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HomeService } from '../../services/home.service';
 import { Notification } from '../../models/notification';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../utils/confirm-dialog';
+
+
 
 @Component({
   selector: 'app-consumption-alerts',
@@ -16,7 +20,7 @@ export class ConsumptionAlertsComponent implements OnInit {
   unreadCount = 0;
   deletingIds = new Set<number>();
 
-  constructor(private homeService: HomeService) {}
+  constructor(private homeService: HomeService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     const hid = this.homeService.getHomeId?.() ?? 1;
@@ -80,10 +84,18 @@ export class ConsumptionAlertsComponent implements OnInit {
     });
   }
 
-  deleteNotification(notification: Notification): void {
-    if (!notification) return;
-    const ok = confirm('¿Seguro que querés eliminar esta notificación?');
-    if (!ok) return;
+deleteNotification(notification: Notification): void {
+  if (!notification) return;
+
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    data: {
+      title: 'Eliminar notificación',
+      message: '¿Seguro que querés eliminar esta notificación?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) return; // Si el usuario cancela, no hace nada
 
     this.deletingIds.add(notification.id);
 
@@ -97,16 +109,30 @@ export class ConsumptionAlertsComponent implements OnInit {
       },
       error: () => {
         this.deletingIds.delete(notification.id);
-        alert('No se pudo eliminar la notificación.');
+        this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title: 'Error',
+            message: 'No se pudo eliminar la notificación.'
+          }
+        });
       }
     });
-  }
+  });
+}
 
-  deleteAllNotifications(): void {
-    if (this.notifications.length === 0) return;
 
-    const ok = confirm('¿Seguro que querés eliminar TODAS las notificaciones?');
-    if (!ok) return;
+deleteAllNotifications(): void {
+  if (this.notifications.length === 0) return;
+
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    data: {
+      title: 'Eliminar todas las notificaciones',
+      message: '¿Seguro que querés eliminar TODAS las notificaciones?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) return;
 
     this.notifications.forEach(n => this.deletingIds.add(n.id));
 
@@ -120,10 +146,17 @@ export class ConsumptionAlertsComponent implements OnInit {
       },
       error: () => {
         this.deletingIds.clear();
-        alert('No se pudieron eliminar todas las notificaciones.');
+        this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title: 'Error',
+            message: 'No se pudieron eliminar todas las notificaciones.'
+          }
+        });
       }
     });
-  }
+  });
+}
+
 
   getIcon(type: string): string {
     switch (type) {
