@@ -249,3 +249,59 @@
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 6px 15px rgba(0,0,0,0.12);
 }
+
+.atajos-tiempo {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px 0 40px 0;
+}
+
+.atajos-tiempo button {
+  background-color: #f0f4f8;
+  color: #001F3F;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.atajos-tiempo button:hover {
+  background-color: #001F3F;
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+.atajos-fecha {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.atajos-fecha button {
+  background-color: #E0EAFB;
+  color: #001F3F;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.atajos-fecha button:hover {
+  background-color: #001F3F;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.atajos-fecha button:active {
+  transform: scale(0.97);
+}

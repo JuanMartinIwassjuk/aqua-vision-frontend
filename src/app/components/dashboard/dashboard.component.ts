@@ -122,7 +122,7 @@ ngOnInit(): void {
       borderColor: '#2563eb',
       tension: 0.3,
       borderWidth: 3,
-      pointRadius: 5,
+      pointRadius: 3.5,
       pointBackgroundColor: '#2563eb',
       backgroundColor: '#fff'
     },

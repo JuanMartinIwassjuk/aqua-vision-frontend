@@ -224,3 +224,41 @@ h3, h4 {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
 }
+
+.fecha-navegacion {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fecha-navegacion button {
+  background: #001F3F;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.fecha-navegacion button:hover:not(:disabled) {
+  transform: scale(1.1);
+  background-color: #004080;
+}
+
+.fecha-navegacion button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.fecha-navegacion span {
+  font-weight: bold;
+  color: #001F3F;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+}

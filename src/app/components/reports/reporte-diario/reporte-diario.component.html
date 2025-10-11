@@ -9,7 +9,20 @@
   </div>
 
 
-  <h2>Reportes de Consumo del Día</h2>
+  <h2>Reportes de Consumo Diario</h2>
+      <div class="fecha-navegacion">
+        <button class="flecha-btn" (click)="cambiarDia(-1)">
+          <i class="material-icons">chevron_left</i>
+        </button>
+
+        <span class="fecha-texto">{{ fechaFormateada | titlecase }}</span>
+
+        <button class="flecha-btn" (click)="cambiarDia(1)" [disabled]="esHoy">
+          <i class="material-icons">chevron_right</i>
+        </button>
+      </div>
+
+
   <div class="chart-card slide-left">
     <h3>Proporción de Consumo por {{ esHogar ? 'Hogar' : 'Sector' }}</h3>
     <div class="chart-wrapper-proportions">
