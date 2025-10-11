@@ -679,3 +679,88 @@ h2:hover, h4:hover {
   opacity: 0;
   transition: 0s;
 }
+
+.title-greeting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  
+}
+
+.title-greeting .form-image {
+  margin: 0;
+}
+
+.title-greeting img {
+  width: 38px;
+  height: auto;
+  transform: translateY(1px);
+}
+
+.title-greeting h2 {
+  margin: 0;
+  color: #0077cc;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+.empty-img {
+  width: 0.1vw;
+  height: 01rem;
+  height: auto;
+  opacity: 0.95;
+  animation: float 2.4s infinite ease-in-out;
+}
+.title-greeting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.title-greeting .form-image {
+  margin: 0;
+}
+
+.title-greeting img {
+  width: 38px;
+  height: auto;
+  transform: translateY(1px);
+}
+
+.title-greeting h2 {
+  margin: 0;
+  color: #0077cc;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+
+@keyframes float {
+  0%, 100% { transform: translateY(1px); }
+  50% { transform: translateY(-4px); }
+}
+
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+
+.empty-img {
+  opacity: 0.9;
+  animation: float 3.5s infinite ease-in-out;
+}
+
+
+.left-img {
+  animation: float 3.5s infinite ease-in-out, fadeInOut 4s infinite ease-in-out;
+}
+
+.right-img {
+  animation: float 3.5s infinite ease-in-out, fadeInOut 4s infinite ease-in-out;
+  animation-delay: 2s; 
+}
