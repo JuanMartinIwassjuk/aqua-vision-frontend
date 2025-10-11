@@ -24,15 +24,11 @@ export class ReporteService {
     private dateUtils: DateUtilsService
   ) {}
 
-getConsumoDiarioPorSector(id: number): Observable<ReporteDiario[]> {
-  const hoy = new Date();
-  const fechaDesde = this.dateUtils.formatDateToJava(hoy);
-  
-  const fechaHasta = new Date(hoy);
-  fechaHasta.setHours(23, 59, 59, 999);
-  const fechaHastaStr = this.dateUtils.formatDateToJava(fechaHasta);
+getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> {
+  const fechaDesde = this.dateUtils.formatDateToJava(new Date(fecha.setHours(0, 0, 0, 0)));
+  const fechaHasta = this.dateUtils.formatDateToJava(new Date(fecha.setHours(23, 59, 59, 999)));
 
-  const url = `${this.baseUrl}/${id}/consumo-fecha?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHastaStr)}`;
+  const url = `${this.baseUrl}/${id}/consumo-fecha?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
 
   return this.http.get<any>(url).pipe(
     map((response: any) => {
@@ -41,12 +37,13 @@ getConsumoDiarioPorSector(id: number): Observable<ReporteDiario[]> {
         consumo_total: item.consumoTotal,
         media_consumo: item.consumoPromedio,
         pico_maximo: item.consumoPico,
-        timestamp: hoy.toISOString(),
-        costo: this.calcularCosto(item.consumoTotal).toFixed(2) 
+        timestamp: fecha.toISOString(),
+        costo: this.calcularCosto(item.consumoTotal).toFixed(2)
       }));
     })
   );
 }
+
 
 
   getConsumoMensualPorSector(id: number, fechaDesde: string | Date, fechaHasta: string | Date): Observable<ReporteMensual[]> {

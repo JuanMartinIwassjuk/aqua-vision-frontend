@@ -22,6 +22,7 @@ export class ReporteDiarioComponent implements OnInit {
   public cantidadSectores = 0;
   public esHogar = false;
   public homeId!: number;
+  public fechaActual: Date = new Date();
 
   public sectoresDisponibles: string[] = [];
   public sectoresSeleccionados: { [nombre: string]: boolean } = {};
@@ -55,15 +56,15 @@ export class ReporteDiarioComponent implements OnInit {
       .subscribe(id => {
         if (id !== null) {
           this.homeId = id;
-          this.cargarReporte(id);
+          this.cargarReporte(id,this.fechaActual);
         } else {
           console.error('No se pudo obtener el homeId');
         }
       });
   }
 
-  private cargarReporte(homeId: number): void {
-    this.reporteService.getConsumoDiarioPorSector(homeId).subscribe({
+  private cargarReporte(homeId: number, fecha: Date): void {
+    this.reporteService.getConsumoDiarioPorSector(homeId, fecha).subscribe({
       next: (data) => {
         this.sectoresOriginales = data;
         this.sectoresDisponibles = data.map(s => s.nombre_sector);
@@ -141,6 +142,32 @@ const datosExportar = this.sectoresFiltrados.map(s => ({
     const hoy = new Date();
     this.reporteService.descargarReportePDF(this.homeId, hoy, hoy);
   }
+
+    cambiarDia(offset: number): void {
+    const nuevaFecha = new Date(this.fechaActual);
+    nuevaFecha.setDate(this.fechaActual.getDate() + offset);
+
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    if (nuevaFecha > hoy) return;
+
+    this.fechaActual = nuevaFecha;
+    this.cargarReporte(this.homeId, this.fechaActual);
+  }
+
+    get fechaFormateada(): string {
+    return this.fechaActual.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  get esHoy(): boolean {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const fechaActualSinHora = new Date(this.fechaActual);
+  fechaActualSinHora.setHours(0, 0, 0, 0);
+  return fechaActualSinHora.getTime() === hoy.getTime();
+}
+
 }
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
