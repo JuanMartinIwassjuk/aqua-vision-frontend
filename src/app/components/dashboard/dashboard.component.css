@@ -5,6 +5,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  margin-bottom: 7vh;
 }
 
 h2 {
@@ -84,6 +85,7 @@ h2 {
   flex-direction: column;
   justify-content: center;
   padding: 1.5rem;
+  min-height: 18vh;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   color: inherit;
@@ -182,6 +184,10 @@ a.card:hover {
 @media (max-width: 768px) {
   .cards-row {
     grid-template-columns: 1fr; 
+  }
+
+  .dashboard-container {
+    margin-bottom: 10vh;
   }
 }
 
@@ -426,7 +432,14 @@ mat-icon {
   color: #0077cc;
   font-weight: 500;
   opacity: 0.85;
-  pointer-events: none; 
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Cuando el usuario pasa el mouse por la card */
+.card:hover .card-hint {
+  transform: scale(1.03);
+  opacity: 1;
 }
 
 
