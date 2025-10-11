@@ -23,6 +23,7 @@ export class ReporteDiarioComponent implements OnInit {
   public esHogar = false;
   public homeId!: number;
   public fechaActual: Date = new Date();
+  public sinDatos = false; 
 
   public sectoresDisponibles: string[] = [];
   public sectoresSeleccionados: { [nombre: string]: boolean } = {};
@@ -48,36 +49,49 @@ export class ReporteDiarioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
- 
     this.homeService.initHomeId();
 
-
-    this.homeService.homeId$
-      .subscribe(id => {
-        if (id !== null) {
-          this.homeId = id;
-          this.cargarReporte(id,this.fechaActual);
-        } else {
-          console.error('No se pudo obtener el homeId');
-        }
-      });
-  }
-
-  private cargarReporte(homeId: number, fecha: Date): void {
-    this.reporteService.getConsumoDiarioPorSector(homeId, fecha).subscribe({
-      next: (data) => {
-        this.sectoresOriginales = data;
-        this.sectoresDisponibles = data.map(s => s.nombre_sector);
-        this.sectoresDisponibles.forEach(nombre => this.sectoresSeleccionados[nombre] = true);
-        this.cantidadSectores = data.length;
-        this.esHogar = this.cantidadSectores === 1;
-        this.actualizarDatos();
-      },
-      error: (err) => {
-        console.error('Error cargando reporte diario', err);
+    this.homeService.homeId$.subscribe(id => {
+      if (id !== null) {
+        this.homeId = id;
+        this.cargarReporte(id, this.fechaActual);
+      } else {
+        console.error('No se pudo obtener el homeId');
       }
     });
   }
+
+  cargarReporte(homeId: number, fecha: Date): void {
+    this.reporteService.getConsumoDiarioPorSector(homeId, fecha).subscribe({
+      next: (data) => {
+        console.log('📦 Reporte diario recibido:', data);
+
+        this.sinDatos = !this.hayDatosReales(data);
+
+        this.sectoresOriginales = data;
+        this.sectoresDisponibles = data.map(s => s.nombre_sector);
+        this.sectoresDisponibles.forEach(nombre => (this.sectoresSeleccionados[nombre] = true));
+        this.cantidadSectores = data.length;
+        this.esHogar = this.cantidadSectores === 1;
+
+        if (!this.sinDatos) {
+          this.actualizarDatos();
+        } else {
+          // Si no hay datos, limpiamos los gráficos, pero mantenemos la UI
+          this.sectoresFiltrados = [];
+          this.barChartData = { labels: [], datasets: [] };
+          this.pieChartData = { labels: [], datasets: [] };
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar reporte diario:', err);
+        this.sinDatos = true;
+        this.sectoresOriginales = [];
+        this.sectoresFiltrados = [];
+      }
+    });
+  }
+
 
 actualizarDatos(): void {
   const filtrados = this.sectoresOriginales.filter(s => this.sectoresSeleccionados[s.nombre_sector]);
@@ -143,15 +157,10 @@ const datosExportar = this.sectoresFiltrados.map(s => ({
     this.reporteService.descargarReportePDF(this.homeId, hoy, hoy);
   }
 
-    cambiarDia(offset: number): void {
+
+  cambiarDia(dias: number): void {
     const nuevaFecha = new Date(this.fechaActual);
-    nuevaFecha.setDate(this.fechaActual.getDate() + offset);
-
-
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-    if (nuevaFecha > hoy) return;
-
+    nuevaFecha.setDate(this.fechaActual.getDate() + dias);
     this.fechaActual = nuevaFecha;
     this.cargarReporte(this.homeId, this.fechaActual);
   }
@@ -167,6 +176,21 @@ const datosExportar = this.sectoresFiltrados.map(s => ({
   fechaActualSinHora.setHours(0, 0, 0, 0);
   return fechaActualSinHora.getTime() === hoy.getTime();
 }
+
+  private hayDatosReales(data: ReporteDiario[]): boolean {
+  
+    if (!data || data.length === 0) return false;
+    return data.some(s => {
+      const consumo = Number(s?.consumo_total ?? 0);
+    
+      return !isNaN(consumo) && consumo > 0;
+    });
+  }
+
+  refrescar(): void {
+    this.cargarReporte(this.homeId, this.fechaActual);
+  }
+
 
 }
 

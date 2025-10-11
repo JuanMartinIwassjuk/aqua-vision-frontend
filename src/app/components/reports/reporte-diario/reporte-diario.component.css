@@ -263,3 +263,160 @@ h3, h4 {
   font-size: 1.1rem;
   text-transform: capitalize;
 }
+
+.empty-state {
+  grid-column: span 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.empty-inner {
+  text-align: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.empty-img {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.empty-text h3 {
+  color: #001F3F;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-text p {
+  color: #555;
+  font-size: 1rem;
+}
+
+.header-fecha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn-dia {
+  background: #1e88e5;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.btn-dia:hover {
+  background: #1565c0;
+}
+
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.empty-inner {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  padding: 2rem 3rem;
+  text-align: center;
+  max-width: 420px;
+}
+
+.empty-img {
+  width: 120px;
+  margin-bottom: 1rem;
+}
+
+
+.pulse {
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.empty-text h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1a237e;
+  margin-bottom: 0.6rem;
+}
+
+.empty-text p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.fecha-navegacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.flecha-btn {
+  background-color: #0d47a1;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.flecha-btn:hover {
+  transform: scale(1.1);
+}
+
+.fecha-texto {
+  font-weight: 600;
+  color: #0d47a1;
+  font-size: 1rem;
+}
+
+.btn-exportar {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-exportar:hover {
+  background-color: #1b5e20;
+}
