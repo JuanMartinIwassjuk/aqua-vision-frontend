@@ -43,27 +43,40 @@
 
   <!-- Renderizado de sectores filtrados -->
   <div *ngFor="let sector of sectoresFiltradosData" class="chart-card fade-in">
-    <h3 class="sector-titulo">{{ sector.nombre }}</h3>
+  <h3 class="sector-titulo">{{ sector.nombre }}</h3>
 
-    <div class="chart-wrapper">
-      <canvas
-        baseChart
-        [data]="sector.lineChartData"
-        [options]="lineChartOptions"
-        [type]="'line'">
-      </canvas>
-    </div>
-
-    <div class="card-resumen">
-      <p><strong>💧 Gasto actual:</strong> ${{ sector.costoActual }}</p>
-      <p><strong>📈 Gasto proyectado:</strong> ${{ sector.costoProyectado }}</p>
-    </div>
-
-    <div class="costo-hallazgos" *ngIf="sector.hallazgosClave.length > 0">
-      <strong>Hallazgos clave:</strong>
-      <ul>
-        <li *ngFor="let hallazgo of sector.hallazgosClave">{{ hallazgo }}</li>
-      </ul>
-    </div>
+  <div class="chart-wrapper">
+    <canvas
+      baseChart
+      [data]="sector.lineChartData"
+      [options]="lineChartOptions"
+      [type]="'line'">
+    </canvas>
   </div>
+
+      <!-- GRID DE DATOS E HALLAZGOS -->
+    <div class="resumen-grid">
+      <div class="datos-consumo">
+        <h4>📊 Resumen de Consumo</h4>
+        <ul>
+          <li><strong>💧 Gasto actual:</strong> ${{ sector.costoActual }}</li>
+          <li><strong>📈 Gasto proyectado:</strong> ${{ sector.costoProyectado }}</li>
+          <li><strong>📉 Tendencia mínima:</strong> 
+            {{ sector.tendenciaMinima !== null ? (sector.tendenciaMinima | number:'1.0-2') + ' L' : 'N/A' }}
+          </li>
+          <li><strong>📈 Tendencia máxima:</strong> 
+            {{ sector.tendenciaMaxima !== null ? (sector.tendenciaMaxima | number:'1.0-2') + ' L' : 'N/A' }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="hallazgos" *ngIf="sector.hallazgosClave.length > 0">
+        <h4>💡 Hallazgos clave</h4>
+        <ul>
+          <li *ngFor="let hallazgo of sector.hallazgosClave">{{ hallazgo }}</li>
+        </ul>
+      </div>
+    </div>
+
+
 </div>
