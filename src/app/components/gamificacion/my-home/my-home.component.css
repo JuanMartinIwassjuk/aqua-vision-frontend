@@ -1,0 +1,77 @@
+.game-container {
+  text-align: center;
+}
+
+.scene {
+  position: relative;
+  display: inline-block;
+}
+
+.scene-image {
+  width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.leak {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  animation: blink 1s infinite;
+  transform: translate(-50%, -50%);
+}
+
+.leak.closed {
+  background-color: green;
+  animation: none;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.score {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.controls {
+  margin-top: 15px;
+}
+
+.start-screen {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.start-screen button {
+  font-size: 20px;
+  padding: 10px 20px;
+}
+
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  width: 350px;
+}
+
+.popup-content button {
+  margin-top: 15px;
+  padding: 8px 15px;
+  font-size: 16px;
+}

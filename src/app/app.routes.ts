@@ -6,6 +6,7 @@ import { TriviaComponent } from './components/gamificacion/trivia/trivia.compone
 import { AquaSaveComponent } from './components/gamificacion/aquasave/aquasave.component';
 import { MemoryGameComponent } from './components/gamificacion/memory-test/memory-test.component';
 import { DragDropComponent } from './components/gamificacion/drag-drop/drag-drop.component';
+import { MyHomeComponent } from './components/gamificacion/my-home/my-home.component';
 
 export const routes: Routes = [
   {
@@ -88,6 +89,7 @@ export const routes: Routes = [
   { path: 'gamificacion/aquasave', component: AquaSaveComponent },
   { path: 'gamificacion/memory-test', component: MemoryGameComponent },
   { path: 'gamificacion/drag-drop', component: DragDropComponent },
+  { path: 'gamificacion/my-home', component: MyHomeComponent },
   { path: '', redirectTo: 'gamificacion', pathMatch: 'full' },
   { path: '**', redirectTo: 'gamificacion' },
   { path: '**', redirectTo: 'login' } 

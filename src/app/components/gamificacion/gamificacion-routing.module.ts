@@ -5,6 +5,7 @@ import { TriviaComponent } from './trivia/trivia.component';
 import { AquaSaveComponent } from './aquasave/aquasave.component';
 import { MemoryGameComponent } from './memory-test/memory-test.component';
 import { DragDropComponent } from './drag-drop/drag-drop.component';
+import { MyHomeComponent } from './my-home/my-home.component';
 
 
 const routes: Routes = [
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'trivia', component: TriviaComponent },
   { path: 'aquasave', component: AquaSaveComponent },
   { path: 'memory-test', component: MemoryGameComponent },
-  { path: 'drag-drop', component: DragDropComponent }
+  { path: 'drag-drop', component: DragDropComponent },
+  { path: 'my-home', component: MyHomeComponent }
 ];
 
 @NgModule({

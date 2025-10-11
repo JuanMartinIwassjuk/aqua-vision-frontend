@@ -1,0 +1,38 @@
+<div class="game-container" *ngIf="gameStarted; else startScreen">
+  <h2>Sector: {{ currentScene.title }}</h2>
+
+  <div class="scene">
+    <img [src]="currentScene.image" class="scene-image" alt="{{ currentScene.title }}" />
+
+    <div
+      *ngFor="let leak of currentScene.leaks"
+      class="leak"
+      [ngStyle]="{ top: leak.y + '%', left: leak.x + '%' }"
+      [class.closed]="leak.closed"
+      (click)="closeLeak(leak)"
+    ></div>
+  </div>
+
+  <div class="score">
+    {{ closedLeaksCount }}/{{ currentScene.leaks.length }} fugas cerradas
+  </div>
+
+  <div class="controls">
+    <button (click)="restartGame()">🔄 Reiniciar</button>
+  </div>
+
+  <div class="popup" *ngIf="showNextScenePopup">
+    <div class="popup-content">
+      <h3>¡Excelente! Cerraste todas las fugas del {{ currentScene.title }} 💧</h3>
+      <button (click)="nextScene()">Siguiente sector ➡️</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #startScreen>
+  <div class="start-screen">
+    <h2>💦 Juego del Hogar Sustentable 💦</h2>
+    <p>Descubrí y cerrá las fugas de agua en cada sector del hogar.</p>
+    <button (click)="startGame()">Comenzar</button>
+  </div>
+</ng-template>
