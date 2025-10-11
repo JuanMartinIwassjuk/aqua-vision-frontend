@@ -2,19 +2,17 @@
   <h2 class="titulo-principal">Predicción de Consumo</h2>
 
   <div class="acciones-superiores">
-        <button class="btn-filtro" (click)="mostrarFiltros = !mostrarFiltros">
-          <i class="fa-solid fa-filter"></i>
-          Filtros
-          <i 
-            class="fa-solid"
-            [ngClass]="mostrarFiltros ? 'fa-chevron-up' : 'fa-chevron-down'">
-          </i>
-        </button>
-
-
+    <button class="btn-filtro" (click)="mostrarFiltros = !mostrarFiltros">
+      <i class="fa-solid fa-filter"></i>
+      Filtros
+      <i
+        class="fa-solid"
+        [ngClass]="mostrarFiltros ? 'fa-chevron-up' : 'fa-chevron-down'">
+      </i>
+    </button>
   </div>
 
-  <!-- Filtros por sector -->
+  <!-- Filtros -->
   <div class="filtros-sectores slide-down" *ngIf="mostrarFiltros">
     <h4>Filtrar por sector</h4>
     <div class="checkbox-grid">
@@ -22,9 +20,23 @@
         <input
           type="checkbox"
           [checked]="sectoresFiltrados.includes(sector.nombre)"
-          (change)="toggleFiltro(sector.nombre)"
+          (change)="toggleFiltroSector(sector.nombre)"
         />
         {{ sector.nombre }}
+      </label>
+    </div>
+
+    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #ddd;">
+
+    <h4>Filtrar por tipo de dato</h4>
+    <div class="checkbox-grid">
+      <label *ngFor="let key of (filtrosParametros | keyvalue)">
+        <input
+          type="checkbox"
+          [checked]="key.value"
+          (change)="toggleFiltroParametro(key.key)"
+        />
+        {{ key.key }}
       </label>
     </div>
   </div>

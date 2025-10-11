@@ -246,3 +246,24 @@ h2.titulo-principal {
 .btn-filtro i.fa-chevron-down {
   transform: rotate(0deg);
 }
+.filtros-sectores h4 {
+  margin-bottom: 0.8rem;
+  color: #002A5C;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+hr {
+  opacity: 0.5;
+}
+
+.checkbox-grid label {
+  background: #f9fbfd;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.checkbox-grid label:hover {
+  background: #e7f0ff;
+}
