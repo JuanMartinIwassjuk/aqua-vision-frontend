@@ -1,14 +1,14 @@
 <div class="contenedor-reporte">
 
-<div class="exports">
-  <div class="exportar-container">
-    <button class="btn-exportar" (click)="exportarExcel()">📥 Exportar XLSX</button>
-    <button class="btn-exportar pdf" (click)="exportarPDF()">📄 Exportar PDF</button>
+  <div class="exports">
+    <div class="exportar-container">
+      <button class="btn-exportar" (click)="exportarExcel()">📥 Exportar XLSX</button>
+      <button class="btn-exportar pdf" (click)="exportarPDF()">📄 Exportar PDF</button>
+    </div>
   </div>
-</div>
 
   <br>
-  
+
   <div class="filtros-generales slide-top">
     <div class="inputs-fecha">
       <div class="inputs-fecha-container">
@@ -25,15 +25,25 @@
         </div>
       </div>
     </div>
-
-    <div class="resumen-global">
-      <p><strong class="blue_marine_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
-      <p><strong class="blue_marine_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
-      <p><strong class="blue_marine_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
-      <p><strong class="blue_marine_effect">Costo total:</strong> {{ costoGlobal | currency:'USD':'symbol':'1.0-2' }}</p> <!-- 🔹 Nuevo -->
-    </div>
+      <div class="atajos-tiempo slide-top">
+        <button (click)="setAtajo('7d')">Últimos 7 días</button>
+        <button (click)="setAtajo('1m')">Último mes</button>
+        <button (click)="setAtajo('3m')">Últimos 3 meses</button>
+        <button (click)="setAtajo('6m')">Últimos 6 meses</button>
+      </div>
 
   </div>
+
+
+
+  <div class="resumen-global">
+    <p><strong class="blue_marine_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
+    <p><strong class="blue_marine_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
+    <p><strong class="blue_marine_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
+    <p><strong class="blue_marine_effect">Costo total:</strong> {{ costoGlobal | currency:'USD':'symbol':'1.0-2' }}</p>
+    <br>
+  </div>
+ <br>
 
   <div class="sectores-cards slide-bottom">
     <div *ngFor="let sector of resumenPorSector | keyvalue" class="card-sector">
@@ -44,7 +54,6 @@
       <p>Costo: {{ sector.value.costo | currency:'USD':'symbol':'1.0-2' }}</p> 
     </div>
   </div>
-
 
   <div class="grafico-contenedor slide-bottom">
     <h3 class="blue_marine_effect">Histórico de valores</h3>

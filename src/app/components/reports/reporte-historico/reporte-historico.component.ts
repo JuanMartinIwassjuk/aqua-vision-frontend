@@ -166,6 +166,32 @@ generarGrafico(consumosMensuales: any[]): void {
       console.warn('Faltan fechas para exportar el PDF');
     }
   }
+
+setAtajo(rango: '7d' | '1m' | '3m' | '6m'): void {
+  const hoy = new Date();
+  const desde = new Date();
+
+  switch (rango) {
+    case '7d':
+      desde.setDate(hoy.getDate() - 6);
+      break;
+    case '1m':
+      desde.setMonth(hoy.getMonth() - 1);
+      break;
+    case '3m':
+      desde.setMonth(hoy.getMonth() - 3);
+      break;
+    case '6m':
+      desde.setMonth(hoy.getMonth() - 6);
+      break;
+  }
+
+  this.fechaDesde = this.formatFechaLocal(desde);
+  this.fechaHasta = this.formatFechaLocal(hoy);
+  this.aplicarFiltro();
+}
+
+
 }
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
