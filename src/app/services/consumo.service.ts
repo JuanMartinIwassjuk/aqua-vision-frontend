@@ -142,4 +142,13 @@ getPrediccionConsumoPorDia(hogarId: number): Observable<PrediccionPorDia[]> {
 }
 
 
+getConsumosPorHoraYSector(hogarId: number, dia: string): Observable<any> {
+  const url = `http://localhost:8080/reportes/${hogarId}/consumo-dia-hora-sectores?dia=${dia}`;
+  return this.http.get<any>(url).pipe(
+    tap(res => console.log('📦 Respuesta del backend (consumo por hora y sectores):', res))
+  );
+}
+
+
+
 }

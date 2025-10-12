@@ -34,88 +34,67 @@ export class EventGraphicComponent implements OnInit {
   }
 
 ngOnInit(): void {
-  const sectoresData = this.consumoService.getConsumosPorHoraPorSector();
+  const hogarId = this.homeService.getHomeId() ?? 0;
+  const dia = new Date().toISOString().split('T')[0]; 
 
-  this.consumoService.getEventosDeLosSectores(this.homeService.getHomeId()).subscribe(eventosPorSectores => {
-  console.log('📦 Eventos por sectores (raw):', JSON.stringify(eventosPorSectores, null, 2));
-});
+  this.consumoService.getConsumosPorHoraYSector(hogarId, dia).subscribe(response => {
+    console.log('📊 Datos procesados del backend:', response);
 
-  this.consumoService.getEventosDeLosSectores(this.homeService.getHomeId()).subscribe(eventosPorSectores => {
 
-    this.sectores = sectoresData.map((sector, index) => {
-      const horas = sector.consumos.map(c => c.hora);
-      const caudales = sector.consumos.map(c => c.caudal_m3 ?? null);
-      console.log('Eventos del backend:', eventosPorSectores);
-      console.log('Sectores del consumo:', sectoresData);
+  this.sectores = response.consumosPorHora.map((sectorData: any, index: number) => {
+    const horas: string[] = sectorData.consumosPorHora.map((c: any) =>
+      `${c.hora.toString().padStart(2, '0')}:00`
+    );
+    const caudales: number[] = sectorData.consumosPorHora.map((c: any) => c.consumo);
 
-      const eventosEntry = eventosPorSectores.find(e => Number(e.id) === Number(sector.id));
-      console.log(`Buscando eventos para sector ${sector.nombre} (id=${sector.id}) →`, eventosEntry);
+    const numericCaudales = caudales.filter((v: number) => v !== null) as number[];
+    const maxY = numericCaudales.length > 0 ? Math.max(...numericCaudales) : 10;
 
-      const eventos = eventosEntry?.eventos ?? [];
+    const annotations: Record<string, any> = {};
 
-      const numericCaudales = caudales.filter(v => v !== null) as number[];
-      const maxY = (numericCaudales.length > 0) ? Math.max(...numericCaudales) : 10;
-
-      const annotations: Record<string, any> = {};
-      eventos.forEach((ev, i) => {
-        const matching = sector.consumos.find(c => c.hora === ev.hora);
-        let yValue: number;
-        if (matching && (matching.caudal_m3 !== undefined)) {
-          if (matching.caudal_m3 > maxY * 0.8) {
-            yValue = matching.caudal_m3 - Math.round(maxY * 0.1);
-          } else {
-            yValue = matching.caudal_m3 + Math.round(maxY * 0.05);
-          }
-        } else {
-          yValue = Math.round(maxY * 0.75);
+    const chartData: ChartData<'line'> = {
+      labels: horas,
+      datasets: [
+        {
+          label: `Consumo ${sectorData.nombreSector}`,
+          data: caudales,
+          borderColor: this.colores[index % this.colores.length],
+          backgroundColor: this.colores[index % this.colores.length],
+          fill: false,
+          tension: 0.3,
+          pointRadius: 3,
+          borderWidth: 2
         }
-        console.log(`Evento para ${sector.nombre}:`, ev.hora, 'Horas en labels:', horas);
-        annotations[`evento_${sector.id}_${i}`] = {
-          type: 'label',
-          xValue: ev.hora,
-          yValue: yValue,
-          backgroundColor: 'rgba(255, 205, 0, 0.95)',
-          borderColor: '#333',
-          borderWidth: 1,
-          content: [ev.descripcion, ev.hora],
-          font: { size: 11, weight: '600' },
-          color: '#000',
-          padding: 6,
-          position: 'center'
-        } as any;
-      });
+      ]
+    };
 
-      const chartData: ChartData<'line'> = {
-        labels: horas,
-        datasets: [
-          {
-            label: `Consumo ${sector.nombre}`,
-            data: caudales,
-            borderColor: this.colores[index % this.colores.length],
-            backgroundColor: this.colores[index % this.colores.length],
-            fill: false,
-            tension: 0.3,
-            pointRadius: 3,
-            borderWidth: 2
-          }
-        ]
-      };
+    const chartOptions: ChartOptions<'line'> = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' },
+        annotation: { annotations: annotations as any } as any
+      },
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
+        x: { title: { display: true, text: 'Hora' } }
+      }
+    };
 
-      const chartOptions: ChartOptions<'line'> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'bottom' },
-          annotation: { annotations: annotations as any } as any
-        },
-        scales: {
-          y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
-          x: { title: { display: true, text: 'Hora' } }
-        }
-      };
-
-      return { sector, chartData, chartOptions, eventos };
-    });
+    return {
+      sector: {
+        id: sectorData.sectorId,
+        nombre: sectorData.nombreSector,
+        consumos: horas.map((h: string, i: number) => ({
+          hora: h,
+          caudal_m3: caudales[i]
+        }))
+      },
+      chartData,
+      chartOptions,
+      eventos: []
+    };
+  });
   });
 }
 
