@@ -32,31 +32,41 @@ export class MyHomeComponent implements OnInit, OnDestroy {
 
   scenes: Scene[] = [
     {
-      name: 'bano',
+      name: 'Baño',
       title: 'Baño',
-      image: 'images/bathroom.jpg',
+      image: 'images/bathroomv2.png',
       leaks: [
         { x: 20, y: 50, closed: false },
         { x: 45, y: 42, closed: false },
-        { x: 85, y: 57, closed: false }
+        { x: 85, y: 57, closed: false },
+        { x: 58, y: 16, closed: false }
       ]
     },
     {
-      name: 'cocina',
-      title: 'Cocina',
-      image: 'images/cocina.jpg',
+      name: 'Lavadero',
+      title: 'Lavadero',
+      image: 'images/laundryv2.png',
       leaks: [
-        { x: 30, y: 50, closed: false },
-        { x: 60, y: 70, closed: false }
+        { x: 65, y: 40, closed: false },
+        { x: 46, y: 53, closed: false }
       ]
     },
     {
-      name: 'patio',
+      name: 'Patio',
       title: 'Patio',
-      image: 'images/patio.jpg',
+      image: 'images/yardv2.png',
       leaks: [
-        { x: 50, y: 40, closed: false },
-        { x: 80, y: 60, closed: false }
+        { x: 48, y: 78, closed: false },
+        { x: 31, y: 85, closed: false }
+      ]
+    },
+    {
+      name: 'Cocina',
+      title: 'Cocina',
+      image: 'images/kitchenv2.png',
+      leaks: [
+        { x: 50, y: 52, closed: false },
+        { x: 69, y: 45, closed: false }
       ]
     }
   ];
@@ -148,7 +158,6 @@ export class MyHomeComponent implements OnInit, OnDestroy {
       this.currentIndex++;
       this.startSceneDrops();
     } else {
-      alert('🎉 ¡Felicitaciones! Completaste todos los sectores del hogar 💧');
       this.restartGame();
     }
   }
