@@ -106,6 +106,14 @@ getEventosDeLosSectores(hogarId: number | null): Observable<EventoSector[]> {
     })
   );
 }
+
+getEventos(): Observable<any[]> {
+  return this.http.get<any[]>('http://localhost:8080/eventos').pipe(
+    tap(res => console.log('📦 Eventos del backend:', res))
+  );
+}
+
+
 getPrediccionPorDia(id: number): Observable<PrediccionPorDia> {
   const url = `${this.baseUrl}/1/proyeccion-grafico`;
   return this.http.get<PrediccionPorDia>(url);

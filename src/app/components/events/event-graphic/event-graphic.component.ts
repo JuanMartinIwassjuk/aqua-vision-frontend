@@ -8,6 +8,7 @@ import { EventDialogComponent } from './dialog/event-dialog.component';
 import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { HomeService } from '../../../services/home.service';
+import { forkJoin } from 'rxjs';
 
 Chart.register(annotationPlugin);
 
@@ -37,67 +38,96 @@ ngOnInit(): void {
   const hogarId = this.homeService.getHomeId() ?? 0;
   const dia = new Date().toISOString().split('T')[0]; 
 
-  this.consumoService.getConsumosPorHoraYSector(hogarId, dia).subscribe(response => {
-    console.log('📊 Datos procesados del backend:', response);
+  forkJoin({
+    consumos: this.consumoService.getConsumosPorHoraYSector(hogarId, dia),
+    eventos: this.consumoService.getEventos()
+  }).subscribe(({ consumos, eventos }) => {
+    console.log('📊 Consumos por hora y sector:', consumos);
+    console.log('📆 Eventos obtenidos:', eventos);
+
+    this.sectores = consumos.consumosPorHora.map((sectorData: any, index: number) => {
+      const horas: string[] = sectorData.consumosPorHora.map((c: any) =>
+        `${c.hora.toString().padStart(2, '0')}:00`
+      );
+      const caudales: number[] = sectorData.consumosPorHora.map((c: any) => c.consumo);
+      const maxY = Math.max(...caudales, 10);
+
+ 
+      const eventosSector = eventos
+        .filter(ev => ev.sector?.id === sectorData.sectorId)
+        .filter(ev => ev.fechaInicio.startsWith(dia)) 
+        .map(ev => ({
+          hora: new Date(ev.fechaInicio).toTimeString().slice(0, 5),
+          descripcion: ev.descripcion || ev.titulo || 'Evento'
+        }));
 
 
-  this.sectores = response.consumosPorHora.map((sectorData: any, index: number) => {
-    const horas: string[] = sectorData.consumosPorHora.map((c: any) =>
-      `${c.hora.toString().padStart(2, '0')}:00`
-    );
-    const caudales: number[] = sectorData.consumosPorHora.map((c: any) => c.consumo);
+      const annotations: Record<string, any> = {};
+      eventosSector.forEach((ev, i) => {
+        const horaCercana = this.getHoraMasCercana(ev.hora, horas);
 
-    const numericCaudales = caudales.filter((v: number) => v !== null) as number[];
-    const maxY = numericCaudales.length > 0 ? Math.max(...numericCaudales) : 10;
+        annotations[`evento_${sectorData.sectorId}_${i}`] = {
+          type: 'label',
+          xValue: horaCercana, 
+          yValue: maxY * 0.8,
+          backgroundColor: 'rgba(255, 205, 0, 0.95)',
+          borderColor: '#333',
+          borderWidth: 1,
+          content: [ev.descripcion, ev.hora],
+          font: { size: 11, weight: '600' },
+          color: '#000',
+          padding: 6,
+          position: 'center'
+        } as any;
+      });
 
-    const annotations: Record<string, any> = {};
 
-    const chartData: ChartData<'line'> = {
-      labels: horas,
-      datasets: [
-        {
-          label: `Consumo ${sectorData.nombreSector}`,
-          data: caudales,
-          borderColor: this.colores[index % this.colores.length],
-          backgroundColor: this.colores[index % this.colores.length],
-          fill: false,
-          tension: 0.3,
-          pointRadius: 3,
-          borderWidth: 2
+
+      const chartData: ChartData<'line'> = {
+        labels: horas,
+        datasets: [
+          {
+            label: `Consumo ${sectorData.nombreSector}`,
+            data: caudales,
+            borderColor: this.colores[index % this.colores.length],
+            backgroundColor: this.colores[index % this.colores.length],
+            fill: false,
+            tension: 0.3,
+            pointRadius: 3,
+            borderWidth: 2
+          }
+        ]
+      };
+
+      const chartOptions: ChartOptions<'line'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' },
+          annotation: { annotations: annotations as any } as any
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
+          x: { title: { display: true, text: 'Hora' } }
         }
-      ]
-    };
+      };
 
-    const chartOptions: ChartOptions<'line'> = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom' },
-        annotation: { annotations: annotations as any } as any
-      },
-      scales: {
-        y: { beginAtZero: true, title: { display: true, text: 'Caudal (m³)' } },
-        x: { title: { display: true, text: 'Hora' } }
-      }
-    };
-
-    return {
-      sector: {
-        id: sectorData.sectorId,
-        nombre: sectorData.nombreSector,
-        consumos: horas.map((h: string, i: number) => ({
-          hora: h,
-          caudal_m3: caudales[i]
-        }))
-      },
-      chartData,
-      chartOptions,
-      eventos: []
-    };
-  });
+      return {
+        sector: {
+          id: sectorData.sectorId,
+          nombre: sectorData.nombreSector,
+          consumos: horas.map((h: string, i: number) => ({
+            hora: h,
+            caudal_m3: caudales[i]
+          }))
+        },
+        chartData,
+        chartOptions,
+        eventos: eventosSector
+      };
+    });
   });
 }
-
 
 onChartClick(event: { event?: ChartEvent; active?: any[] }, item: { chartData: ChartData<'line'>; sector: ConsumoSector }) {
   if (event.active && event.active.length > 0) {
@@ -130,5 +160,23 @@ onChartClick(event: { event?: ChartEvent; active?: any[] }, item: { chartData: C
     });
   }
 }
+
+private getHoraMasCercana(horaEvento: string, horas: string[]): string {
+  const [hEv, mEv] = horaEvento.split(':').map(Number);
+  let minDiff = Infinity;
+  let closest = horas[0];
+
+  for (const h of horas) {
+    const [hLabel, mLabel] = h.split(':').map(Number);
+    const diff = Math.abs(hEv * 60 + mEv - (hLabel * 60 + mLabel));
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = h;
+    }
+  }
+
+  return closest;
+}
+
 
 }
