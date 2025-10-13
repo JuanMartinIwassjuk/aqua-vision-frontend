@@ -111,15 +111,15 @@ nav > ul > li > a,
   color: #fff;
   text-decoration: none;
   font-size: 1rem;
-  padding: 0.5rem 0.8rem; /* mayor padding vertical = cajas más altas */
+  padding: 0.5rem 0.8rem; 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-  border-bottom: 2px solid transparent; /* para subrayado */
+  border-bottom: 2px solid transparent; 
   border-radius: 4px;
 }
 
 nav > ul > li > a:hover,
 .submenu > a:hover {
-  --background-color: rgba(0,0,0,0.2); /* hover solo para items principales */
+  --background-color: rgba(0,0,0,0.2); 
   transform: translateX(3px);
 }
 
@@ -341,3 +341,42 @@ box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
 }
 
 
+  .notif-link {
+    position: absolute;
+
+    align-items: center;
+  }
+
+.notif-badge {
+  background-color: #e53935;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  line-height: 1;
+  padding: 4px 7px;
+  margin-left: 6px;
+  position: relative;
+  top: -2px;             
+  transform-origin: center;
+  box-shadow: 0 0 6px rgba(229, 57, 53, 0.6); 
+}
+
+.badge-pulse {
+  animation: badgePulse 1.4s infinite ease-in-out;
+}
+
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(229, 57, 53, 0.6);
+  }
+  50% {
+    transform: scale(1.35);
+    box-shadow: 0 0 12px rgba(229, 57, 53, 0.9);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(229, 57, 53, 0.6);
+  }
+}
