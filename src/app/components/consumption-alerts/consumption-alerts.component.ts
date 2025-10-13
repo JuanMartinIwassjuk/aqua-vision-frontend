@@ -165,23 +165,24 @@ loadNotifications(): void {
     });
   }
 
-  getIcon(type: string): string {
-    switch (type) {
-      case 'alert': return '⚠️';
-      case 'info': return 'ℹ️';
-      case 'event': return '🎉';
-      case 'reminder': return '⏰';
-      default: return '🔔';
-    }
+getIcon(type: string): string {
+  switch (type) {
+    case 'alerta': return '⚠️';
+    case 'info': return 'ℹ️';
+    case 'evento': return '🎉';
+    case 'recordatorio': return '⏰';
+    default: return '🔔';
   }
+}
 
-  getCardClass(n: Notification): string {
-    const base = 'notif-card';
-    if (this.deletingIds.has(n.id)) return `${base} deleting`;
-    if (!n.isRead && n.type === 'alert') return `${base} pulse-alert-laser`;
-    if (!n.isRead && n.type === 'event') return `${base} pulse-green`;
-    return base;
-  }
+getCardClass(n: Notification): string {
+  const base = 'notif-card';
+  if (this.deletingIds.has(n.id)) return `${base} deleting`;
+  if (!n.isRead && n.type === 'alerta') return `${base} pulse-alert-laser`;
+  if (!n.isRead && n.type === 'evento') return `${base} pulse-green`;
+  return base;
+}
+
 
   timeAgo(date: Date): string {
     if (!date) return '';
