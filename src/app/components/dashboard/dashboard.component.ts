@@ -7,6 +7,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { forkJoin, of } from 'rxjs';
+import { HomeService } from '../../services/home.service';
 
 
 
@@ -71,104 +73,81 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  constructor(private reporteService: ReporteService, private authService: AuthService,  private snackBar: MatSnackBar) {}
+  constructor(private reporteService: ReporteService, private authService: AuthService,  private snackBar: MatSnackBar,private homeService: HomeService) {}
 
 ngOnInit(): void {
-  const datos = this.reporteService.getConsumoPorHora();
-  const datosAnterior = this.reporteService.getConsumoPorHoraDiaAnterior();
-  const datosMensual = this.reporteService.getConsumoPromedioPorHoraMensual();
+  const hogarId =  this.homeService.getHomeId()??0; 
+  const hoy = new Date();
+  const ayer = new Date(hoy);
+  ayer.setDate(hoy.getDate() - 1);
 
-  const horas = datos.map(d => d.hora);
-  const caudales = datos.map(d => d.caudal_m3 ?? null);
-  const caudalesAnterior = datosAnterior.map(d => d.caudal_m3 ?? null);
-  const caudalesMensual = datosMensual.map(d => d.caudal_m3 ?? null);
+  const diaHoy = hoy.toISOString().split('T')[0];
+  const diaAyer = ayer.toISOString().split('T')[0];
 
-  const datosAdmin = this.reporteService.getConsumoTotalHogaresPorHora();
-  const horasTotales = datosAdmin.map(d => d.hora);
-  const caudalesTotales = datosAdmin.map(d => d.caudal_m3 ?? null);
+  forkJoin({
+    hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy),
+    ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer),
+    promedio: of(this.reporteService.getConsumoPromedioPorHoraMensual())
+  }).subscribe(({ hoy, ayer, promedio }) => {
+    const horas = hoy.map(d => d.hora);
+    const caudales = hoy.map(d => d.caudal_m3 ?? null);
+    const caudalesAnterior = ayer.map(d => d.caudal_m3 ?? null);
+    const caudalesMensual = promedio.map(d => d.caudal_m3 ?? null);
 
-  if (!this.isAdmin) {
-    this.consumoDia = this.reporteService.getConsumoUltimoDia();
-    const consumoDiaAnterior = this.reporteService.getConsumoDiaAnterior();
+    this.lineChartData = {
+      labels: horas,
+      datasets: [
+        {
+          label: 'Hoy',
+          data: caudales,
+          fill: false,
+          borderColor: '#2563eb',
+          tension: 0.3,
+          borderWidth: 3,
+          pointRadius: 3.5,
+          pointBackgroundColor: '#2563eb',
+          backgroundColor: '#fff'
+        },
+        {
+          label: 'Ayer',
+          data: caudalesAnterior,
+          fill: false,
+          borderColor: '#16a34a',
+          tension: 0.3,
+          borderWidth: 2,
+          borderDash: [6, 6],
+          pointRadius: 3,
+          pointBackgroundColor: '#16a34a',
+          backgroundColor: '#fff'
+        },
+        {
+          label: 'Promedio mensual',
+          data: caudalesMensual,
+          fill: false,
+          borderColor: '#9333ea',
+          tension: 0.3,
+          borderWidth: 2,
+          borderDash: [2, 4],
+          pointRadius: 3,
+          pointBackgroundColor: '#9333ea',
+          backgroundColor: '#fff'
+        }
+      ]
+    };
 
-    this.estadoMedidores = this.reporteService.getEstadoMedidores();
-    this.medidoresConectados = this.estadoMedidores.conectados;
-    this.medidoresDesconectados = this.estadoMedidores.desconectados;
-
-    this.setConsumoStatus();
-    this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
-  }
-
-  if (this.isAdmin) {
-    this.medidoresConectadosAdmin = this.reporteService.getTotalMedidoresConectados();
-    this.medidoresDesconectadosAdmin = this.reporteService.getTotalMedidoresDesconectados();
-    this.totalHogaresAdmin = this.reporteService.getTotalHogares();
-    this.totalTriviasAdmin = this.reporteService.getTotalTriviasCompletadas();
-
-    this.consumoPromedio = this.reporteService.getConsumoPromedio();
-    this.consumoPromedioAnterior = this.reporteService.getConsumoPromedioAnterior();
-
-    this.calcularDiferencia(this.consumoPromedio, this.consumoPromedioAnterior);
-  }
-
-
-  this.lineChartData = {
-  labels: horas,
-  datasets: [
-    {
-      label: 'Hoy',
-      data: caudales,
-      fill: false,
-      borderColor: '#2563eb',
-      tension: 0.3,
-      borderWidth: 3,
-      pointRadius: 3.5,
-      pointBackgroundColor: '#2563eb',
-      backgroundColor: '#fff'
-    },
-    {
-      label: 'Ayer',
-      data: caudalesAnterior,
-      fill: false,
-      borderColor: '#16a34a',
-      tension: 0.3,
-      borderWidth: 2,
-      borderDash: [6, 6],
-      pointRadius: 3,
-      pointBackgroundColor: '#16a34a',
-      backgroundColor: '#fff'
-    },
-    {
-      label: 'Promedio mensual',
-      data: caudalesMensual,
-      fill: false,
-      borderColor: '#9333ea',
-      tension: 0.3,
-      borderWidth: 2,
-      borderDash: [2, 4], 
-      pointRadius: 3,
-      pointBackgroundColor: '#9333ea',
-      backgroundColor: '#fff'
+    // El resto de tu inicialización (consumoDia, estado medidores, etc.)
+    if (!this.isAdmin) {
+      this.consumoDia = this.reporteService.getConsumoUltimoDia();
+      const consumoDiaAnterior = this.reporteService.getConsumoDiaAnterior();
+      this.estadoMedidores = this.reporteService.getEstadoMedidores();
+      this.medidoresConectados = this.estadoMedidores.conectados;
+      this.medidoresDesconectados = this.estadoMedidores.desconectados;
+      this.setConsumoStatus();
+      this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
     }
-  ]
-};
-
-
-
-  this.lineChartDataAdmin = {
-    labels: horasTotales,
-    datasets: [
-      {
-        label: 'Consumo total hogares',
-        data: caudalesTotales,
-        borderColor: '#f25932ff',
-        backgroundColor: 'rgba(242,89,50,0.3)',
-        tension: 0.3,
-        pointRadius: 3
-      }
-    ]
-  };
+  });
 }
+
 
 
 
