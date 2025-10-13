@@ -4,7 +4,7 @@ import { ReporteMensual } from '../models/reporteMensual';
 import { HttpClient } from '@angular/common/http';
 import { DateUtilsService } from '../services/date.service';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { PrediccionSector } from '../models/prediction/prediccionSector';
 import { SectorProyeccion } from '../models/prediction/sectorProyeccion';
@@ -71,6 +71,21 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
     const tarifaPorUnidad = 0.24; 
     return consumoTotal * tarifaPorUnidad;
   }
+
+  getConsumoPorHoraBackend(hogarId: number, dia: string): Observable<{ hora: string; caudal_m3: number }[]> {
+  const url = `http://localhost:8080/reportes/${hogarId}/consumo-dia-hora?dia=${dia}`;
+  return this.http.get<any>(url).pipe(
+    map(response => {
+
+      return response.consumosPorHora.map((item: any) => ({
+        hora: item.hora.toString().padStart(2, '0') + ':00',
+        caudal_m3: item.consumo
+      }));
+    }),
+    tap(data => console.log('📦 Datos de consumo por hora desde backend:', data))
+  );
+}
+
 
 
   getConsumoPorHora(): { hora: string; caudal_m3?: number }[] {
