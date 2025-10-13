@@ -390,3 +390,61 @@ h2 {
 }
 
 
+
+.alerta-card {
+  border-left: 6px solid #ff5252;
+  background: rgba(255, 82, 82, 0.08);
+}
+
+.recompensa-card {
+  border-left: 6px solid #ffb300;
+  background: rgba(255, 179, 0, 0.08);
+}
+
+.informe-card {
+  border-left: 6px solid #42a5f5;
+  background: rgba(66, 165, 245, 0.08);
+}
+
+.evento-card {
+  border-left: 6px solid #66bb6a;
+  background: rgba(102, 187, 106, 0.08);
+}
+
+.recordatorio-card {
+  border-left: 6px solid #ab47bc;
+  background: rgba(171, 71, 188, 0.08);
+}
+
+.default-card {
+  border-left: 6px solid #90a4ae;
+  background: rgba(144, 164, 174, 0.08);
+}
+
+
+@keyframes pulseAlert {
+  0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
+}
+.pulse-alert-laser {
+  animation: pulseAlert 1.4s infinite;
+}
+
+@keyframes pulseGreen {
+  0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+.pulse-green {
+  animation: pulseGreen 1.4s infinite;
+}
+
+@keyframes pulseSoft {
+  0% { box-shadow: 0 0 0 0 rgba(100, 100, 100, 0.3); }
+  70% { box-shadow: 0 0 0 10px rgba(100, 100, 100, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(100, 100, 100, 0); }
+}
+.pulse-soft {
+  animation: pulseSoft 1.8s infinite;
+}
