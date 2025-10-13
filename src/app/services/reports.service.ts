@@ -33,7 +33,7 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
   return this.http.get<any>(url).pipe(
     map((response: any) => {
       return response.consumosPorSector.map((item: any) => ({
-        nombre_sector: item.sector.nombre,
+        nombre_sector: item.nombreSector,
         consumo_total: item.consumoTotal,
         media_consumo: item.consumoPromedio,
         pico_maximo: item.consumoPico,
@@ -55,7 +55,7 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
     return this.http.get<any>(url).pipe(
       map((response: any) => {
         return response.consumosPorSector.map((item: any) => ({
-          nombre_sector: item.sector.nombre,
+          nombre_sector: item.nombreSector,
           mes: desde.substring(0, 7),
           consumo_total: item.consumoTotal,
           media_consumo: item.consumoPromedio,

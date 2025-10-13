@@ -77,7 +77,7 @@ export class ReporteDiarioComponent implements OnInit {
         if (!this.sinDatos) {
           this.actualizarDatos();
         } else {
-          // Si no hay datos, limpiamos los gráficos, pero mantenemos la UI
+       
           this.sectoresFiltrados = [];
           this.barChartData = { labels: [], datasets: [] };
           this.pieChartData = { labels: [], datasets: [] };
