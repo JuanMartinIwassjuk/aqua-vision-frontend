@@ -1,9 +1,9 @@
 export interface Notification {
   id: number;
   homeId: number;
+  type: 'info' | 'alert' | 'event' | 'reminder' | 'alerta' | 'evento' | 'recordatorio';
   title: string;
   message: string;
-  type: 'alert' | 'info' | 'event' | 'reminder';
-  createdAt: Date;
   isRead: boolean;
+  createdAt: Date;
 }
