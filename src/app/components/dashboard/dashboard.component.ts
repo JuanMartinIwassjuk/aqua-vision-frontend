@@ -146,7 +146,6 @@ ngOnInit(): void {
       this.medidoresConectados = this.estadoMedidores.conectados;
       this.medidoresDesconectados = this.estadoMedidores.desconectados;
 
-      this.setConsumoStatus();
       this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
     }
   });
@@ -164,15 +163,7 @@ ngOnInit(): void {
   this.consumoDiffAbs = Math.abs(Math.round(this.consumoDiff));
 }
 
-  setConsumoStatus() {
-    if (this.consumoDia <= 60) {
-      this.consumoColor = '#4eb867ff';
-    } else if (this.consumoDia <= 70) {
-      this.consumoColor = '#ffb700ff'; 
-    } else {
-      this.consumoColor = '#e53935'; 
-    }
-  }
+
 
   get isAdmin(): boolean {
     return this.authService.isAdmin();

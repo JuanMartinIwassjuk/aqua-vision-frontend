@@ -2,7 +2,7 @@
   <div class="top-row">
     <h2>Notificaciones del Hogar</h2>
 
-    <!-- CAMPANA con badge y pulso -->
+
 <div class="bell-wrapper" aria-hidden="true">
   <button class="bell-btn" title="Notificaciones">
     <span class="bell-icon" [class.bell-pulse]="hasUnread()">🔔</span>
@@ -33,7 +33,7 @@
 
   <div *ngIf="loading" class="loading">Cargando notificaciones...</div>
 
-  <!-- Lista -->
+
   <div *ngIf="!loading && notifications.length > 0" class="list">
     <div *ngFor="let n of notifications" 
          [ngClass]="getCardClass(n)"
@@ -53,13 +53,12 @@
         <div class="left-time">{{ timeAgo(n.createdAt) }}</div>
 
         <div class="right-actions-buttons">
-          <!-- marcar como leída -->
+
           <button class="action-btn" title="Marcar como leída" (click)="markAsRead(n); $event.stopPropagation()"
                   [disabled]="n.isRead">
             <span class="material-icon">done</span>
           </button>
 
-          <!-- eliminar individual -->
           <button class="action-btn warn" title="Eliminar" (click)="deleteNotification(n); $event.stopPropagation()">
             <span class="material-icon">delete</span>
           </button>
@@ -68,10 +67,10 @@
     </div>
   </div>
 
-  <!-- Estado "todo leído" / vacío -->
+
   <div *ngIf="!loading && notifications.length === 0" class="empty-state">
     <div class="empty-inner">
-      <!-- Pon aquí la imagen que prefieras en assets -->
+
       <img src="images/avatar-gotita.png" alt="Al día" class="empty-img" />
       <div class="empty-text">
         <h3>¡Estás al día!</h3>
