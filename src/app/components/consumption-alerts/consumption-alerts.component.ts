@@ -177,10 +177,40 @@ getIcon(type: string): string {
 
 getCardClass(n: Notification): string {
   const base = 'notif-card';
+
   if (this.deletingIds.has(n.id)) return `${base} deleting`;
-  if (!n.isRead && n.type === 'alerta') return `${base} pulse-alert-laser`;
-  if (!n.isRead && n.type === 'evento') return `${base} pulse-green`;
-  return base;
+
+
+  let typeClass = '';
+  switch (n.type) {
+    case 'alerta':
+      typeClass = 'alerta-card';
+      break;
+    case 'recompensa':
+      typeClass = 'recompensa-card';
+      break;
+    case 'informe':
+      typeClass = 'informe-card';
+      break;
+    case 'evento':
+      typeClass = 'evento-card';
+      break;
+    case 'recordatorio':
+      typeClass = 'recordatorio-card';
+      break;
+    default:
+      typeClass = 'default-card';
+      break;
+  }
+
+
+  if (!n.isRead) {
+    if (n.type === 'alerta') return `${base} ${typeClass} pulse-alert-laser`;
+    if (n.type === 'evento') return `${base} ${typeClass} pulse-green`;
+    return `${base} ${typeClass} pulse-soft`;
+  }
+
+  return `${base} ${typeClass}`;
 }
 
 
