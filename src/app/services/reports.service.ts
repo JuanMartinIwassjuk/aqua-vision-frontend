@@ -33,7 +33,7 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
   return this.http.get<any>(url).pipe(
     map((response: any) => {
       return response.consumosPorSector.map((item: any) => ({
-        nombre_sector: item.sector.nombre,
+        nombre_sector: item.nombreSector,
         consumo_total: item.consumoTotal,
         media_consumo: item.consumoPromedio,
         pico_maximo: item.consumoPico,
@@ -55,7 +55,7 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
     return this.http.get<any>(url).pipe(
       map((response: any) => {
         return response.consumosPorSector.map((item: any) => ({
-          nombre_sector: item.sector.nombre,
+          nombre_sector: item.nombreSector,
           mes: desde.substring(0, 7),
           consumo_total: item.consumoTotal,
           media_consumo: item.consumoPromedio,
@@ -207,13 +207,24 @@ getConsumoPromedioPorHoraMensual(): { hora: string; caudal_m3?: number }[] {
 
 
 
-  getConsumoUltimoDia(): number {
-    return 68;
-  }
+getConsumoUltimoDia(idHogar: number): Observable<number> {
+  const hoy = new Date();
+  return this.getConsumoDiarioPorSector(idHogar, hoy).pipe(
+    map((reportes: any[]) =>
+      reportes.reduce((total, r) => total + Number(r.consumo_total || 0), 0)
+    )
+  );
+}
 
-  getConsumoPromedio(): number {
-    return 52;
-  }
+getConsumoPromedio(idHogar: number): Observable<number> {
+  const ayer = new Date();
+  ayer.setDate(ayer.getDate() - 1);
+  return this.getConsumoDiarioPorSector(idHogar, ayer).pipe(
+    map((reportes: any[]) =>
+      reportes.reduce((total, r) => total + Number(r.consumo_total || 0), 0)
+    )
+  );
+}
   getEstadoMedidores(): { conectados: number; desconectados: number } {
     return {conectados: 3, desconectados: 1};
   }

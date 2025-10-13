@@ -76,7 +76,7 @@ export class DashboardComponent implements OnInit {
   constructor(private reporteService: ReporteService, private authService: AuthService,  private snackBar: MatSnackBar,private homeService: HomeService) {}
 
 ngOnInit(): void {
-  const hogarId =  this.homeService.getHomeId()??0; 
+  const hogarId = this.homeService.getHomeId() ?? 0;
   const hoy = new Date();
   const ayer = new Date(hoy);
   ayer.setDate(hoy.getDate() - 1);
@@ -87,8 +87,11 @@ ngOnInit(): void {
   forkJoin({
     hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy),
     ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer),
-    promedio: of(this.reporteService.getConsumoPromedioPorHoraMensual())
-  }).subscribe(({ hoy, ayer, promedio }) => {
+    promedio: of(this.reporteService.getConsumoPromedioPorHoraMensual()),
+    consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId),      
+    consumoAyer: this.reporteService.getConsumoPromedio(hogarId)       
+  }).subscribe(({ hoy, ayer, promedio, consumoHoy, consumoAyer }) => {
+
     const horas = hoy.map(d => d.hora);
     const caudales = hoy.map(d => d.caudal_m3 ?? null);
     const caudalesAnterior = ayer.map(d => d.caudal_m3 ?? null);
@@ -135,19 +138,19 @@ ngOnInit(): void {
       ]
     };
 
-    // El resto de tu inicialización (consumoDia, estado medidores, etc.)
+  
     if (!this.isAdmin) {
-      this.consumoDia = this.reporteService.getConsumoUltimoDia();
-      const consumoDiaAnterior = this.reporteService.getConsumoDiaAnterior();
+      this.consumoDia = consumoHoy;            
+      const consumoDiaAnterior = consumoAyer;  
       this.estadoMedidores = this.reporteService.getEstadoMedidores();
       this.medidoresConectados = this.estadoMedidores.conectados;
       this.medidoresDesconectados = this.estadoMedidores.desconectados;
+
       this.setConsumoStatus();
       this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
     }
   });
 }
-
 
 
 
