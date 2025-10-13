@@ -1,38 +1,51 @@
-<div class="game-container" *ngIf="gameStarted; else startScreen">
-  <h2>Sector: {{ currentScene.title }}</h2>
-
-  <div class="scene">
-    <img [src]="currentScene.image" class="scene-image" alt="{{ currentScene.title }}" />
-
-    <div
-      *ngFor="let leak of currentScene.leaks"
-      class="leak"
-      [ngStyle]="{ top: leak.y + '%', left: leak.x + '%' }"
-      [class.closed]="leak.closed"
-      (click)="closeLeak(leak)"
-    ></div>
+<div class="game-container">
+  <div class="game-layout">
+    
+    <div class="scene-panel">
+      <h3>Sectores</h3>
+<div class="scene-grid">
+  <div 
+    class="scene-card"
+    *ngFor="let scene of scenes; let i = index"
+    [class.active]="i === currentIndex"
+    (click)="goToScene(i)">
+    
+    <img [src]="scene.image" alt="{{ scene.title }}" />
+    <div class="scene-info">
+      <h4>{{ scene.title }}</h4>
+      <p>{{ getClosedLeaks(scene) }}/{{ scene.leaks.length }} fugas cerradas</p>
+    </div>
   </div>
 
-  <div class="score">
-    {{ closedLeaksCount }}/{{ currentScene.leaks.length }} fugas cerradas
+<div class="scene-card current-info">
+  <div class="scene-info left-align">
+    <h4>Estadísticas generales - {{ currentScene.title }}</h4>
+    <p><strong>Total de fugas solucionadas:</strong> {{ closedLeaksCount }}/{{ currentScene.leaks.length }}</p>
+    <p><strong>Gasto:</strong> ${{ currentScene.expense | number:'1.2-2' }}</p>
+    <p><strong>Última revisión:</strong> {{ currentScene.lastRevision | date:'dd/MM/yyyy' }}</p>
   </div>
+</div>
+</div>
+</div>
 
-  <div class="controls">
-    <button (click)="restartGame()">🔄 Reiniciar</button>
-  </div>
+    <div class="scene-container">
+      <h2>Sector: {{ currentScene.title }}</h2>
 
-  <div class="popup" *ngIf="showNextScenePopup">
-    <div class="popup-content">
-      <h3>¡Excelente! Cerraste todas las fugas del {{ currentScene.title }} 💧</h3>
-      <button (click)="nextScene()">Siguiente sector ➡️</button>
+      <div class="scene">
+        <img [src]="currentScene.image" class="scene-image" alt="{{ currentScene.title }}" />
+
+        <div
+          *ngFor="let leak of currentScene.leaks"
+          class="leak"
+          [ngStyle]="{ top: leak.y + '%', left: leak.x + '%' }"
+          [class.closed]="leak.closed"
+          (click)="closeLeak(leak)"
+        ></div>
+      </div>
+
+      <div class="score">
+        {{ closedLeaksCount }}/{{ currentScene.leaks.length }} fugas cerradas
+      </div>
     </div>
   </div>
 </div>
-
-<ng-template #startScreen>
-  <div class="start-screen">
-    <h2>💦 Juego del Hogar Sustentable 💦</h2>
-    <p>Descubrí y cerrá las fugas de agua en cada sector del hogar.</p>
-    <button (click)="startGame()">Comenzar</button>
-  </div>
-</ng-template>
