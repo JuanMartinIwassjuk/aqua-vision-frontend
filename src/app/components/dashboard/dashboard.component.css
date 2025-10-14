@@ -764,3 +764,35 @@ h2:hover, h4:hover {
   animation: float 3.5s infinite ease-in-out, fadeInOut 4s infinite ease-in-out;
   animation-delay: 2s; 
 }
+
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  font-size: 1.2rem;
+  color: #2563eb;
+  text-align: center;
+  gap: 1rem;
+}
+
+.loading-container .spin {
+  font-size: 3rem;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.dashboard-content {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
