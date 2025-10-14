@@ -137,19 +137,39 @@ export class EventDialogComponent implements OnInit {
   }
 
 confirm() {
-  const now = new Date();
+  const today = new Date();
   const [startHour, startMin] = this.start.split(':').map(Number);
   const [endHour, endMin] = this.end.split(':').map(Number);
+  const fechaInicio = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    startHour,
+    startMin,
+    0,
+    0
+  );
 
-  const fechaInicio = new Date(now);
-  fechaInicio.setHours(startHour, startMin, 0, 0);
+  const fechaFin = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    endHour,
+    endMin,
+    0,
+    0
+  );
 
-  const fechaFin = new Date(now);
-  fechaFin.setHours(endHour, endMin, 0, 0);
+  fechaInicio.setMinutes(fechaInicio.getMinutes() - fechaInicio.getTimezoneOffset());
+  fechaFin.setMinutes(fechaFin.getMinutes() - fechaFin.getTimezoneOffset());
+
+  const tagPrincipal = this.selectedTags.length > 0 ? this.selectedTags[0] : null;
+  const nombreTag = tagPrincipal ? tagPrincipal.nombre : 'evento rápido';
+
 
   const eventToSave: Partial<AquaEvent> = {
-    titulo: `Evento rápido ${this.start}-${this.end}`,
-    descripcion: 'Creado desde gráfico',
+    titulo: `Evento de ${nombreTag}`,
+    descripcion: `De ${this.start} a ${this.end} hs — Creado desde gráfico.`,
     tags: this.selectedTags,
     estado: 'FINALIZADO',
     fechaInicio,
@@ -158,7 +178,6 @@ confirm() {
     costo: this.costo,
     sector: this.sector
   };
-
   this.eventService.createEvent(eventToSave as AquaEvent).subscribe({
     next: savedEvent => {
       console.log('✅ Evento rápido creado:', savedEvent);
@@ -171,8 +190,6 @@ confirm() {
   });
 }
 
+cancel() { this.dialogRef.close(false); }
 
-  cancel() {
-    this.dialogRef.close(false);
-  }
 }

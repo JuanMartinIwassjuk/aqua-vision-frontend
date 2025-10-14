@@ -12,7 +12,6 @@ import { HomeService } from '../../services/home.service';
 import { NotificationService } from '../../services/notification.service';
 
 
-
 @Component({
   selector: 'app-dashboard',
   imports: [NgChartsModule, CommonModule, RouterModule, MatIconModule],
@@ -21,13 +20,15 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class DashboardComponent implements OnInit {
 
+  isLoading: boolean = true;
+
   consumoDia!: number;
   consumoColor!: string;
   medidoresConectados!: number;
   medidoresDesconectados!: number;
   estadoMedidores: { conectados: number, desconectados: number } | undefined;
-  
-  cantidadNotificaciones = 0; // 🔹 Inicializamos en 0
+
+  cantidadNotificaciones = 0;
 
   medidoresConectadosAdmin!: number;
   medidoresDesconectadosAdmin!: number;
@@ -39,37 +40,19 @@ export class DashboardComponent implements OnInit {
   consumoDiff!: number;
   consumoDiffAbs!: number;
 
-  public lineChartData: ChartData<'line'> = {
-    labels: [],
-    datasets: []
-  };
-
-  public lineChartDataAdmin: ChartData<'line'> = {
-    labels: [],
-    datasets: []
-  };
+  public lineChartData: ChartData<'line'> = { labels: [], datasets: [] };
+  public lineChartDataAdmin: ChartData<'line'> = { labels: [], datasets: [] };
 
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom'
-      }
-    },
+    plugins: { legend: { position: 'bottom' } },
     scales: {
       y: {
         beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Caudal (m³)'
-        }
+        title: { display: true, text: 'Caudal (m³)' }
       },
-      x: {
-        title: {
-          display: true,
-        }
-      }
+      x: { title: { display: true } }
     }
   };
 
@@ -78,7 +61,7 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private homeService: HomeService,
-    private notificationService: NotificationService 
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -92,13 +75,12 @@ export class DashboardComponent implements OnInit {
 
 
     this.notificationService.getUnreadCount(hogarId).subscribe({
-      next: (count: number) => {
-        this.cantidadNotificaciones = count;
-      },
-      error: err => {
-        console.error('Error al obtener notificaciones no leídas:', err);
-      }
+      next: count => this.cantidadNotificaciones = count,
+      error: err => console.error('Error al obtener notificaciones:', err)
     });
+
+
+    this.isLoading = true;
 
     forkJoin({
       hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy),
@@ -106,67 +88,71 @@ export class DashboardComponent implements OnInit {
       promedio: of(this.reporteService.getConsumoPromedioPorHoraMensual()),
       consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId),
       consumoAyer: this.reporteService.getConsumoPromedio(hogarId)
-    }).subscribe(({ hoy, ayer, promedio, consumoHoy, consumoAyer }) => {
+    }).subscribe({
+      next: ({ hoy, ayer, promedio, consumoHoy, consumoAyer }) => {
+        const horas = hoy.map(d => d.hora);
+        const caudales = hoy.map(d => d.caudal_m3 ?? null);
+        const caudalesAnterior = ayer.map(d => d.caudal_m3 ?? null);
+        const caudalesMensual = promedio.map(d => d.caudal_m3 ?? null);
 
-      const horas = hoy.map(d => d.hora);
-      const caudales = hoy.map(d => d.caudal_m3 ?? null);
-      const caudalesAnterior = ayer.map(d => d.caudal_m3 ?? null);
-      const caudalesMensual = promedio.map(d => d.caudal_m3 ?? null);
+        this.lineChartData = {
+          labels: horas,
+          datasets: [
+            {
+              label: 'Hoy',
+              data: caudales,
+              borderColor: '#2563eb',
+              fill: false,
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 3.5,
+              pointBackgroundColor: '#2563eb'
+            },
+            {
+              label: 'Ayer',
+              data: caudalesAnterior,
+              borderColor: '#16a34a',
+              fill: false,
+              tension: 0.3,
+              borderWidth: 2,
+              borderDash: [6, 6],
+              pointRadius: 3,
+              pointBackgroundColor: '#16a34a'
+            },
+            {
+              label: 'Promedio mensual',
+              data: caudalesMensual,
+              borderColor: '#9333ea',
+              fill: false,
+              tension: 0.3,
+              borderWidth: 2,
+              borderDash: [2, 4],
+              pointRadius: 3,
+              pointBackgroundColor: '#9333ea'
+            }
+          ]
+        };
 
-      this.lineChartData = {
-        labels: horas,
-        datasets: [
-          {
-            label: 'Hoy',
-            data: caudales,
-            fill: false,
-            borderColor: '#2563eb',
-            tension: 0.3,
-            borderWidth: 3,
-            pointRadius: 3.5,
-            pointBackgroundColor: '#2563eb',
-            backgroundColor: '#fff'
-          },
-          {
-            label: 'Ayer',
-            data: caudalesAnterior,
-            fill: false,
-            borderColor: '#16a34a',
-            tension: 0.3,
-            borderWidth: 2,
-            borderDash: [6, 6],
-            pointRadius: 3,
-            pointBackgroundColor: '#16a34a',
-            backgroundColor: '#fff'
-          },
-          {
-            label: 'Promedio mensual',
-            data: caudalesMensual,
-            fill: false,
-            borderColor: '#9333ea',
-            tension: 0.3,
-            borderWidth: 2,
-            borderDash: [2, 4],
-            pointRadius: 3,
-            pointBackgroundColor: '#9333ea',
-            backgroundColor: '#fff'
-          }
-        ]
-      };
-
-      if (!this.isAdmin) {
-        this.consumoDia = consumoHoy;
-        const consumoDiaAnterior = consumoAyer;
-        this.estadoMedidores = this.reporteService.getEstadoMedidores();
-        this.medidoresConectados = this.estadoMedidores.conectados;
-        this.medidoresDesconectados = this.estadoMedidores.desconectados;
-
-        this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
+        if (!this.isAdmin) {
+          this.consumoDia = consumoHoy;
+          const consumoDiaAnterior = consumoAyer;
+          this.estadoMedidores = this.reporteService.getEstadoMedidores();
+          this.medidoresConectados = this.estadoMedidores.conectados;
+          this.medidoresDesconectados = this.estadoMedidores.desconectados;
+          this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
+        }
+      },
+      error: err => {
+        console.error('Error al cargar datos del dashboard:', err);
+        this.snackBar.open('Error al cargar los datos del dashboard', 'Cerrar', { duration: 4000 });
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
   }
 
-  calcularDiferencia(actual: number = this.consumoPromedio, anterior: number = this.consumoPromedioAnterior): void {
+  calcularDiferencia(actual: number, anterior: number): void {
     if (!anterior || anterior === 0) {
       this.consumoDiff = 0;
       this.consumoDiffAbs = 0;
@@ -180,33 +166,19 @@ export class DashboardComponent implements OnInit {
     return this.authService.isAdmin();
   }
 
-  get isUser(): boolean {
-    return this.authService.isUser();
-  }
-
   onChartClick(event: { event?: ChartEvent, active?: any[] }) {
     if (event.active && event.active.length > 0) {
       const element = event.active[0];
       const datasetIndex = element.datasetIndex;
       const dataIndex = element.index;
-
       const labels = this.isAdmin ? this.lineChartDataAdmin.labels : this.lineChartData.labels;
       const datasets = this.isAdmin ? this.lineChartDataAdmin.datasets : this.lineChartData.datasets;
-
       const hora = labels?.[dataIndex];
       const valor = datasets[datasetIndex].data[dataIndex] as number;
 
-      console.log(`Click detectado → Hora: ${hora}, Consumo: ${valor}`);
-
-      if (hora !== undefined && valor !== undefined && valor !== null) {
-        this.snackBar.open(
-          `Hora ${hora} → Consumo: ${valor} m³`,
-          'Cerrar',
-          { duration: 3000 }
-        );
+      if (hora && valor !== undefined && valor !== null) {
+        this.snackBar.open(`Hora ${hora} → Consumo: ${valor} m³`, 'Cerrar', { duration: 3000 });
       }
-    } else {
-      console.log('Click detectado en el gráfico, pero no en un punto de datos.');
     }
   }
 }

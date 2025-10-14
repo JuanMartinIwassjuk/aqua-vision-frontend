@@ -1,4 +1,9 @@
-<div class="title-greeting">
+<div *ngIf="isLoading" class="loading-container">
+  <p>Cargando datos del dashboard...</p>
+</div>
+
+
+<div *ngIf="!isLoading" class="title-greeting">
   <div class="form-image">
     <img src="images/avatar-gotita.png" alt="Mascota AquaVision" class="empty-img left-img">
   </div>
@@ -8,7 +13,7 @@
   <img src="images/avatar-gotita.png" alt="Mascota AquaVision" class="empty-img right-img">
 </div>
 
-<div class="dashboard-container">
+<div *ngIf="!isLoading" class="dashboard-container">
   <div class="cards-row slide-left">
 
     <!-- Card Consumo Promedio (Admin) -->
