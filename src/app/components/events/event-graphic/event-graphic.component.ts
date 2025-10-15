@@ -21,14 +21,15 @@ Chart.register(annotationPlugin);
 })
 export class EventGraphicComponent implements OnInit {
 
-  sectores: {
-    sector: ConsumoSector;
-    chartData: ChartData<'line'>;
-    chartOptions: ChartOptions<'line'>;
-    eventos: { hora: string; descripcion: string }[];
-  }[] = [];
+sectores: {
+  sector: ConsumoSector;
+  chartData: ChartData<'line'>;
+  chartOptions: ChartOptions<'line'>;
+  eventos: { hora: string; titulo: string; descripcion: string }[];
+}[] = [];
 
-  private colores = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'];
+
+  private colores = ['#2F80ED', '#27AE60', '#F2C94C', '#EB5757', '#9B51E0', '#56CCF2','#F2994A', '#27AE60'];
 
   constructor(private consumoService: ConsumoService, private dialog: MatDialog,private homeService: HomeService) {
 
@@ -57,15 +58,19 @@ ngOnInit(): void {
 
       const eventosSector = eventos
         .filter(ev => ev.sector?.id === sectorData.sectorId)
-        .filter(ev => ev.fechaInicio.startsWith(dia))
+        .filter(ev => ev.fechaInicio && ev.fechaInicio.startsWith(dia)) 
         .map(ev => ({
-          hora: new Date(ev.fechaInicio).toLocaleTimeString('es-AR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          }),
-          titulo: ev.titulo  || 'Evento'
+          hora: ev.fechaInicio
+            ? new Date(ev.fechaInicio).toLocaleTimeString('es-AR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })
+            : '-', 
+          titulo: ev.titulo || 'Evento',
+          descripcion: ev.descripcion || '',
         }));
+
 
 
       const annotations: Record<string, any> = {};
