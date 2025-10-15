@@ -66,6 +66,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const hogarId = this.homeService.getHomeId() ?? 0;
+
+    
     const hoy = new Date();
     const ayer = new Date(hoy);
     ayer.setDate(hoy.getDate() - 1);

@@ -1,10 +1,11 @@
-<div class="event-graphic-container">
-  <h2>Consumo por hora por sector</h2>
+<div class="reportes-container">
+  <br>
+  <h2 class="titulo-principal">Consumo por Hora por Sector</h2>
 
-  <div class="sector-charts">
-    <div class="chart-card" *ngFor="let item of sectores">
-      <h3>{{ item.sector.nombre }}</h3>
-      <div class="chart-wrapper">
+  <div *ngFor="let item of sectores" class="chart-card fade-in">
+    <h3 class="sector-titulo">{{ item.sector.nombre }}</h3>
+
+    <div class="chart-wrapper">
       <canvas
         baseChart
         [data]="item.chartData"
@@ -12,16 +13,21 @@
         type="line"
         (chartClick)="onChartClick($event, item)">
       </canvas>
+    </div>
 
-      </div>
-
-
-      <div class="event-cards">
-        <div *ngFor="let ev of item.eventos" class="event-card">
-          <strong style="padding-right: 5px;">{{ ev.descripcion }}</strong>
-          <span class="ev-time">{{ ev.hora }}</span>
-        </div>
-      </div>
+    <div class="eventos-container" *ngIf="item.eventos.length > 0">
+      <h4>🕒 Eventos del Día</h4>
+      <ul>
+        <li *ngFor="let ev of item.eventos">
+          <div class="evento-card">
+            <div class="evento-header">
+              <span class="evento-titulo">{{ ev.titulo }}</span>
+              <span class="evento-hora">{{ ev.hora }}</span>
+            </div>
+            <p class="evento-descripcion">{{ ev.descripcion || 'Sin descripción' }}</p>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>

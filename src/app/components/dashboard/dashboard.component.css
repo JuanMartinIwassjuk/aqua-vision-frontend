@@ -765,34 +765,31 @@ h2:hover, h4:hover {
   animation-delay: 2s; 
 }
 
-
 .loading-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 70vh;
+  align-items: center;
+  height: 100px;
+  font-family: Arial, sans-serif;
+}
+
+.loading-text {
   font-size: 1.2rem;
-  color: #2563eb;
-  text-align: center;
-  gap: 1rem;
+  color: #001F3F;
 }
 
-.loading-container .spin {
-  font-size: 3rem;
-  animation: spin 1.2s linear infinite;
+.dots::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+  animation: dots 1.5s steps(4, end) infinite;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.dashboard-content {
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
 }
