@@ -86,3 +86,36 @@
   height: 40px;
   text-align: center;
 }
+
+.gamification-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 10px 20px;
+  background-color: #0000000f;
+  position: relative; 
+}
+
+.back-btn {
+  position: absolute;
+  left: 25px; 
+  background: #0288d1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.back-btn:hover {
+  background: #0277bd;
+}
+
+.gamification-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #3a3a3a;
+  text-align: center;
+  flex-grow: 1;
+}

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface LeakPoint {
   x: number;
@@ -20,7 +21,7 @@ interface Scene {
 @Component({
   selector: 'app-my-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './my-home.component.html',
   styleUrls: ['./my-home.component.css']
 })
@@ -92,7 +93,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.backgroundMusic = new Audio('sounds/background-music.mp3');
     this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.2;
+    this.backgroundMusic.volume = 0.1;
 
     this.fixSound = new Audio('sounds/fix-gota-sound.mp3');
 
@@ -117,7 +118,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
 
       const drop = new Audio('sounds/gota-sound.mp3');
       drop.loop = true;
-      drop.volume = 0.6;
+      drop.volume = 0.2;
       leak.dropSound = drop;
 
       setTimeout(() => {

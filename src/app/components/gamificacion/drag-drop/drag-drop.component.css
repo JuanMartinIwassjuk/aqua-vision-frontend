@@ -53,17 +53,6 @@
   z-index: 100; 
 }
 
-.back-btn {
-  position: absolute;
-  left: 0;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  color: #007bff;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-}
 
 .drag-drop-header {
   display: flex;
@@ -76,6 +65,39 @@
 .drag-drop-header h2 {
   color: #001F3F;
   font-size: 1.8rem;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.gamification-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 10px 20px;
+  background-color: #0000000f;
+  position: relative; 
+}
+
+.back-btn {
+  position: absolute;
+  left: 25px; 
+  background: #0288d1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.back-btn:hover {
+  background: #0277bd;
+}
+
+.gamification-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #3a3a3a;
   text-align: center;
   flex-grow: 1;
 }
