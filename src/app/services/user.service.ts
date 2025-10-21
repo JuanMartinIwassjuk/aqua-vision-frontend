@@ -19,10 +19,10 @@ export class UserService {
       map((response: any) => response as User[])
     );
   }
+
   deleteById(id: number): Observable<void> {
     return this.http.delete<void>(`${this.urlBackend}/${id}`);
   }
-
 
   create(user: User): Observable<User> {
     return this.http.post<User>(this.urlBackend, user).pipe(
@@ -36,7 +36,11 @@ export class UserService {
     );
   }
 
-    getAuthenticatedHomeId(): Observable<number> {
+  getAuthenticatedHomeId(): Observable<number> {
     return this.http.get<number>(`${this.urlBackend}/authenticatedId`);
+  }
+
+  getAuthenticatedUser(): Observable<User> {
+    return this.http.get<User>(`${this.urlBackend}/me`);
   }
 }

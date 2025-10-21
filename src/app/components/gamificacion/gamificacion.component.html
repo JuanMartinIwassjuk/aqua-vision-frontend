@@ -172,10 +172,10 @@
   </div>
   <div class="seccion-gamificacion">
     <div class="container-coleccionables">
-      <div class="container-avatar">
+      <div class="container-avatar" *ngIf="user">
         <img src="images/avatar-gotita.png" loading="lazy" sizes="(max-width: 1024px) 100vw, 1024px" srcset="images/avatar-gotita-p-500.png 500w, images/avatar-gotita-p-800.png 800w, images/avatar-gotita.png 1024w" alt="" class="avatar">
         <img src="images/pencil.png" loading="lazy" alt="" class="lapiz_editar" (click)="openModal('avatar')">
-        <h1 class="nombre_avatar">&lt;nombre_user&gt;</h1>
+        <h1 class="nombre_avatar">Hola, {{ user.username }}</h1>
       </div>
       <div class="coleccionables">
         <div class="logros">
@@ -212,19 +212,19 @@
         <img src="images/check.png" loading="lazy" sizes="(max-width: 512px) 100vw, 512px" srcset="images/check-p-500.png 500w, images/check.png 512w" alt="" class="image-13">
         <h4 class="trivia-completado">Trivia 1: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
+      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 2: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
+      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 3: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
+      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 4: &quot;nombre&quot;</h4>
       </div>
-      <div class="trivia-modal w-inline-block" (click)="openModal('trivia')">
+      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 5: &quot;nombre&quot;</h4>
       </div>

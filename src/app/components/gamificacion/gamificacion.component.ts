@@ -1,9 +1,13 @@
-import { Component, ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef} from '@angular/core';
+import { Component, ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef, OnInit} from '@angular/core';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { RouterModule } from '@angular/router';
+
+import { HomeService } from '../../services/home.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-gamificacion',
@@ -21,11 +25,16 @@ import { RouterModule } from '@angular/router';
     ])]
 })
 
-export class GamificacionComponent {
+export class GamificacionComponent implements OnInit{
 
   activeModal: string | null = null;
   
-  constructor(private authService: AuthService, private router: Router){  }
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private homeService: HomeService,
+    private userService: UserService
+  ){  }
   
   @ViewChild('medallasModal') medallasModal!: TemplateRef<any>;
   
@@ -49,6 +58,17 @@ export class GamificacionComponent {
   
   closeModal() {
     this.activeModal = null;
+  }
+
+  nombreUser!: string;
+
+  user: User | null = null;
+
+  ngOnInit(): void {
+    this.userService.getAuthenticatedUser().subscribe({
+      next: (u) => this.user = u,
+      error: (err) => console.error('Error al obtener usuario', err)
+    });
   }
 
 }

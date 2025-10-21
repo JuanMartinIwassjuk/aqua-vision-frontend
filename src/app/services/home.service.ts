@@ -95,13 +95,13 @@ export class HomeService {
 
 
 
-getNotifications(homeId: number): Observable<Notification[]> {
+  getNotifications(homeId: number): Observable<Notification[]> {
 
-  const allNotifications = this.mockNotifications.map(n => ({ ...n }));
+    const allNotifications = this.mockNotifications.map(n => ({ ...n }));
 
-  console.log('Resultado:', allNotifications);
+    console.log('Resultado:', allNotifications);
 
-  return of(allNotifications).pipe(delay(450));
+    return of(allNotifications).pipe(delay(450));
 }
 
 
