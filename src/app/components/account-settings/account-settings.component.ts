@@ -4,6 +4,10 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
+import { HomeService } from '../../services/home.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user';
+
 @Component({
   selector: 'app-account-settings',
   imports: [CommonModule],
@@ -28,7 +32,12 @@ export class AccountSettingsComponent {
 
   activeModal: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router){  }
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private homeService: HomeService,
+    private userService: UserService
+  ){  }
 
    logout(){
     this.authService.logout();
@@ -42,6 +51,23 @@ export class AccountSettingsComponent {
 
   closeModal() {
     this.activeModal = null;
+  }
+
+  user: User | null = null;
+  /*sensores: Sensor[] = [];*/
+
+  ngOnInit(): void {
+    this.userService.getAuthenticatedUser().subscribe({
+      next: (u) => this.user = u,
+      error: (err) => console.error('Error al obtener usuario', err)
+    });
+
+    /*
+    const idUsuario = this.authService.getUsuarioId();
+    this.sensorService.getSensoresUsuario(idUsuario).subscribe({
+      next: (data) => this.sensores = data,
+      error: (err) => console.error(err)
+    */
   }
 
 }

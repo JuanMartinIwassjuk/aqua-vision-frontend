@@ -60,8 +60,6 @@ export class GamificacionComponent implements OnInit{
     this.activeModal = null;
   }
 
-  nombreUser!: string;
-
   user: User | null = null;
 
   ngOnInit(): void {

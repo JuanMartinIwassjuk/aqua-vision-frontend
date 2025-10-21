@@ -158,5 +158,10 @@ getConsumosPorHoraYSector(hogarId: number, dia: string): Observable<any> {
 }
 
 
+/*
+getSensoresUsuario(idUsuario: number): Observable<Sensor[]> {
+  return this.http.get<Sensor[]>(`${this.apiUrl}/sensores/usuario/${idUsuario}`);
+}
+*/
 
 }
