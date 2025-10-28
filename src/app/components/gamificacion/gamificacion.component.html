@@ -100,9 +100,9 @@
     <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
         <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
         (click)="closeModal()">
-      <h1 class="title-medallas">Mis loros</h1>
+      <h1 class="title-medallas">Mis logros</h1>
       <div class="container-modal-medallas">
-        <p class="descr-medallas">En este apartado podrás ver todas tus logros conseguidas y más información de cada uno. Algunos logros solo mostrarán información una vez conseguidos.</p>
+        <p class="descr-medallas">En este apartado podrás ver todos tus logros conseguidos y más información de cada uno. Algunos logros solo mostrarán información una vez conseguidos.</p>
       </div>
     </div>
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
@@ -116,6 +116,20 @@
         (click)="closeModal()">
       <h1 class="title-medallas">Personaliza tu avatar</h1>
       <div class="container-modal-medallas">
+        <div class="grid-avatares">
+          <div class="avatar">
+            <img class="avatarpng" src="images/avatar-gotita.png" loading="lazy" alt="avatar1">
+            <h4 class="nombre-avatar">&lt;nombre avatar&gt;</h4>
+          </div>
+          <div class="avatar">
+            <img class="avatarpng" src="images/avatar2.png" loading="lazy" alt="avatar2">
+            <h4 class="nombre-avatar">&lt;nombre avatar&gt;</h4>
+          </div>
+          <div class="avatar">
+            <img class="avatarpng" src="images/avatar2.png" loading="lazy" alt="avatar2">
+            <h4 class="nombre-avatar">&lt;nombre avatar&gt;</h4>
+          </div>
+        </div>
       </div>
     </div>
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
@@ -136,6 +150,8 @@
     </div>
   </div>
 
+
+  <!--TODO: QUE SEA TABLA DINAMICA Y LO TRAIGA DEL BACK TODO-->
   <div class="modal-popup" *ngIf="activeModal === 'ranking'" (click)="closeModal()">
     <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
         <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
@@ -144,6 +160,199 @@
       <div class="container-modal-medallas">
         <p class="descr-medallas">Acá podes ver todas las posiciones del ranking de hogares. ¿En qué posición estás hoy?</p>
       </div>
+      <div class="container-ranking">
+      <ul role="list" class="ranking-list">
+        <li class="titulo-ranking completo">
+          <div class="div-block-8">
+            <div class="div-block-9">
+              <h3 class="heading-5">#</h3>
+            </div>
+            <div class="div-block-10">
+              <h3 class="heading-6">Usuario</h3>
+            </div>
+          </div>
+          <div class="div-block-11">
+            <h3 class="heading-7">Puntos</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>1</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepito</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>4500</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>2</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepita</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>4430</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>3</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitoo</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>4200</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>4</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepito-responsable</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>3800</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>5</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>450</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>6</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>350</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>6</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>300</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>7</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>200</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>8</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>100</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>9</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>50</h3>
+          </div>
+        </li>
+        <li class="user-ranking completo">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>10</h3>
+            </div>
+            <div class="user-rank-container">
+              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
+              <div>
+                <h3>Pepitos</h3>
+              </div>
+            </div>
+          </div>
+          <div class="user-puntos-rank">
+            <h3>0</h3>
+          </div>
+        </li>
+      </ul>
+    </div>
     </div>
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
         
@@ -158,6 +367,155 @@
       <div class="container-modal-medallas">
         <p class="descr-medallas">Acá podes ver todas las recompensas disponibles para canjear usando tus AquaPuntos.</p>
       </div>
+      <div class="container-recompensas">
+      <ul role="list" class="recompensas-list">
+        <li class="titulo-recompensa">
+          <div class="header-recompensa">
+            <div class="div-block-9">
+              <h3 class="heading-5">Recompensa</h3>
+            </div>
+            <div class="div-recompensa">
+              <h3 class="heading-6">Puntos</h3>
+            </div>
+          </div>
+        </li>
+        <li class="item-recompensa">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>1</h3>
+            </div>
+            <div class="user-rank-container">
+              <h3>3 meses gratis en ChatGPT Pro</h3>
+            </div>
+          </div>
+          <div class="recompensa-canjearpuntos-boton">
+            <h3>4500</h3>
+            <button class="animated-button">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+              <span class="text">Canjear</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </li>
+        <li class="item-recompensa">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>2</h3>
+            </div>
+            <div class="user-rank-container">
+              <h3>3 meses gratis en ChatGPT Pro</h3>
+            </div>
+          </div>
+          <div class="recompensa-canjearpuntos-boton">
+            <h3>4500</h3>
+            <button class="animated-button">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+              <span class="text">Canjear</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </li>
+        <li class="item-recompensa">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>3</h3>
+            </div>
+            <div class="user-rank-container">
+              <h3>3 meses gratis en ChatGPT Pro</h3>
+            </div>
+          </div>
+          <div class="recompensa-canjearpuntos-boton">
+            <h3>4500</h3>
+            <button class="animated-button">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+              <span class="text">Canjear</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </li>
+        <li class="item-recompensa">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>4</h3>
+            </div>
+            <div class="user-rank-container">
+              <h3>3 meses gratis en ChatGPT Pro</h3>
+            </div>
+          </div>
+          <div class="recompensa-canjearpuntos-boton">
+            <h3>4500</h3>
+            <button class="animated-button">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+              <span class="text">Canjear</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </li>
+        <li class="item-recompensa">
+          <div class="user-container-ranking">
+            <div class="user-posicion-rank">
+              <h3>5</h3>
+            </div>
+            <div class="user-rank-container">
+              <h3>3 meses gratis en ChatGPT Pro</h3>
+            </div>
+          </div>
+          <div class="recompensa-canjearpuntos-boton">
+            <h3>4500</h3>
+            <button class="animated-button">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+              <span class="text">Canjear</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </li>   
+      </ul>
+    </div>
     </div>
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
         
@@ -173,7 +531,7 @@
   <div class="seccion-gamificacion">
     <div class="container-coleccionables">
       <div class="container-avatar" *ngIf="user">
-        <img src="images/avatar-gotita.png" loading="lazy" sizes="(max-width: 1024px) 100vw, 1024px" srcset="images/avatar-gotita-p-500.png 500w, images/avatar-gotita-p-800.png 800w, images/avatar-gotita.png 1024w" alt="" class="avatar">
+        <img src="images/avatar-gotita.png" loading="lazy" sizes="(max-width: 1024px) 100vw, 1024px" srcset="images/avatar-gotita-p-500.png 500w, images/avatar-gotita-p-800.png 800w, images/avatar-gotita.png 1024w" alt="" class="avatargota">
         <img src="images/pencil.png" loading="lazy" alt="" class="lapiz_editar" (click)="openModal('avatar')">
         <h1 class="nombre_avatar">Hola, {{ user.username }}</h1>
       </div>
@@ -391,6 +749,7 @@
       </ul>
     </div>
   </div>
+  <!--TODO: QUE SEA TABLA DINAMICA Y LO TRAIGA DEL BACK TODO-->
   <div class="div-block">
     <h2 class="heading-2">Ranking de hogares</h2>
     <p class="bio-micuenta">Competí con otros hogares para ver quién cuida más el agua.</p>

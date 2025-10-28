@@ -81,7 +81,7 @@ h2 {
   display: flex;
 }
 
-.avatar {
+.avatargota {
   max-width: 450px;
   margin-left: 60px;
 }
@@ -357,6 +357,11 @@ h2 {
   margin-right: 2rem;
 }
 
+.recompensas-list{
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
 .titulo-desafios {
   border-bottom: 4px solid #fff;
   justify-content: space-between;
@@ -403,11 +408,28 @@ h2 {
   align-items: center;
 }
 
+.container-recompensas {
+  justify-content: center;
+  align-items: center;
+}
+
 .titulo-ranking {
   border-bottom: 4px solid #fff;
   justify-content: space-between;
   display: flex;
   padding: 1rem;
+}
+
+.titulo-ranking.completo {
+  border-bottom:4px solid var(--azul-fondo);
+}
+
+.titulo-recompensa {
+  border-bottom: 4px solid var(--azul-fondo);
+  justify-content: space-around;
+  display: flex;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
 }
 
 .user-ranking {
@@ -417,6 +439,18 @@ h2 {
   padding-bottom: 15px;
   display: flex;
   padding:1rem;
+  align-items: center;
+}
+
+.user-ranking.completo {
+  border-bottom: 2px solid var(--azul-fondo); 
+}
+
+.item-recompensa {
+  border-bottom: 2px solid #fff;
+  justify-content: space-between;
+  display: flex;
+  padding:1.5rem;
   align-items: center;
 }
 
@@ -445,6 +479,16 @@ h2 {
   margin-right: .5rem;
   padding-left: 5rem;
   padding-right: 5rem;
+}
+
+.recompensa-canjearpuntos-boton {
+  margin-right: .5rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: center;
 }
 
 .vertodo-ranking {
@@ -489,6 +533,14 @@ h2 {
   display: flex;
 }
 
+.div-recompensa {
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+  padding-left: 4rem;
+  padding-right: 15rem;
+  display: flex;
+}
+
 .div-block-13 {
   padding-left: 5rem;
   padding-right: 5rem;
@@ -530,6 +582,14 @@ h2 {
 .div-block-11 {
   padding-left: 5rem;
   padding-right: 5rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.header-recompensa {
+  display: flex;
+  flex-direction: row;
+  gap: 30rem;
 }
 
 .heading-4 {
@@ -603,6 +663,7 @@ h2 {
   grid-template-columns: 1fr 1fr;
   grid-auto-columns: 1fr;
   display: grid;
+  padding-top: 1rem;
 }
 
 .grid {
@@ -612,12 +673,25 @@ h2 {
   align-items: stretch;
 }
 
+.grid-avatares{
+  grid-column-gap: 2.5rem;
+  grid-row-gap: 3.5rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  align-items: stretch;
+  grid-auto-columns: 1fr;
+  display: grid;
+  padding: 1rem;
+}
+
 .title-medallas{
   text-align: left;
+  color: var(--azul-fondo);
 }
 
 .descr-medallas{
   text-align: left;
+  color: var(--azul-fondo);
 }
 
 .medalla{
@@ -627,13 +701,45 @@ h2 {
   align-items: center;
 }
 
+.avatar{
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--gris-fondo);
+  border-radius: 20px;
+  max-height: 25vh;
+  cursor: pointer;
+}
+
+.avatar:hover{
+  transform: translate(-5px, -5px);
+  box-shadow: 5px 10px 5px #0003;
+}
+
+.avatar:active {
+  transform: none;
+}
+
 .prueba{
   min-width: 8vw;
   min-height: 8vh;
   max-width: 0%;
 }
 
+.avatarpng{
+  min-width: 12vw;
+  min-height: 12vh;
+  max-width: 0%;
+}
+
 .nombre-medalla{
+  font-weight: 700;
+  font-size: 18px;
+  height: 24px;
+}
+
+.nombre-avatar{
   font-weight: 700;
   font-size: 18px;
   height: 24px;
@@ -658,4 +764,92 @@ h2 {
 
 .texto-canjea-puntos:hover{
   text-decoration: underline;
+}
+
+.animated-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 35px;
+  border: 4px solid;
+  border-color: transparent;
+  font-size: 12px;
+  background-color: inherit;
+  border-radius: 100px;
+  font-weight: 600;
+  color: var(--azul-fondo);
+  box-shadow: 0 0 0 2px var(--azul-fondo);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button svg {
+  position: absolute;
+  width: 24px;
+  fill: var(--azul-fondo);
+  z-index: 9;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .arr-1 {
+  right: 16px;
+}
+
+.animated-button .arr-2 {
+  left: -25%;
+}
+
+.animated-button .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background-color: var(--azul-fondo);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .text {
+  position: relative;
+  z-index: 1;
+  transform: translateX(-12px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button:hover {
+  box-shadow: 0 0 0 12px transparent;
+  color: #ffff;
+  border-radius: 10px;
+}
+
+.animated-button:hover .arr-1 {
+  right: -25%;
+}
+
+.animated-button:hover .arr-2 {
+  left: 16px;
+}
+
+.animated-button:hover .text {
+  transform: translateX(12px);
+}
+
+.animated-button:hover svg {
+  fill: #ffff;
+}
+
+.animated-button:active {
+  scale: 0.95;
+  box-shadow: 0 0 0 4px var(--azul-fondo);
+}
+
+.animated-button:hover .circle {
+  width: 220px;
+  height: 220px;
+  opacity: 1;
 }
