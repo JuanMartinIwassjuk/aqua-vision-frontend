@@ -4,13 +4,13 @@ import { RouterModule } from '@angular/router';
 
 interface Card {
   id: number;
-  text: string;        
+  text: string;
   matched: boolean;
   x?: number;
   y?: number;
   initialX?: number;
   initialY?: number;
-  tip?: string;         
+  tip?: string;
 }
 
 @Component({
@@ -20,122 +20,161 @@ interface Card {
   templateUrl: './drag-drop.component.html',
   styleUrls: ['./drag-drop.component.css']
 })
+
 export class DragDropComponent implements OnInit {
+  leftCards: Card[] = [
+    { id: 1, text: 'Si lavas el auto dejando la manguera abierta durante minutos.', matched: false, tip: 'Usando balde y esponja podés ahorrar hasta 200 L por lavado.' },
+    { id: 2, text: 'Si regás el jardín al mediodía, cuando el sol es fuerte.', matched: false, tip: 'Regando temprano o al atardecer se evita hasta el 50% de evaporación.' },
+    { id: 3, text: 'Si dejas la canilla abierta mientras te cepillás los dientes.', matched: false, tip: 'Cerrar la canilla mientras te cepillás ahorra unos 6 L por minuto.' },
+    { id: 4, text: 'Si te das duchas largas de más de 10 minutos todos los días.', matched: false, tip: 'Reduciendo la ducha a 5 minutos se ahorran hasta 75 L por día.' },
+    { id: 5, text: 'Si tu inodoro o canillas gotean sin que lo notes.', matched: false, tip: 'Una fuga puede desperdiciar 20 L diarios. Revisá y arreglá a tiempo.' },
+    { id: 6, text: 'Si usás el lavarropas con media carga varias veces por semana.', matched: false, tip: 'Esperar a carga completa ahorra agua y energía.' },
+    { id: 7, text: 'Si lavas frutas y verduras directamente bajo la canilla abierta.', matched: false, tip: 'Lavar en un recipiente puede ahorrar hasta 10 L.' },
+    { id: 8, text: 'Si nunca revisás tu medidor ni controlás tu consumo de agua.', matched: false, tip: 'Controlando tu consumo podés detectar fugas y reducir gastos.' },
+  ];
 
-leftCards: Card[] = [
-  { 
-    id: 4, 
-    text: 'Duchas largas de más de 10 minutos', 
-    matched: false, 
-    tip: 'Reduciendo la ducha a 5 minutos se pueden ahorrar hasta 75 litros por día por persona.' 
-  },
-  { 
-    id: 1, 
-    text: 'Lavar el auto usando manguera abierta', 
-    matched: false, 
-    tip: 'Usando un balde y una esponja podés ahorrar hasta 200 litros de agua por lavado. ¡Pequeños cambios suman mucho!' 
-  },
-  { 
-    id: 3, 
-    text: 'Dejar la canilla abierta mientras te cepillás los dientes', 
-    matched: false, 
-    tip: 'Cerrando la canilla mientras te cepillás podés ahorrar alrededor de 6 litros por minuto. ¡Multiplicá por los días!' 
-  },
-  { 
-    id: 5, 
-    text: 'Dejar goteando el inodoro o canillas', 
-    matched: false, 
-    tip: 'Una canilla que gotea puede desperdiciar 20 litros de agua al día. Revisá y arreglá fugas a tiempo.' 
-  },
-  { 
-    id: 2, 
-    text: 'Regar el jardín al mediodía con manguera', 
-    matched: false, 
-    tip: 'Regar temprano por la mañana o al atardecer puede reducir hasta un 50% de pérdida por evaporación.' 
-  },
-];
-
-rightCards: Card[] = [
-  { id: 3, text: 'Desperdicio innecesario en el hogar', matched: false },
-  { id: 1, text: 'Consumo excesivo de agua', matched: false },
-  { id: 5, text: 'Goteos y fugas desapercibidas', matched: false },
-  { id: 2, text: 'Pérdida por evaporación', matched: false },
-  { id: 4, text: 'Alta huella hídrica', matched: false },
-];
-
+  rightCards: Card[] = [
+    { id: 1, text: 'Desperdiciás cientos de litros de agua innecesariamente al lavar tu vehículo.', matched: false },
+    { id: 2, text: 'Gran parte del agua se evapora antes de que las plantas la absorban.', matched: false },
+    { id: 3, text: 'Se desperdician litros de agua cada minuto mientras te higienizas.', matched: false },
+    { id: 4, text: 'Tu huella hídrica diaria se dispara, usando más agua de la necesaria.', matched: false },
+    { id: 5, text: 'La fuga constante genera pérdida de agua todos los días.', matched: false },
+    { id: 6, text: 'Usar electrodomésticos a media carga aumenta tu consumo innecesario.', matched: false },
+    { id: 7, text: 'Malgastás agua en la cocina y no aprovechás bien el recurso.', matched: false },
+    { id: 8, text: 'No detectás fugas ni controlás tu consumo, aumentando desperdicios y costos.', matched: false },
+  ];
   draggingCard: Card | null = null;
   offsetX = 0;
   offsetY = 0;
+  tips: string[] = [];
 
   @ViewChild('container', { static: true }) container!: ElementRef;
 
-ngOnInit() {
-  const verticalSpacing = 150; 
+  ngOnInit() {
+    const verticalSpacing = 140;
+    const containerWidth = 400;
+    const boardWidth = this.container.nativeElement.offsetWidth;
 
-  this.leftCards.forEach((c, i) => {
-    c.x = 50;
-    c.y = 50 + i * verticalSpacing;
-    c.initialX = c.x;
-    c.initialY = c.y;
-  });
+    this.leftCards.forEach((c, i) => {
+      c.x = 20;
+      c.y = 20 + i * verticalSpacing;
+      c.initialX = c.x;
+      c.initialY = c.y;
+    });
 
-  this.rightCards.forEach((c, i) => {
-    c.x = 450;                 
-    c.y = 50 + i * verticalSpacing;
-  });
-}
+    this.rightCards.forEach((c, i) => {
+      const cardWidth = 280;
+      c.x = boardWidth - cardWidth - 20;
+      c.y = 20 + i * verticalSpacing;
+      c.initialX = c.x;
+      c.initialY = c.y;
+    });
+  }
 
   startDrag(event: MouseEvent, card: Card) {
     if (card.matched) return;
+
     this.draggingCard = card;
-    const rect = (event.target as HTMLElement).getBoundingClientRect();
-    this.offsetX = event.clientX - rect.left;
-    this.offsetY = event.clientY - rect.top;
-    (event.target as HTMLElement).classList.add('dragging');
+
+    const container = this.container.nativeElement as HTMLElement;
+    const containerRect = container.getBoundingClientRect();
+
+    this.offsetX = event.clientX - (containerRect.left + card.x!);
+    this.offsetY = event.clientY - (containerRect.top + card.y!);
+
+    (event.currentTarget as HTMLElement).classList.add('dragging');
+
+    event.preventDefault();
   }
 
   onMouseMove(event: MouseEvent) {
     if (!this.draggingCard) return;
-    this.draggingCard.x = event.clientX - this.offsetX - this.container.nativeElement.getBoundingClientRect().left;
-    this.draggingCard.y = event.clientY - this.offsetY - this.container.nativeElement.getBoundingClientRect().top;
+
+    const container = this.container.nativeElement as HTMLElement;
+    const containerRect = container.getBoundingClientRect();
+
+    this.draggingCard.x = event.clientX - containerRect.left - this.offsetX;
+    this.draggingCard.y = event.clientY - containerRect.top - this.offsetY;
   }
 
-onMouseUp() {
-  if (!this.draggingCard) return;
+  onMouseUp() {
+    if (!this.draggingCard) return;
 
-  const draggingEl = document.querySelector('.dragging') as HTMLElement;
-  const match = this.rightCards.find(rc => !rc.matched && rc.id === this.draggingCard!.id);
+    const card = this.draggingCard;
 
-  let collided = false;
-  if (match && draggingEl) {
-    const matchEl = document.querySelectorAll('.right-card')[this.rightCards.indexOf(match)] as HTMLElement;
-    const rectDrag = draggingEl.getBoundingClientRect();
-    const rectMatch = matchEl.getBoundingClientRect();
+    const leftRect = {
+      x: card.x ?? 0,
+      y: card.y ?? 0,
+      width: 280,
+      height: 120
+    };
 
-    collided =
-      rectDrag.left < rectMatch.right &&
-      rectDrag.right > rectMatch.left &&
-      rectDrag.top < rectMatch.bottom &&
-      rectDrag.bottom > rectMatch.top;
+    const match = this.rightCards.find(rc => !rc.matched && rc.id === card.id);
+
+    if (match) {
+      const rightRect = {
+        x: match.x ?? 0,
+        y: match.y ?? 0,
+        width: 280,
+        height: 120
+      };
+
+      const isTouching = !(
+        leftRect.x + leftRect.width < rightRect.x ||
+        leftRect.x > rightRect.x + rightRect.width ||
+        leftRect.y + leftRect.height < rightRect.y ||
+        leftRect.y > rightRect.y + rightRect.height
+      );
+
+      if (isTouching) {
+        card.matched = true;
+        match.matched = true;
+
+        const distanceX = (match.x ?? 0) - (card.x ?? 0);
+        card.x = (card.x ?? 0) + distanceX;
+        card.y = match.y ?? card.y ?? 0;
+
+        if (card.tip) this.tips.push(card.tip);
+
+        return this.finishDrag();
+      }
+    }
+
+    card.x = card.initialX ?? card.x ?? 0;
+    card.y = card.initialY ?? card.y ?? 0;
+    this.finishDrag(true);
   }
 
-if (collided && match) {
-  
-  this.draggingCard.x = match.x!;
-  this.draggingCard.y = match.y!;
-  this.draggingCard.matched = true;
-  this.draggingCard.text = this.draggingCard.tip!;
-
-  const draggingEl = document.querySelector('.dragging') as HTMLElement;
-  if (draggingEl) draggingEl.style.zIndex = '10';
-
-  match.matched = true;
-} else {
-    this.draggingCard.x = this.draggingCard.initialX!;
-    this.draggingCard.y = this.draggingCard.initialY!;
+  get matchedCount() {
+    return this.leftCards.filter(c => c.matched).length;
   }
 
-  if (draggingEl) draggingEl.classList.remove('dragging');
-  this.draggingCard = null;
-}
+  resetGame() {
+    this.leftCards.forEach(c => {
+      c.matched = false;
+      c.x = c.initialX!;
+      c.y = c.initialY!;
+    });
+    this.rightCards.forEach(c => (c.matched = false));
+    this.tips = [];
+  }
+
+  finishDrag(wrong = false) {
+    const draggingEl = document.querySelector('.dragging') as HTMLElement;
+    if (!draggingEl) {
+      this.draggingCard = null;
+      return;
+    }
+
+    if (wrong) {
+      draggingEl.classList.add('wrong');
+      setTimeout(() => draggingEl?.classList.remove('wrong'), 300);
+    } else if (this.draggingCard?.matched) {
+      draggingEl.classList.add('matched');
+    }
+
+    draggingEl.classList.remove('dragging');
+    this.draggingCard = null;
+
+  }
 }

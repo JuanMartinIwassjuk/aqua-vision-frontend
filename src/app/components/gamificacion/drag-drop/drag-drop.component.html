@@ -3,24 +3,33 @@
   <h2>AquaMatch</h2>
 </div>
 
-<div #container class="match-container" 
-     (mousemove)="onMouseMove($event)" 
-     (mouseup)="onMouseUp()">
+<div class="aquamatch-layout">
+  <div class="aquamatch-board" #container (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()">
 
-<div *ngFor="let card of leftCards" 
-     class="card left-card" 
-     [style.left.px]="card.x" 
-     [style.top.px]="card.y" 
-     [class.grayed]="card.matched"
-     (mousedown)="startDrag($event, card)">
-  {{ card.text }}
-</div>
+    <div *ngFor="let card of leftCards" class="card left-card" [style.left.px]="card.x" [style.top.px]="card.y"
+      [class.grayed]="card.matched" (mousedown)="startDrag($event, card)">
+      <div class="card-text">
+        {{ card.text }}
+      </div>
+    </div>
 
-<div *ngFor="let card of rightCards" 
-     class="card right-card" 
-     [style.left.px]="card.x"
-     [style.top.px]="card.y"
-     [class.grayed]="card.matched">
-  {{ card.text }}
-</div>
+    <div *ngFor="let card of rightCards" class="card right-card" [style.left.px]="card.x" [style.top.px]="card.y"
+      [class.grayed]="card.matched">
+      {{ card.text }}
+    </div>
+
+  </div>
+
+  <div class="aquamatch-info">
+    <h3>💧 Consejos obtenidos</h3>
+
+    <div *ngIf="tips.length === 0" class="locked-info">
+      🔒 Uní las tarjetas para descubrir consejos sobre cómo cuidar el agua.
+    </div>
+
+    <div *ngFor="let tip of tips" class="info-card unlocked">
+      <h4>Consejo</h4>
+      <p>{{ tip }}</p>
+    </div>
+  </div>
 </div>
