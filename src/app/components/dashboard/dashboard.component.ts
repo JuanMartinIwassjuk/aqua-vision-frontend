@@ -10,6 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { forkJoin, of } from 'rxjs';
 import { HomeService } from '../../services/home.service';
 import { NotificationService } from '../../services/notification.service';
+import { switchMap, catchError } from 'rxjs/operators';
+
+
 
 
 @Component({
@@ -65,36 +68,48 @@ export class DashboardComponent implements OnInit {
     private notificationService: NotificationService
   ) {}
 
-  ngOnInit(): void {
-    const hogarId = this.homeService.getHomeId() ?? 0;
-    const hoy = new Date();
-    const ayer = new Date(hoy);
-    ayer.setDate(hoy.getDate() - 1);
+ ngOnInit(): void {
+  this.isLoading = true;
 
-    const diaHoy = hoy.toISOString().split('T')[0];
-    const diaAyer = ayer.toISOString().split('T')[0];
+  this.homeService.waitForHomeId()
+    .pipe(
+      switchMap(hogarId => {
+
+        const hoy = new Date();
+        const ayer = new Date(hoy);
+        ayer.setDate(hoy.getDate() - 1);
+
+        const diaHoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+        const diaAyer = new Date(ayer).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
 
-    this.notificationService.getUnreadCount(hogarId).subscribe({
-      next: count => this.cantidadNotificaciones = count,
-      error: err => console.error('Error al obtener notificaciones:', err)
-    });
+        this.notificationService.getUnreadCount(hogarId).subscribe({
+          next: count => this.cantidadNotificaciones = count,
+          error: err => console.error('Error al obtener notificaciones:', err)
+        });
 
 
-    this.isLoading = true;
-
-    forkJoin({
-      hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy),
-      ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer),
-      promedio: of(this.reporteService.getConsumoPromedioPorHoraMensual()),
-      consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId),
-      consumoAyer: this.reporteService.getConsumoPromedio(hogarId)
-    }).subscribe({
-      next: ({ hoy, ayer, promedio, consumoHoy, consumoAyer }) => {
-        const horas = hoy.map(d => d.hora);
-        const caudales = hoy.map(d => d.caudal_m3 ?? null);
-        const caudalesAnterior = ayer.map(d => d.caudal_m3 ?? null);
-        const caudalesMensual = promedio.map(d => d.caudal_m3 ?? null);
+        return forkJoin({
+          hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy).pipe(
+            catchError(err => { console.error('hoy error', err); return of([]); })
+          ),
+          ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer).pipe(
+            catchError(err => { console.error('ayer error', err); return of([]); })
+          ),
+          consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId).pipe(
+            catchError(err => { console.error('consumoHoy error', err); return of(0); })
+          ),
+          consumoAyer: this.reporteService.getConsumoPromedio(hogarId).pipe(
+            catchError(err => { console.error('consumoAyer error', err); return of(0); })
+          )
+        });
+      })
+    )
+    .subscribe({
+      next: ({ hoy, ayer, consumoHoy, consumoAyer }) => {
+        const horas = (hoy || []).map((d: any) => d.hora);
+        const caudales = (hoy || []).map((d: any) => d.caudal_m3 ?? null);
+        const caudalesAnterior = (ayer || []).map((d: any) => d.caudal_m3 ?? null);
 
         this.lineChartData = {
           labels: horas,
@@ -119,24 +134,14 @@ export class DashboardComponent implements OnInit {
               borderDash: [6, 6],
               pointRadius: 3,
               pointBackgroundColor: '#16a34a'
-            },
-            {
-              label: 'Promedio mensual',
-              data: caudalesMensual,
-              borderColor: '#9333ea',
-              fill: false,
-              tension: 0.3,
-              borderWidth: 2,
-              borderDash: [2, 4],
-              pointRadius: 3,
-              pointBackgroundColor: '#9333ea'
             }
+            
           ]
         };
 
         if (!this.isAdmin) {
-          this.consumoDia = consumoHoy;
-          const consumoDiaAnterior = consumoAyer;
+          this.consumoDia = consumoHoy as number;
+          const consumoDiaAnterior = consumoAyer as number;
           this.estadoMedidores = this.reporteService.getEstadoMedidores();
           this.medidoresConectados = this.estadoMedidores.conectados;
           this.medidoresDesconectados = this.estadoMedidores.desconectados;
@@ -151,7 +156,7 @@ export class DashboardComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  }
+}
 
   calcularDiferencia(actual: number, anterior: number): void {
     if (!anterior || anterior === 0) {
