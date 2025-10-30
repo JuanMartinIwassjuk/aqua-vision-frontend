@@ -37,7 +37,9 @@ sectores: {
 
 ngOnInit(): void {
   const hogarId = this.homeService.getHomeId() ?? 0;
-  const dia = new Date().toISOString().split('T')[0];
+  const ahora = new Date();
+  const dia = ahora.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+
 
   forkJoin({
     consumos: this.consumoService.getConsumosPorHoraYSector(hogarId, dia),
