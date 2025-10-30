@@ -122,18 +122,20 @@ export class DashboardComponent implements OnInit {
               tension: 0.3,
               borderWidth: 3,
               pointRadius: 3.5,
-              pointBackgroundColor: '#2563eb'
+              pointBackgroundColor: '#2563eb',
+              backgroundColor:'transparent'
             },
             {
               label: 'Ayer',
               data: caudalesAnterior,
-              borderColor: '#16a34a',
+              borderColor: '#25a2ebff',
               fill: false,
               tension: 0.3,
               borderWidth: 2,
               borderDash: [6, 6],
               pointRadius: 3,
-              pointBackgroundColor: '#16a34a'
+              pointBackgroundColor: '#25a2ebff',
+              backgroundColor:'transparent'
             }
             
           ]
