@@ -5,8 +5,6 @@ import { HomeService } from '../../services/home.service';
 import { ChartConfiguration } from 'chart.js';
 import { ConsumoService } from '../../services/consumo.service';
 
-
-
 @Component({
   selector: 'app-consumption-prediction',
   standalone: true,
@@ -23,7 +21,6 @@ export class ConsumptionPredictionComponent implements OnInit {
   sectoresFiltradosData: any[] = [];
   hogarId: number | null = null;
 
-
   showInfo: boolean = false;
 
   filtrosParametros: { [key: string]: boolean } = {
@@ -36,6 +33,7 @@ export class ConsumptionPredictionComponent implements OnInit {
   lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+    elements: { line: { spanGaps: false } }, // evita unir los null
     scales: {
       x: {
         title: { display: true, text: 'Día del mes' },
@@ -75,16 +73,25 @@ export class ConsumptionPredictionComponent implements OnInit {
 
     this.consumoService.getPrediccionConsumoPorDia(this.hogarId).subscribe({
       next: (sectores) => {
+        const hoy = new Date().getDate(); // día actual del mes
+
         this.sectores = sectores.map((datosSector) => {
-          const labels = datosSector.dias.map((d) => d.toString());
-          const consumoActual = datosSector.consumoActual ?? [];
+          const labels = datosSector.dias.map((d: number) => d.toString());
+          const consumoActualOriginal = datosSector.consumoActual ?? [];
+
+          // ✅ Muestra hasta el día actual, corta después
+          const consumoActual = consumoActualOriginal.map((v: number, i: number) =>
+            i + 1 >= hoy ? null : v
+          );
+
           const consumoProyectado = datosSector.consumoProyectado ?? [];
           const tendenciaMin = datosSector.tendenciaMin ?? [];
           const tendenciaMax = datosSector.tendenciaMax ?? [];
 
           const costoPorLitro = 3;
           const costoActual = (
-            consumoActual.reduce((a, b) => a + b, 0) * costoPorLitro
+            consumoActual.filter((v) => v != null).reduce((a, b) => a + (b ?? 0), 0) *
+            costoPorLitro
           ).toFixed(2);
           const costoProyectado = (
             consumoProyectado.reduce((a, b) => a + b, 0) * costoPorLitro
