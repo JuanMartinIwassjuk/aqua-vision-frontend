@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { position: 'bottom' } },
+
     scales: {
       y: {
         beginAtZero: true,
@@ -66,8 +67,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const hogarId = this.homeService.getHomeId() ?? 0;
-
-    
     const hoy = new Date();
     const ayer = new Date(hoy);
     ayer.setDate(hoy.getDate() - 1);
