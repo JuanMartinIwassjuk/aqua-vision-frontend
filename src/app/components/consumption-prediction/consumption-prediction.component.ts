@@ -23,13 +23,14 @@ export class ConsumptionPredictionComponent implements OnInit {
   sectoresFiltradosData: any[] = [];
   hogarId: number | null = null;
 
-  // ✅ Nuevo: filtros de parámetros (grupos de datasets)
+
+  showInfo: boolean = false;
+
   filtrosParametros: { [key: string]: boolean } = {
-    Historico: true,
     Actual: true,
     Proyectado: true,
-    'Tendencia Mín': true,
-    'Tendencia Máx': true
+    'Tendencia Mín': false,
+    'Tendencia Máx': false
   };
 
   lineChartOptions: ChartConfiguration['options'] = {
@@ -65,6 +66,10 @@ export class ConsumptionPredictionComponent implements OnInit {
     }
   }
 
+  toggleInfo(): void {
+    this.showInfo = !this.showInfo;
+  }
+
   cargarPrediccion(): void {
     if (this.hogarId === null) return;
 
@@ -72,7 +77,6 @@ export class ConsumptionPredictionComponent implements OnInit {
       next: (sectores) => {
         this.sectores = sectores.map((datosSector) => {
           const labels = datosSector.dias.map((d) => d.toString());
-          const consumoHistorico = datosSector.consumoHistorico ?? [];
           const consumoActual = datosSector.consumoActual ?? [];
           const consumoProyectado = datosSector.consumoProyectado ?? [];
           const tendenciaMin = datosSector.tendenciaMin ?? [];
@@ -86,26 +90,23 @@ export class ConsumptionPredictionComponent implements OnInit {
             consumoProyectado.reduce((a, b) => a + b, 0) * costoPorLitro
           ).toFixed(2);
 
-        return {
-          nombre: datosSector.nombre_sector,
-          lineChartData: {
-            labels,
-            datasets: [
-              { data: consumoHistorico, label: 'Historico', borderColor: '#888', backgroundColor: 'rgba(136,136,136,0.2)', fill: false, tension: 0.3 },
-              { data: consumoActual, label: 'Actual', borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.3)', fill: false, tension: 0.3 },
-              { data: consumoProyectado, label: 'Proyectado', borderColor: '#28a745', backgroundColor: 'rgba(40,167,69,0.3)', fill: false, tension: 0.3 },
-              { data: tendenciaMin, label: 'Tendencia Mín', borderColor: '#ffc107', borderDash: [5, 5], fill: false, tension: 0.3 },
-              { data: tendenciaMax, label: 'Tendencia Máx', borderColor: '#dc3545', borderDash: [5, 5], fill: false, tension: 0.3 }
-            ]
-          },
-          costoActual,
-          costoProyectado,
-
-          tendenciaMinima: tendenciaMin.length ? Math.min(...tendenciaMin) : null,
-          tendenciaMaxima: tendenciaMax.length ? Math.max(...tendenciaMax) : null,
-          hallazgosClave: datosSector.hallazgosClave ?? []
-        };
-
+          return {
+            nombre: datosSector.nombre_sector,
+            lineChartData: {
+              labels,
+              datasets: [
+                { data: consumoActual, label: 'Actual', borderColor: '#2563eb',  fill: false, tension: 0.3, backgroundColor:'transparent', pointBackgroundColor: '#2563eb' },
+                { data: consumoProyectado, label: 'Proyectado', borderColor: '#25a2ebff', borderDash: [5, 5], fill: false, tension: 0.3, backgroundColor:'transparent', pointBackgroundColor: '#25a2ebff' },
+                { data: tendenciaMin, label: 'Tendencia Mín', borderColor: '#0c6930ff', borderDash: [5, 5], fill: false, tension: 0.3, backgroundColor:'transparent', pointBackgroundColor: '#0c6930ff' },
+                { data: tendenciaMax, label: 'Tendencia Máx', borderColor: '#a30817ff', borderDash: [5, 5], fill: false, tension: 0.3, backgroundColor:'transparent', pointBackgroundColor: '#a30817ff' }
+              ]
+            },
+            costoActual,
+            costoProyectado,
+            tendenciaMinima: tendenciaMin.length ? Math.min(...tendenciaMin) : null,
+            tendenciaMaxima: tendenciaMax.length ? Math.max(...tendenciaMax) : null,
+            hallazgosClave: datosSector.hallazgosClave ?? []
+          };
         });
 
         this.nombresSectores = this.sectores.map((s) => s.nombre);
