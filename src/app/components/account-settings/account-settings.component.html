@@ -160,6 +160,18 @@
     <div data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da3f" class="div-block-4"></div>
   </div>
 
+  <div class="modal-popup4" *ngIf="activeModal === 'logros'" (click)="closeModal()">
+    <div class="modal-popup-item" (click)="$event.stopPropagation()">
+      <img src="images/x.png" loading="lazy" data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da37" alt="cross-icon" class="cross-icon" (click)="closeModal()">
+      <h1 class="modal-datosperso-title">Logros</h1>
+      <div class="div-block-2">
+        <h4 class="descr-datosperso">Acá podrás ver todos tus logros obtenidos.</h4>
+                
+      </div>
+    </div>
+    <div data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da3f" class="div-block-4"></div>
+  </div>
+
   <div class="modal-popup5" *ngIf="activeModal === 'sensor1'" (click)="closeModal()">
     <div class="modal-popup-item" (click)="$event.stopPropagation()">
       <img src="images/x.png" loading="lazy" data-w-id="d1894b6f-801c-7159-f7fa-26f447befa29" alt="cross-icon" class="cross-icon" (click)="closeModal()">
@@ -249,6 +261,14 @@
         <div class="div-block-2">
           <h4 class="micuenta-modal-title">Facturación</h4>
           <p class="paragraph-2">Métodos de pago, ciclo de facturación</p>
+        </div>
+      </div>
+
+      <div data-w-id="0f4fe727-a0dd-3531-c6ee-b0344cff5d0c" class="modal-block3 w-inline-block" (click)="openModal('logros')">
+        <img src="images/trophy-icon-blanco.png" loading="lazy" alt="trophy-icon" class="image-3">
+        <div class="div-block-2">
+          <h4 class="micuenta-modal-title">Logros</h4>
+          <p class="paragraph-2">Todos tus logros obtenidos</p>
         </div>
       </div>
 
