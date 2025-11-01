@@ -86,6 +86,7 @@ html, body {
   --verde-completado: #dafdc2f0;
   --azul-fondo: #001F3F;
   --gris-fondo: #F4F4F4;
+  --gris-bloqueado: #505050;
 }
 html, body { height: 100%; }
 body { margin: 0;  }

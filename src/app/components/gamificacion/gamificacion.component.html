@@ -110,7 +110,7 @@
     </div>
   </div>
 
-  <div class="modal-popup" *ngIf="activeModal === 'avatar'" (click)="closeModal()">
+  <!--div class="modal-popup" *ngIf="activeModal === 'avatar'" (click)="closeModal()">
     <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
         <img src="images/x.png" loading="lazy" data-w-id="1e87669f-b793-dcfd-c1aa-3646179c847d" alt="cross-icon" class="cross-icon"
         (click)="closeModal()">
@@ -135,7 +135,7 @@
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
         
     </div>
-  </div>
+  </div-->
 
   <div class="modal-popup" *ngIf="activeModal === 'trivia'" (click)="closeModal()">
     <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
@@ -532,16 +532,16 @@
     <div class="container-coleccionables">
       <div class="container-avatar" *ngIf="user">
         <img src="images/avatar-gotita.png" loading="lazy" sizes="(max-width: 1024px) 100vw, 1024px" srcset="images/avatar-gotita-p-500.png 500w, images/avatar-gotita-p-800.png 800w, images/avatar-gotita.png 1024w" alt="" class="avatargota">
-        <img src="images/pencil.png" loading="lazy" alt="" class="lapiz_editar" (click)="openModal('avatar')">
+        <!--img src="images/pencil.png" loading="lazy" alt="" class="lapiz_editar" (click)="openModal('avatar')"-->
         <h1 class="nombre_avatar">Hola, {{ user.username }}</h1>
       </div>
       <div class="coleccionables">
-        <div class="logros">
+        <!--div class="logros">
           <div class="logros-modal w-inline-block">
             <img src="images/trophy.png" loading="lazy" alt="" class="image-10" (click)="openModal('logros')">
             <h4 class="logros">Mis logros</h4>
           </div>
-        </div>
+        </div-->
         <div data-w-id="a1b73ec8-d98a-c8c8-77d5-0bd64f309b33" class="medallas" (click)="openModal('medallas')">
           <div class="medallas-modal w-inline-block">
             <img src="images/sports_medal.png" loading="lazy" alt="" class="image-11">
@@ -553,14 +553,17 @@
             <img src="images/droplet.png" loading="lazy" alt="" class="image-12">
             <h1 class="container-puntos">99.999</h1>
           </div>
-        </div>
-        <div class="container-canjea-puntos">
-          <h4 class="texto-canjea-puntos" (click)="openModal('recompensas')">Canjea tus AquaPuntos acá</h4>
+        
+          <div class="container-canjea-puntos">
+            <h4 class="texto-canjea-puntos" (click)="openModal('recompensas')">Canjea tus AquaPuntos acá</h4>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="div-block">
+
+
+  <!--div class="div-block">
     <h2 class="heading-2">Trivias</h2>
     <p class="bio-micuenta">Poné a prueba tus conocimientos sobre el consumo de agua.</p>
     <div class="spacer-40"></div>
@@ -574,9 +577,10 @@
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 2: &quot;nombre&quot;</h4>
       </div>
-      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
+      <div class="trivia-modal-bloqueado w-inline-block">
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
-        <h4 class="trivia">Trivia 3: &quot;nombre&quot;</h4>
+        <img src="images/candado-blanco.png" loading="lazy" sizes="(max-width: 512px) 100vw, 512px" alt="" class="image-13">
+        <h4 class="trivia-bloqueado">Trivia 3: &quot;nombre&quot;</h4>
       </div>
       <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
@@ -586,8 +590,59 @@
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
         <h4 class="trivia">Trivia 5: &quot;nombre&quot;</h4>
       </div>
+      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
+        <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
+        <h4 class="trivia">Trivia 6: &quot;nombre&quot;</h4>
+      </div>
+      <div [routerLink]="['/gamificacion/trivia']" class="trivia-modal w-inline-block">
+        <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
+        <h4 class="trivia">Trivia 7: &quot;nombre&quot;</h4>
+      </div>
+    </div>
+  </div-->
+
+  <div class="div-block">
+    <h2 class="heading-2">Trivias</h2>
+    <p class="bio-micuenta">Poné a prueba tus conocimientos sobre el consumo de agua.</p>
+    <div class="spacer-40"></div>
+    <div class="container-trivias">
+      <div *ngFor="let trivia of trivias" 
+        [ngClass]="{
+         'trivia-modal-completado': trivia.completado,
+         'trivia-modal': !trivia.completado && trivia.diaSemana === diaActual,
+         'trivia-modal-no-completado': !trivia.completado && trivia.diaSemana < diaActual,         
+         'trivia-modal-bloqueado': trivia.diaSemana > diaActual
+        }"
+        [routerLink]="!trivia.completado && trivia.diaSemana === diaActual ? ['/gamificacion/trivia'] : null"
+        [class.w-inline-block]="true"
+        (mouseenter)="trivia.diaSemana > diaActual && showTooltip($event, trivia)"
+        (mousemove)="trivia.diaSemana > diaActual && moveTooltip($event)"
+        (mouseleave)="hideTooltip()">
+        
+        <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
+    
+        <img *ngIf="trivia.completado" src="images/check.png" loading="lazy" alt="check" class="image-13">
+        <img *ngIf="trivia.diaSemana > diaActual" src="images/candado-blanco.png" loading="lazy" alt="candado" class="image-13">
+        <img *ngIf="!trivia.completado && trivia.diaSemana < diaActual" src="images/no-completado.png" loading="lazy" alt="no completado" class="image-17-no-completado">
+
+        <h4 [ngClass]="{
+          'trivia-completado': trivia.completado,
+          'trivia': !trivia.completado && trivia.diaSemana === diaActual,
+          'trivia-no-completado': !trivia.completado && trivia.diaSemana < diaActual,
+          'trivia-bloqueado': trivia.diaSemana > diaActual
+          }">
+          {{ trivia.nombre }}
+        </h4>
+      </div>
+    </div>
+    
+    <!-- Tooltip flotante -->
+    <div
+      class="tooltip-flotante" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
+      {{ tooltipText }}
     </div>
   </div>
+
   <div class="seccion-minijuegos">
     <h2 class="heading-2">Minijuegos</h2>
     <p class="bio-micuenta">Poné a prueba tu agilidad y memoria mientras aprendés a cuidar el agua.</p>
