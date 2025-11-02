@@ -70,4 +70,15 @@ export class AccountSettingsComponent {
     */
   }
 
+  descargarManual() {
+    const link = document.createElement('a');
+    link.href = 'files/Manual_de_usuario.pdf';
+    link.download = 'Manual_Sensor.pdf';
+    link.click();
+  }
+
+  irASoporte() {
+    window.open('https://aquavision-comercial.webflow.io/contacto', '_blank');
+  }
+
 }

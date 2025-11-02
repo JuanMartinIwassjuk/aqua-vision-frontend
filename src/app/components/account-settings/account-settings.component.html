@@ -178,6 +178,7 @@
       <h1 class="modal-datosperso-title">Sensor / 1</h1>
       <div class="div-block-2">
         <h4 class="descr-datosperso">Acá podrás ver el estado del sensor junto con más detalles del mismo.</h4>
+        
         <div class="nombre-apellido-container">
           <div class="nombre-container">
             <h4 class="datoperso-subtitle">Nombre del sensor / Sector en el que se encuentra</h4>
@@ -188,14 +189,35 @@
             <p class="datoperso">&lt;estado-actual&gt;</p>
           </div>
         </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Última medición</h4>
-          <p class="datoperso">&lt;ultima-medicion&gt;</p>
+        
+        <!-- Nueva fila: medición + consumo + botones -->
+        <div class="sensor-info-row">
+          <div class="info-col">
+            <div class="dato-perso-container">
+              <h4 class="datoperso-subtitle">Última medición</h4>
+              <p class="datoperso">&lt;ultima-medicion&gt;</p>
+            </div>
+            <div class="dato-perso-container">
+              <h4 class="datoperso-subtitle">Consumo actual</h4>
+              <p class="datoperso">&lt;consumo-actual&gt;</p>
+            </div>
+          </div>
+
+          <div class="sensor-buttons">
+            <button class="btn-sensor manual" (click)="descargarManual()">
+              <img src="images/manual-negro.png" alt="manual-icon" class="btn-icon icon-normal">
+              <img src="images/manual-blanco.png" alt="manual-icon" class="btn-icon icon-hover">
+                Manual de uso
+            </button>
+
+            <button class="btn-sensor soporte" (click)="irASoporte()">
+              <img src="images/soporte-negro.png" alt="soporte-icon" class="btn-icon icon-normal">
+              <img src="images/soporte-blanco.png" alt="soporte-icon" class="btn-icon icon-hover">
+                Soporte técnico
+            </button>
+          </div>
         </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Consumo actual</h4>
-          <p class="datoperso">&lt;consumo-actual&gt;</p>
-        </div>
+        
       </div>
     </div>
     <div data-w-id="d1894b6f-801c-7159-f7fa-26f447befa31" class="div-block-4"></div>
@@ -207,6 +229,7 @@
       <h1 class="modal-datosperso-title">Sensor / 2</h1>
       <div class="div-block-2">
         <h4 class="descr-datosperso">Acá podrás ver el estado del sensor junto con más detalles del mismo.</h4>
+        
         <div class="nombre-apellido-container">
           <div class="nombre-container">
             <h4 class="datoperso-subtitle">Nombre del sensor / Sector en el que se encuentra</h4>
@@ -217,14 +240,35 @@
             <p class="datoperso">&lt;estado-actual&gt;</p>
           </div>
         </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Última medición</h4>
-          <p class="datoperso">&lt;ultima-medicion&gt;</p>
+        
+        <!-- Nueva fila: medición + consumo + botones -->
+        <div class="sensor-info-row">
+          <div class="info-col">
+            <div class="dato-perso-container">
+              <h4 class="datoperso-subtitle">Última medición</h4>
+              <p class="datoperso">&lt;ultima-medicion&gt;</p>
+            </div>
+            <div class="dato-perso-container">
+              <h4 class="datoperso-subtitle">Consumo actual</h4>
+              <p class="datoperso">&lt;consumo-actual&gt;</p>
+            </div>
+          </div>
+
+          <div class="sensor-buttons">
+            <button class="btn-sensor manual" (click)="descargarManual()">
+              <img src="images/manual-negro.png" alt="manual-icon" class="btn-icon icon-normal">
+              <img src="images/manual-blanco.png" alt="manual-icon" class="btn-icon icon-hover">
+                Manual de uso
+            </button>
+
+            <button class="btn-sensor soporte" (click)="irASoporte()">
+              <img src="images/soporte-negro.png" alt="soporte-icon" class="btn-icon icon-normal">
+              <img src="images/soporte-blanco.png" alt="soporte-icon" class="btn-icon icon-hover">
+                Soporte técnico
+            </button>
+          </div>
         </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Consumo actual</h4>
-          <p class="datoperso">&lt;consumo-actual&gt;</p>
-        </div>
+        
       </div>
     </div>
     <div data-w-id="d1894b6f-801c-7159-f7fa-26f447befa31" class="div-block-4"></div>
@@ -308,7 +352,7 @@
         </div>
     </div>
 
-      <a href="https://aquavision-registro.webflow.io" class="modal-block modal-plus w-inline-block">
+      <a href="https://aquavision-comercial.webflow.io/contacto" target="_blank" rel="noopener noreferrer" class="modal-block modal-plus w-inline-block">
         <img src="images/circle-fading-plus.png" loading="lazy" alt="plus-icon" class="image-3 modal-plus">
         <div class="div-block-2 modal-plus">
           <h5 class="micuenta-modal-title modal-plus">Solicitar un nuevo sensor</h5>
