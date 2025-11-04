@@ -2110,6 +2110,28 @@
   margin-bottom: 10px;
 }
 
+.mailverification-alert{
+  margin-left: 1rem;
+  width: 0px;
+  height: 0px;
+  min-width: 35px;
+  min-height: 30px;
+  margin-bottom: 10px;
+  filter: hue-rotate(20deg) brightness(0.9);
+}
+
+.mailnoverificado-text {
+  color: #e74c3c;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.mailverificado-text {
+  color: #27ae60;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
 .correo-container{
   display: flex;
   flex-direction: row;

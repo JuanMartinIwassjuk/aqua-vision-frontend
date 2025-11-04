@@ -45,8 +45,18 @@
           <h4 class="datoperso-subtitle">Correo</h4>
           <div class="correo-container">
             <p class="datoperso">{{user.correo}}</p>
-            <img src="images/check.png" loading="lazy" alt="check" class="mailverification-check">
-            <p class="mailverificado-text">Dirección de correo electrónico verificado.</p>
+
+            <!-- Caso verificado -->
+            <ng-container *ngIf="user.correoVerificado; else noVerificado">
+              <img src="images/check.png" loading="lazy" alt="check" class="mailverification-check">
+              <p class="mailverificado-text">Dirección de correo electrónico verificada.</p>
+            </ng-container>
+
+            <!-- Caso no verificado -->
+            <ng-template #noVerificado>
+              <img src="images/alert.png" loading="lazy" alt="alert" class="mailverification-alert">
+              <p class="mailnoverificado-text">Tu correo no está verificado. Revisá tu bandeja para completar la verificación.</p>
+            </ng-template>
           </div>
         </div>     
         <div class="dato-perso-container">
@@ -312,7 +322,7 @@
             <p class="paragraph-2">
               Estado actual:
               <span [ngClass]="sensor.estadoActual === 'ON' ? 'estado-cone' : 'estado-descone'">
-                {{ sensor.estadoActual }}
+                {{ sensor.estadoActual === 'ON' ? 'Conectado' : 'Desconectado'  }}
               </span>
             </p>
             <div [ngClass]="sensor.estadoActual === 'ON' ? 'punto-cone' : 'punto-descone'"></div>
