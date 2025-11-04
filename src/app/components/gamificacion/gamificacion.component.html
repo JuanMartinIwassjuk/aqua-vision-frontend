@@ -621,7 +621,7 @@
         
         <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
     
-        <img *ngIf="trivia.completado" src="images/check.png" loading="lazy" alt="check" class="image-13">
+        <img *ngIf="trivia.completado && trivia.diaSemana <= diaActual" src="images/check.png" loading="lazy" alt="check" class="image-13">
         <img *ngIf="trivia.diaSemana > diaActual" src="images/candado-blanco.png" loading="lazy" alt="candado" class="image-13">
         <img *ngIf="!trivia.completado && trivia.diaSemana < diaActual" src="images/no-completado.png" loading="lazy" alt="no completado" class="image-17-no-completado">
 

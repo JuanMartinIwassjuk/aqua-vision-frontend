@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef, OnInit} from '@angular/core';
+import { Component, ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef, OnInit, HostListener} from '@angular/core';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -56,6 +56,11 @@ export class GamificacionComponent implements OnInit{
     this.activeModal = id;
   }
   
+  @HostListener('document:keydown.escape', ['$event'])
+  onKeydownHandler() {
+    this.closeModal();
+  }
+
   closeModal() {
     this.activeModal = null;
   }
@@ -109,10 +114,49 @@ export class GamificacionComponent implements OnInit{
   tooltipX = 0;
   tooltipY = 0;
 
+  private intervalId: any = null;
+
+  /**
+   * Calcula el tiempo restante hasta el inicio del día de la trivia.
+   */
+  calcularTiempoRestante(diaTrivia: number): string {
+    const ahora = new Date();
+    const diaActual = this.diaActual;
+
+    let diasFaltantes = diaTrivia - diaActual;
+    if (diasFaltantes < 0) diasFaltantes += 7; // por si se cruza de semana
+
+    const proximoDia = new Date();
+    proximoDia.setDate(ahora.getDate() + diasFaltantes);
+    proximoDia.setHours(0, 0, 0, 0);
+
+    const diff = proximoDia.getTime() - ahora.getTime();
+
+    if (diff <= 0) return 'Disponible ahora';
+
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((diff % (1000 * 60)) / 1000);
+
+    let texto = '';
+    if (dias > 0) texto += `${dias}d `;
+    texto += `${horas}h ${minutos}m ${segundos}s`;
+    return texto;
+  }
+
   showTooltip(event: MouseEvent, trivia: any) {
-    this.tooltipText = `Disponible en ${this.tiempoRestante}`;
     this.tooltipVisible = true;
     this.moveTooltip(event);
+
+    // Limpiar intervalos previos
+    if (this.intervalId) clearInterval(this.intervalId);
+
+    // Actualizar cada segundo para esa trivia puntual
+    this.tooltipText = `Disponible en ${this.calcularTiempoRestante(trivia.diaSemana)}`;
+    this.intervalId = setInterval(() => {
+      this.tooltipText = `Disponible en ${this.calcularTiempoRestante(trivia.diaSemana)}`;
+    }, 1000);
   }
 
   moveTooltip(event: MouseEvent) {
@@ -122,5 +166,9 @@ export class GamificacionComponent implements OnInit{
 
   hideTooltip() {
     this.tooltipVisible = false;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
   }
 }

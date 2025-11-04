@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef, HostListener} from '@angular/core';
 import { AuthService } from '../../auth/serviceAuth/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -53,6 +53,11 @@ export class AccountSettingsComponent implements OnInit{
   openModal(id: string) {
     console.log('Abriendo modal: ', id)
     this.activeModal = id;
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onKeydownHandler() {
+    this.closeModal();
   }
 
   closeModal() {
