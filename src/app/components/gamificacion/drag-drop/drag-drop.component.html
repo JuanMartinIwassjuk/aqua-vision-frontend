@@ -6,10 +6,12 @@
 <div class="aquamatch-layout">
   <div class="aquamatch-board" #container (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()">
 
-    <div *ngIf="showIntro" class="intro-screen">
-      <p>💧 En este juego vas a aprender cómo cuidar el agua uniendo tarjetas relacionadas.</p>
-      <button class="start-btn" (click)="startGame()">Comenzar juego</button>
-    </div>
+<div *ngIf="showIntro" class="intro-screen">
+  <div class="intro-box">
+    <p>💧 En este juego vas a aprender cómo cuidar el agua uniendo tarjetas relacionadas.</p>
+    <button class="start-btn" (click)="startGame()">Comenzar juego</button>
+  </div>
+</div>
 
 
     <div *ngIf="showNextLevel" class="intro-screen">

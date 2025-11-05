@@ -93,7 +93,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.backgroundMusic = new Audio('sounds/background-music.mp3');
     this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.1;
+    this.backgroundMusic.volume = 0.03;
 
     this.fixSound = new Audio('sounds/fix-gota-sound.mp3');
 
@@ -118,7 +118,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
 
       const drop = new Audio('sounds/gota-sound.mp3');
       drop.loop = true;
-      drop.volume = 0.2;
+      drop.volume = 0.09;
       leak.dropSound = drop;
 
       setTimeout(() => {
@@ -163,6 +163,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
 
     const clickSound = new Audio('sounds/fix-gota-sound.mp3');
     clickSound.play();
+    clickSound.volume = 0.09
 
 
     const allClosed = this.currentScene.leaks.every(l => l.closed);

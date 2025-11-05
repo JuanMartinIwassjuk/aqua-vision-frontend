@@ -310,3 +310,91 @@
 .start-btn:hover {
   background: #0277bd;
 }
+
+
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) rotate(2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+
+@keyframes bounceMatch {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, opacity 0.25s;
+}
+
+
+.card.left-card {
+  animation: slideInLeft 0.6s ease;
+}
+
+.card.right-card {
+  animation: slideInRight 0.6s ease;
+}
+
+
+.card:hover:not(.grayed) {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.card.matched {
+  background-color: #4CAF50;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: bounceMatch 0.4s ease;
+}
+
+
+.card.wrong {
+  animation: shake 0.35s ease;
+  background-color: #e57373 !important;
+}
+
+
+.start-btn,
+.next-level-btn,
+.claim-btn {
+  transform: scale(1);
+  transition: all 0.2s ease;
+}
+
+.start-btn:hover,
+.next-level-btn:hover,
+.claim-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.merged-card {
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.3s ease;
+}
+
+.merged-card:hover {
+  transform: scale(1.02);
+}
