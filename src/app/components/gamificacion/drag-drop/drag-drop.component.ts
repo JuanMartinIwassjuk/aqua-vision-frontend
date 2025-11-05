@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
+ 
 interface Card {
   id: number;
   text: string;
@@ -11,6 +12,14 @@ interface Card {
   initialX?: number;
   initialY?: number;
   tip?: string;
+}
+
+export interface MergedCard {
+  id: number;
+  leftText: string;
+  rightText: string;
+  tip: string;
+  claimed?: boolean;
 }
 
 @Component({
@@ -47,6 +56,7 @@ export class DragDropComponent implements OnInit {
   offsetX = 0;
   offsetY = 0;
   tips: string[] = [];
+  mergedCards: MergedCard[] = [];
 
   @ViewChild('container', { static: true }) container!: ElementRef;
 
@@ -126,18 +136,24 @@ export class DragDropComponent implements OnInit {
         leftRect.y > rightRect.y + rightRect.height
       );
 
-      if (isTouching) {
-        card.matched = true;
-        match.matched = true;
+if (isTouching) {
+  card.matched = true;
+  match.matched = true;
 
-        const distanceX = (match.x ?? 0) - (card.x ?? 0);
-        card.x = (card.x ?? 0) + distanceX;
-        card.y = match.y ?? card.y ?? 0;
+  this.mergedCards.push({
+    id: card.id,
+    leftText: card.text,
+    rightText: match.text,
+    tip: card.tip ?? ''
+  });
 
-        if (card.tip) this.tips.push(card.tip);
 
-        return this.finishDrag();
-      }
+  this.leftCards = this.leftCards.filter(c => c.id !== card.id);
+  this.rightCards = this.rightCards.filter(c => c.id !== match.id);
+
+  this.finishDrag();
+  return;
+}
     }
 
     card.x = card.initialX ?? card.x ?? 0;
@@ -177,4 +193,11 @@ export class DragDropComponent implements OnInit {
     this.draggingCard = null;
 
   }
+
+  claimPoints(card: MergedCard) {
+  if (!card.claimed) {
+    card.claimed = true;
+    alert('finish');
+  }
+}
 }
