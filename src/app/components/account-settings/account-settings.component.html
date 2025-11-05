@@ -30,36 +30,38 @@
         <div class="nombre-apellido-container">
           <div class="nombre-container">
             <h4 class="datoperso-subtitle">Nombre</h4>
-            <p class="datoperso">&lt;username&gt;</p>
+            <p class="datoperso">{{user.nombre}}</p>
           </div>
           <div class="apellido-container">
             <h4 class="datoperso-subtitle">Apellido</h4>
-            <p class="datoperso">&lt;lastname&gt;</p>
+            <p class="datoperso">{{user.apellido}}</p>
           </div>
         </div>
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Nombre de usuario</h4>
-          <p class="datoperso">{{user.username}}</p>
+          <p class="datoperso">{{user.nombreUsuario}}</p>
         </div>  
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Correo</h4>
           <div class="correo-container">
-            <p class="datoperso">&lt;user-mail&gt;</p>
-            <img src="images/check.png" loading="lazy" alt="check" class="mailverification-check">
-            <p class="mailverificado-text">Dirección de correo electrónico verificado.</p>
+            <p class="datoperso">{{user.correo}}</p>
+
+            <!-- Caso verificado -->
+            <ng-container *ngIf="user.correoVerificado; else noVerificado">
+              <img src="images/check.png" loading="lazy" alt="check" class="mailverification-check">
+              <p class="mailverificado-text">Dirección de correo electrónico verificada.</p>
+            </ng-container>
+
+            <!-- Caso no verificado -->
+            <ng-template #noVerificado>
+              <img src="images/alert.png" loading="lazy" alt="alert" class="mailverification-alert">
+              <p class="mailnoverificado-text">Tu correo no está verificado. Revisá tu bandeja para completar la verificación.</p>
+            </ng-template>
           </div>
-        </div>  
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Rol</h4>
-          <p class="datoperso">&lt;user-role&gt;</p>
-        </div>  
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Estado de la cuenta</h4>
-          <p class="datoperso">&lt;estado-cuenta&gt;</p>
-        </div>  
+        </div>     
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Último login</h4>
-          <p class="datoperso">&lt;last-login&gt;</p>
+          <p class="datoperso">{{user.ultimoLogin | date:'short'}}</p>
         </div>  
       </div>
     </div>
@@ -76,34 +78,30 @@
         <h4 class="descr-datosperso">Acá podrás ver y editar los datos de tu hogar como dirección, tipo de vivienda, ambiente y más.</h4>
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Nombre del hogar</h4>
-          <p class="datoperso">&lt;nombre-hogar&gt;</p>
+          <p class="datoperso">{{hogar?.nombreHogar}}</p>
         </div>
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Dirección</h4>
-          <p class="datoperso">&lt;direccion&gt;</p>
+          <p class="datoperso">{{hogar?.direccion}}</p>
         </div>
         <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Nombre del hogar</h4>
-          <p class="datoperso">&lt;algo&gt;</p>
+          <h4 class="datoperso-subtitle">Ciudad</h4>
+          <p class="datoperso">{{hogar?.ciudad}}</p>
         </div>
         <div class="nombre-apellido-container">
           <div class="nombre-container">
             <h4 class="datoperso-subtitle">Tipo de hogar</h4>
-            <p class="datoperso">&lt;tipo-hogar&gt;</p>
-          </div>
-          <div class="apellido-container">
-            <h4 class="datoperso-subtitle">Cantidad de ambientes</h4>
-            <p class="datoperso">&lt;cant-ambientes&gt;</p>
+            <p class="datoperso">{{hogar?.tipoHogar}}</p>
           </div>
         </div>
         <div class="nombre-apellido-container">
           <div class="apellido-container">
             <h4 class="datoperso-subtitle">Cantidad de baños</h4>
-            <p class="datoperso">&lt;cant-baños&gt;</p>
+            <p class="datoperso">{{hogar?.cantidadBanos}}</p>
           </div>
           <div class="apellido-container">
             <h4 class="datoperso-subtitle">Cantidad de integrantes</h4>
-            <p class="datoperso">&lt;cant-integrantes&gt;</p>
+            <p class="datoperso">{{hogar?.cantidadIntegrantes}}</p>
           </div>
         </div>
         <div class="nombre-apellido-container">
@@ -140,83 +138,96 @@
         <div class="nombre-apellido-container">
           <div class="nombre-container">
             <h4 class="datoperso-subtitle">Plan actual</h4>
-            <p class="datoperso">&lt;nombre-plan&gt;</p>
+            <p class="datoperso">{{facturacion?.planActual}}</p>
           </div>
           <div class="apellido-container">
             <h4 class="datoperso-subtitle">Monto mensual</h4>
-            <p class="datoperso">&lt;$$monto&gt;</p>
+            <p class="datoperso">{{facturacion?.monto | currency:'ARS'}}</p>
           </div>
         </div>
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Fecha de próximo vencimiento</h4>
-          <p class="datoperso">&lt;fecha-venc&gt;</p>
+          <p class="datoperso">{{facturacion?.fechaProxVencimiento | date}}</p>
         </div>
         <div class="dato-perso-container">
           <h4 class="datoperso-subtitle">Método de pago</h4>
-          <p class="datoperso">&lt;metodo-pago&gt;</p>
+          <p class="datoperso">{{facturacion?.metodoPago}}</p>
         </div>
       </div>
     </div>
     <div data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da3f" class="div-block-4"></div>
   </div>
 
-  <div class="modal-popup5" *ngIf="activeModal === 'sensor1'" (click)="closeModal()">
+  <div class="modal-popup4" *ngIf="activeModal === 'logros'" (click)="closeModal()">
     <div class="modal-popup-item" (click)="$event.stopPropagation()">
-      <img src="images/x.png" loading="lazy" data-w-id="d1894b6f-801c-7159-f7fa-26f447befa29" alt="cross-icon" class="cross-icon" (click)="closeModal()">
-      <h1 class="modal-datosperso-title">Sensor / 1</h1>
+      <img src="images/x.png" loading="lazy" data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da37" alt="cross-icon" class="cross-icon" (click)="closeModal()">
+      <h1 class="modal-datosperso-title">Logros</h1>
       <div class="div-block-2">
-        <h4 class="descr-datosperso">Acá podrás ver el estado del sensor junto con más detalles del mismo.</h4>
-        <div class="nombre-apellido-container">
-          <div class="nombre-container">
-            <h4 class="datoperso-subtitle">Nombre del sensor / Sector en el que se encuentra</h4>
-            <p class="datoperso">&lt;nombre-sensor&gt;</p>
-          </div>
-          <div class="apellido-container">
-            <h4 class="datoperso-subtitle">Estado actual</h4>
-            <p class="datoperso">&lt;estado-actual&gt;</p>
-          </div>
-        </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Última medición</h4>
-          <p class="datoperso">&lt;ultima-medicion&gt;</p>
-        </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Consumo actual</h4>
-          <p class="datoperso">&lt;consumo-actual&gt;</p>
-        </div>
+        <h4 class="descr-datosperso">Acá podrás ver todos tus logros obtenidos.</h4>
+                
       </div>
     </div>
-    <div data-w-id="d1894b6f-801c-7159-f7fa-26f447befa31" class="div-block-4"></div>
+    <div data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da3f" class="div-block-4"></div>
   </div>
 
-  <div class="modal-popup5" *ngIf="activeModal === 'sensor2'" (click)="closeModal()">
+  <ng-container *ngFor="let sensor of sensores; let i = index">
+  <div
+    class="modal-popup5"
+    *ngIf="activeModal === 'sensor' + i"
+    (click)="closeModal()"
+  >
     <div class="modal-popup-item" (click)="$event.stopPropagation()">
-      <img src="images/x.png" loading="lazy" data-w-id="d1894b6f-801c-7159-f7fa-26f447befa29" alt="cross-icon" class="cross-icon" (click)="closeModal()">
-      <h1 class="modal-datosperso-title">Sensor / 2</h1>
+      <img src="images/x.png" alt="cross-icon" class="cross-icon" (click)="closeModal()">
+      <h1 class="modal-datosperso-title">Sensor / {{ i + 1 }}</h1>
       <div class="div-block-2">
-        <h4 class="descr-datosperso">Acá podrás ver el estado del sensor junto con más detalles del mismo.</h4>
+        <h4 class="descr-datosperso">
+          Acá podrás ver el estado del sensor junto con más detalles del mismo.
+        </h4>
+
         <div class="nombre-apellido-container">
           <div class="nombre-container">
             <h4 class="datoperso-subtitle">Nombre del sensor / Sector en el que se encuentra</h4>
-            <p class="datoperso">&lt;nombre-sensor&gt;</p>
+            <p class="datoperso">{{ sensor?.nombreSensor }}</p>
           </div>
           <div class="apellido-container">
             <h4 class="datoperso-subtitle">Estado actual</h4>
-            <p class="datoperso">&lt;estado-actual&gt;</p>
+            <p class="datoperso">{{ sensor?.estadoActual }}</p>
           </div>
         </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Última medición</h4>
-          <p class="datoperso">&lt;ultima-medicion&gt;</p>
-        </div>
-        <div class="dato-perso-container">
-          <h4 class="datoperso-subtitle">Consumo actual</h4>
-          <p class="datoperso">&lt;consumo-actual&gt;</p>
+
+        <div class="sensor-info-row">
+          <div class="info-col">
+            <div class="dato-perso-container">
+              <h4 class="datoperso-subtitle">Última medición</h4>
+              <p class="datoperso">{{ sensor?.ultimaMedicion | date:'short' }}</p>
+            </div>
+            <div class="dato-perso-container">
+              <h4 class="datoperso-subtitle">Consumo actual</h4>
+              <p class="datoperso">{{ sensor?.consumoActual }}</p>
+            </div>
+          </div>
+
+          <div class="sensor-buttons">
+            <button class="btn-sensor manual" (click)="descargarManual()">
+              <img src="images/manual-negro.png" alt="manual-icon" class="btn-icon icon-normal">
+              <img src="images/manual-blanco.png" alt="manual-icon" class="btn-icon icon-hover">
+              Manual de uso
+            </button>
+
+              <button class="btn-sensor soporte" (click)="irASoporte()">
+                <img src="images/soporte-negro.png" alt="soporte-icon" class="btn-icon icon-normal">
+                <img src="images/soporte-blanco.png" alt="soporte-icon" class="btn-icon icon-hover">
+                  Soporte técnico
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div class="div-block-4"></div>
     </div>
-    <div data-w-id="d1894b6f-801c-7159-f7fa-26f447befa31" class="div-block-4"></div>
-  </div>
+  </ng-container>
+
 
   <!--FIN DE MODALS ORIGINALES-->
 
@@ -252,6 +263,14 @@
         </div>
       </div>
 
+      <div data-w-id="0f4fe727-a0dd-3531-c6ee-b0344cff5d0c" class="modal-block3 w-inline-block" (click)="openModal('logros')">
+        <img src="images/trophy-icon-blanco.png" loading="lazy" alt="trophy-icon" class="image-3">
+        <div class="div-block-2">
+          <h4 class="micuenta-modal-title">Logros</h4>
+          <p class="paragraph-2">Todos tus logros obtenidos</p>
+        </div>
+      </div>
+
       <!--
       <div *ngFor="let sensor of sensores" class="card-sensor" (click)="abrirModal(sensor)">
         <h3>{{ sensor.nombre }}</h3>
@@ -262,6 +281,7 @@
       </div>
       -->
 
+      <!--
       <div data-w-id="c0fc98e8-a192-c32a-3af1-373e67541366" class="modal-block4 w-inline-block" (click)="openModal('sensor1')">
         <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
         <div class="div-block-2">
@@ -286,9 +306,31 @@
             <div class="punto-descone"></div>
           </div>
         </div>
-    </div>
+      </div>
+      -->
 
-      <a href="https://aquavision-registro.webflow.io" class="modal-block modal-plus w-inline-block">
+      <!-- Cards de sensores -->
+      <div
+        *ngFor="let sensor of sensores; let i = index"
+        class="modal-block4 w-inline-block"
+        (click)="openModal('sensor' + i)"
+      >
+        <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
+        <div class="div-block-2">
+          <h4 class="micuenta-modal-title">Sensor / {{ sensor?.nombreSensor }}</h4>
+          <div class="estado-container">
+            <p class="paragraph-2">
+              Estado actual:
+              <span [ngClass]="sensor.estadoActual === 'ON' ? 'estado-cone' : 'estado-descone'">
+                {{ sensor.estadoActual === 'ON' ? 'Conectado' : 'Desconectado'  }}
+              </span>
+            </p>
+            <div [ngClass]="sensor.estadoActual === 'ON' ? 'punto-cone' : 'punto-descone'"></div>
+          </div>
+        </div>
+      </div>
+
+      <a href="https://aquavision-comercial.webflow.io/contacto" target="_blank" rel="noopener noreferrer" class="modal-block modal-plus w-inline-block">
         <img src="images/circle-fading-plus.png" loading="lazy" alt="plus-icon" class="image-3 modal-plus">
         <div class="div-block-2 modal-plus">
           <h5 class="micuenta-modal-title modal-plus">Solicitar un nuevo sensor</h5>
