@@ -139,8 +139,8 @@
   clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 25% 50%, 0% 0%);
   display: flex;
   align-items: center;
-  justify-content: flex-start; 
-  padding-left: 45px; 
+  justify-content: flex-start;
+  padding-left: 45px;
 }
 
 .card.right-card .card-text {
@@ -149,7 +149,7 @@
 }
 
 .card.right-card .card-text {
-  margin-left: 35px; 
+  margin-left: 35px;
   padding-right: 10px;
   text-align: left;
 }
@@ -216,7 +216,7 @@
   background: #e3f2fd;
   border-left: 5px solid #0288d1;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 12px 16px;
   margin-bottom: 15px;
   animation: fadeIn 0.4s ease;
@@ -262,3 +262,51 @@
 }
 
 
+.next-level-btn {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #43a047;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+}
+
+.next-level-btn:hover {
+  background: #2e7d32;
+}
+
+.intro-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: #ffffffcc;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.start-btn {
+  background: #0288d1;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.start-btn:hover {
+  background: #0277bd;
+}

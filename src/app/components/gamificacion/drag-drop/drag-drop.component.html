@@ -6,39 +6,54 @@
 <div class="aquamatch-layout">
   <div class="aquamatch-board" #container (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()">
 
-    <div *ngFor="let card of leftCards" class="card left-card" [style.left.px]="card.x" [style.top.px]="card.y"
-      [class.grayed]="card.matched" (mousedown)="startDrag($event, card)">
-      <div class="card-text">
-        {{ card.text }}
+    <div *ngIf="showIntro" class="intro-screen">
+      <p>💧 En este juego vas a aprender cómo cuidar el agua uniendo tarjetas relacionadas.</p>
+      <button class="start-btn" (click)="startGame()">Comenzar juego</button>
+    </div>
+
+
+    <div *ngIf="showNextLevel" class="intro-screen">
+      <p>🎉 ¡Excelente! Completaste el nivel {{ currentLevel }}.</p>
+      <p>¿Listo para seguir aprendiendo y ganar más puntos?</p>
+      <button class="start-btn" (click)="nextLevel()">Siguiente nivel 🚀</button>
+    </div>
+
+    <div *ngIf="finalMessage" class="intro-screen">
+      <p>🏆 ¡Felicitaciones! Completaste todos los niveles de AquaMatch.</p>
+      <p>Ahora sos un experto en el cuidado del agua.</p>
+      <button class="start-btn" (click)="restartGame()">Volver a jugar 🔁</button>
+    </div>
+
+
+    <ng-container *ngIf="!showIntro">
+      <div *ngFor="let card of leftCards" class="card left-card" [style.left.px]="card.x" [style.top.px]="card.y"
+        (mousedown)="startDrag($event, card)">
+        <div class="card-text">{{ card.text }}</div>
       </div>
+
+      <div *ngFor="let card of rightCards" class="card right-card" [style.left.px]="card.x" [style.top.px]="card.y">
+        <div class="card-text">{{ card.text }}</div>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <div class="aquamatch-info">
+    <h3>💧 Consejos obtenidos</h3>
+    <div *ngIf="mergedCards.length === 0" class="locked-info">
+      🔒 Uní las tarjetas para descubrir consejos sobre cómo cuidar el agua.
     </div>
-
-<div *ngFor="let card of rightCards" class="card right-card" 
-     [style.left.px]="card.x" [style.top.px]="card.y"
-     [class.grayed]="card.matched">
-  <div class="card-text">
-    {{ card.text }}
-  </div>
-</div>
-
-  </div>
-
-<div class="aquamatch-info">
-  <h3>💧 Consejos obtenidos</h3>
-
-  <div *ngIf="mergedCards.length === 0" class="locked-info">
-    🔒 Uní las tarjetas para descubrir consejos sobre cómo cuidar el agua.
-  </div>
-
-  <div *ngFor="let merged of mergedCards" class="merged-card">
-    <div class="merged-card-header">
-      <div class="left-text">{{ merged.leftText }}</div>
-      <div class="right-text">{{ merged.rightText }}</div>
+    <div *ngFor="let merged of mergedCards" class="merged-card">
+      <div class="merged-card-header">
+        <div class="left-text">{{ merged.leftText }}</div>
+        <div class="right-text">{{ merged.rightText }}</div>
+      </div>
+      <div class="merged-card-tip">
+        💡 {{ merged.tip }}
+      </div>
+      <button class="claim-btn" (click)="claimPoints(merged)" [disabled]="merged.claimed">
+        {{ merged.claimed ? '✅ Reclamado' : '🎁 Reclamar puntos' }}
+      </button>
     </div>
-    <div class="merged-card-tip">
-      💡 {{ merged.tip }}
-    </div>
-    <button class="claim-btn" (click)="claimPoints(merged)">🎁 Reclamar puntos</button>
   </div>
-</div>
 </div>
