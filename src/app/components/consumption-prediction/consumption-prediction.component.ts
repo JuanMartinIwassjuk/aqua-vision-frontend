@@ -81,7 +81,7 @@ export class ConsumptionPredictionComponent implements OnInit {
 
           // ✅ Muestra hasta el día actual, corta después
           const consumoActual = consumoActualOriginal.map((v: number, i: number) =>
-            i + 1 >= hoy ? null : v
+            i + 1 > hoy ? null : v
           );
 
           const consumoProyectado = datosSector.consumoProyectado ?? [];
