@@ -4,14 +4,15 @@
 </div>
 
 <div class="aquamatch-layout">
-  <div class="aquamatch-board" #container (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()">
+  <div class="aquamatch-board" #container (mousemove)="onMove($event)" (mouseup)="onEnd($event)"
+    (touchmove)="onMove($event)" (touchend)="onEnd($event)">
 
-<div *ngIf="showIntro" class="intro-screen">
-  <div class="intro-box">
-    <p>💧 En este juego vas a aprender cómo cuidar el agua uniendo tarjetas relacionadas.</p>
-    <button class="start-btn" (click)="startGame()">Comenzar juego</button>
-  </div>
-</div>
+    <div *ngIf="showIntro" class="intro-screen">
+      <div class="intro-box">
+        <p>💧 En este juego vas a aprender cómo cuidar el agua uniendo tarjetas relacionadas.</p>
+        <button class="start-btn" (click)="startGame()">Comenzar juego</button>
+      </div>
+    </div>
 
 
     <div *ngIf="showNextLevel" class="intro-screen">
@@ -29,7 +30,7 @@
 
     <ng-container *ngIf="!showIntro">
       <div *ngFor="let card of leftCards" class="card left-card" [style.left.px]="card.x" [style.top.px]="card.y"
-        (mousedown)="startDrag($event, card)">
+        (mousedown)="startDrag($event, card)" (touchstart)="startDrag($event, card)">
         <div class="card-text">{{ card.text }}</div>
       </div>
 
