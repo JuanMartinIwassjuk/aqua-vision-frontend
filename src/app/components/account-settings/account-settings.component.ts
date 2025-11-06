@@ -89,7 +89,7 @@ export class AccountSettingsComponent implements OnInit{
 
   descargarManual() {
     const link = document.createElement('a');
-    link.href = 'files/Manual_de_usuario.pdf';
+    link.href = 'files/Manual_usuario_Aquavision_v1.0.pdf';
     link.download = 'Manual_Sensor.pdf';
     link.click();
   }
