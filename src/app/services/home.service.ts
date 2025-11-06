@@ -5,6 +5,8 @@ import { Sector } from '../models/sector';
 import { Notification } from '../models/notification';
 import { HttpClient } from '@angular/common/http';
 
+import { Hogar } from '../models/hogar';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -72,5 +74,11 @@ export class HomeService {
 
   getSectorsByHomeId(homeId: number): Observable<Sector[]> {
     return this.http.get<Sector[]>(`http://localhost:8080/hogares/${homeId}/sectores`);
+  }
+
+  private apiUrl = 'http://localhost:8080/hogares';
+   
+  getPuntosHogar(hogarId: number): Observable<Hogar> {
+    return this.http.get<Hogar>(`${this.apiUrl}/${hogarId}/puntos`);
   }
 }

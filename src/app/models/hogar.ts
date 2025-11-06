@@ -10,5 +10,6 @@ export class Hogar {
     tienePileta!: boolean;
     tieneTanquePropio!: boolean;
     tieneTermotanqueElectrico!: boolean;
+    puntos!: number;
 
 }

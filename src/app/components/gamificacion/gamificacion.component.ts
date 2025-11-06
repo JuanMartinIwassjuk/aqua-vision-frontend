@@ -9,6 +9,8 @@ import { HomeService } from '../../services/home.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 
+import { Hogar } from '../../models/hogar';
+
 @Component({
   selector: 'app-gamificacion',
   imports: [CommonModule, RouterModule],
@@ -107,6 +109,15 @@ export class GamificacionComponent implements OnInit{
 
     this.actualizarTiempoRestante();
     setInterval(() => this.actualizarTiempoRestante(), 1000);
+
+    this.homeService.waitForHomeId().subscribe({
+      next: (hogarId: number) => {
+        console.log('Hogar ID obtenido:', hogarId);
+       this.cargarPuntos(hogarId);
+      },
+      error: (err) => console.error('Error al obtener hogarId', err)
+    });
+
   }    
 
   tooltipVisible = false;
@@ -170,5 +181,11 @@ export class GamificacionComponent implements OnInit{
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+  }
+
+  hogar?: Hogar;
+
+  cargarPuntos(hogarId:number): void {
+    this.homeService.getPuntosHogar(hogarId).subscribe(data => this.hogar = data);
   }
 }
