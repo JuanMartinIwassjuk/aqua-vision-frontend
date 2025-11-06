@@ -11,6 +11,9 @@ import { User } from '../../models/user';
 
 import { Hogar } from '../../models/hogar';
 
+import { GamificacionService } from '../../services/gamificacion.service';
+import { HogarRanking, Recompensa } from '../../models/gamificacion';
+
 @Component({
   selector: 'app-gamificacion',
   imports: [CommonModule, RouterModule],
@@ -35,7 +38,8 @@ export class GamificacionComponent implements OnInit{
     private authService: AuthService, 
     private router: Router,
     private homeService: HomeService,
-    private userService: UserService
+    private userService: UserService,
+    private gamificacionService: GamificacionService
   ){  }
   
   @ViewChild('medallasModal') medallasModal!: TemplateRef<any>;
@@ -118,6 +122,9 @@ export class GamificacionComponent implements OnInit{
       error: (err) => console.error('Error al obtener hogarId', err)
     });
 
+    this.cargarRanking();
+    this.cargarRecompensas();
+
   }    
 
   tooltipVisible = false;
@@ -188,4 +195,45 @@ export class GamificacionComponent implements OnInit{
   cargarPuntos(hogarId:number): void {
     this.homeService.getPuntosHogar(hogarId).subscribe(data => this.hogar = data);
   }
+
+  rankingHogares: HogarRanking[] = [];
+  top5Hogares: HogarRanking[] = [];
+  recompensas: Recompensa[] = [];
+
+  cargarRanking(): void {
+    this.gamificacionService.getRanking().subscribe({
+      next: (data) => {
+        const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
+
+        let ultimaPosicion = 0;
+        let ultimoPuntaje: number | null = null;
+        let conteo = 0;
+
+        this.rankingHogares = hogaresOrdenados.map((hogar) => {
+          conteo++;
+
+          // Si el puntaje es distinto al anterior, se actualiza la posición
+          if (hogar.puntaje_ranking !== ultimoPuntaje) {
+            ultimaPosicion = conteo;
+            ultimoPuntaje = hogar.puntaje_ranking;
+          }
+          return {
+            ...hogar,
+            posicion: ultimaPosicion
+          };
+        });
+
+      this.top5Hogares = this.rankingHogares.slice(0, 5);
+      },
+      error: (err) => console.error('Error al cargar ranking', err)
+    });
+  }
+
+  cargarRecompensas(): void {
+    this.gamificacionService.getRecompensas().subscribe({
+      next: (data) => this.recompensas = data,
+      error: (err) => console.error('Error al cargar recompensas', err)
+    });
+  }
+
 }

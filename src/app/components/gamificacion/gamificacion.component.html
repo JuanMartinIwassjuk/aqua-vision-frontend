@@ -175,182 +175,26 @@
             <h3 class="heading-7">Puntos</h3>
           </div>
         </li>
-        <li class="user-ranking completo">
+        
+        <!--LISTADO DINAMICO DE HOGARES-->
+        
+        <li class="user-ranking" *ngFor="let hogar of rankingHogares">
           <div class="user-container-ranking">
             <div class="user-posicion-rank">
-              <h3>1</h3>
+              <h3>{{ hogar.posicion }}</h3>
             </div>
             <div class="user-rank-container">
               <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepito</h3>
-              </div>
+                <div>
+                  <h3>{{ hogar.nombre }}</h3>
+                </div>
             </div>
           </div>
-          <div class="user-puntos-rank">
-            <h3>4500</h3>
+            <div class="user-puntos-rank">
+              <h3>{{ hogar.puntaje_ranking }}</h3>
           </div>
         </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>2</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepita</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>4430</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>3</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitoo</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>4200</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>4</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepito-responsable</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>3800</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>5</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>450</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>6</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>350</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>6</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>300</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>7</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>200</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>8</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>100</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>9</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>50</h3>
-          </div>
-        </li>
-        <li class="user-ranking completo">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>10</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>0</h3>
-          </div>
-        </li>
+
       </ul>
     </div>
     </div>
@@ -369,6 +213,7 @@
       </div>
       <div class="container-recompensas">
       <ul role="list" class="recompensas-list">
+        <!--HEADER DE TABLA RECOMPENSA-->
         <li class="titulo-recompensa">
           <div class="header-recompensa">
             <div class="div-block-9">
@@ -379,141 +224,31 @@
             </div>
           </div>
         </li>
-        <li class="item-recompensa">
+
+        <!--TABLA DINAMICA TOMANDO RECOMPENSAS-->
+        <li class="item-recompensa" *ngFor="let recompensa of recompensas; let i = index">
           <div class="user-container-ranking">
             <div class="user-posicion-rank">
-              <h3>1</h3>
+              <h3>{{ i + 1 }}</h3>
             </div>
             <div class="user-rank-container">
-              <h3>3 meses gratis en ChatGPT Pro</h3>
+              <h3>{{ recompensa.descripcion }}</h3>
             </div>
           </div>
           <div class="recompensa-canjearpuntos-boton">
-            <h3>4500</h3>
+            <h3>{{ recompensa.puntosNecesarios }}</h3>
             <button class="animated-button">
               <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
+                <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
               </svg>
               <span class="text">Canjear</span>
               <span class="circle"></span>
               <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
+                <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
               </svg>
             </button>
           </div>
         </li>
-        <li class="item-recompensa">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>2</h3>
-            </div>
-            <div class="user-rank-container">
-              <h3>3 meses gratis en ChatGPT Pro</h3>
-            </div>
-          </div>
-          <div class="recompensa-canjearpuntos-boton">
-            <h3>4500</h3>
-            <button class="animated-button">
-              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-              <span class="text">Canjear</span>
-              <span class="circle"></span>
-              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        </li>
-        <li class="item-recompensa">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>3</h3>
-            </div>
-            <div class="user-rank-container">
-              <h3>3 meses gratis en ChatGPT Pro</h3>
-            </div>
-          </div>
-          <div class="recompensa-canjearpuntos-boton">
-            <h3>4500</h3>
-            <button class="animated-button">
-              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-              <span class="text">Canjear</span>
-              <span class="circle"></span>
-              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        </li>
-        <li class="item-recompensa">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>4</h3>
-            </div>
-            <div class="user-rank-container">
-              <h3>3 meses gratis en ChatGPT Pro</h3>
-            </div>
-          </div>
-          <div class="recompensa-canjearpuntos-boton">
-            <h3>4500</h3>
-            <button class="animated-button">
-              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-              <span class="text">Canjear</span>
-              <span class="circle"></span>
-              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        </li>
-        <li class="item-recompensa">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>5</h3>
-            </div>
-            <div class="user-rank-container">
-              <h3>3 meses gratis en ChatGPT Pro</h3>
-            </div>
-          </div>
-          <div class="recompensa-canjearpuntos-boton">
-            <h3>4500</h3>
-            <button class="animated-button">
-              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-              <span class="text">Canjear</span>
-              <span class="circle"></span>
-              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        </li>   
       </ul>
     </div>
     </div>
@@ -804,13 +539,13 @@
       </ul>
     </div>
   </div>
-  <!--TODO: QUE SEA TABLA DINAMICA Y LO TRAIGA DEL BACK TODO-->
   <div class="div-block">
     <h2 class="heading-2">Ranking de hogares</h2>
     <p class="bio-micuenta">Competí con otros hogares para ver quién cuida más el agua.</p>
     <div class="spacer-40"></div>
     <div class="container-ranking">
       <ul role="list" class="ranking-list">
+        <!--HEADER DE LA TABLA-->
         <li class="titulo-ranking">
           <div class="div-block-8">
             <div class="div-block-9">
@@ -824,86 +559,26 @@
             <h3 class="heading-7">Puntos</h3>
           </div>
         </li>
-        <li class="user-ranking">
+
+        <!--LISTADO DINAMICO DE HOGARES-->
+        
+        <li class="user-ranking" *ngFor="let hogar of top5Hogares">
           <div class="user-container-ranking">
             <div class="user-posicion-rank">
-              <h3>1</h3>
+              <h3>{{ hogar.posicion }}</h3>
             </div>
             <div class="user-rank-container">
               <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepito</h3>
-              </div>
+                <div>
+                  <h3>{{ hogar.nombre }}</h3>
+                </div>
             </div>
           </div>
-          <div class="user-puntos-rank">
-            <h3>4500</h3>
+            <div class="user-puntos-rank">
+              <h3>{{ hogar.puntaje_ranking }}</h3>
           </div>
         </li>
-        <li class="user-ranking">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>2</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepita</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>4430</h3>
-          </div>
-        </li>
-        <li class="user-ranking">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>3</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitoo</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>4200</h3>
-          </div>
-        </li>
-        <li class="user-ranking">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>4</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepito-responsable</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>3800</h3>
-          </div>
-        </li>
-        <li class="user-ranking">
-          <div class="user-container-ranking">
-            <div class="user-posicion-rank">
-              <h3>5</h3>
-            </div>
-            <div class="user-rank-container">
-              <div><img src="images/circle-user-dark.png" loading="lazy" alt="user-icon"></div>
-              <div>
-                <h3>Pepitos</h3>
-              </div>
-            </div>
-          </div>
-          <div class="user-puntos-rank">
-            <h3>450</h3>
-          </div>
-        </li>
+
         <li class="vertodo-ranking">
           <div class="vermas-rank" (click)="openModal('ranking')">
             <h3 class="heading-4">Ver todas las posiciones del ranking</h3>
