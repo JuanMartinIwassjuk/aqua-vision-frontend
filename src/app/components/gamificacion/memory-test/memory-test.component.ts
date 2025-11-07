@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { GamificacionService } from '../../../services/gamificacion.service';
 
 interface Card {
   id: number;
@@ -65,9 +66,15 @@ export class MemoryGameComponent {
       matched: false
     }
   };
+  hogarId: any;
 
+    constructor(
+      private gamificacionService: GamificacionService
+    ){  }
+    
   ngOnInit() {
     this.resetMemory();
+    this.hogarId = Number(sessionStorage.getItem('homeId'));
   }
 
   startGame() {
@@ -75,23 +82,23 @@ export class MemoryGameComponent {
     this.startTimer();
   }
 
-resetMemory() {
-  this.cards = [...this.icons, ...this.icons]
-    .map((icon, i) => ({ id: i, icon, flipped: false, matched: false }))
-    .sort(() => Math.random() - 0.5);
+  resetMemory() {
+    this.cards = [...this.icons, ...this.icons]
+      .map((icon, i) => ({ id: i, icon, flipped: false, matched: false }))
+      .sort(() => Math.random() - 0.5);
 
-  this.flippedCards = [];
-  this.matchedCards = [];
-  this.scoreCards = 0;
-  this.timeLeft = 60;
-  Object.values(this.infoTexts).forEach(info => {
-    info.claimed = false;
-    info.matched = false;
-  });
+    this.flippedCards = [];
+    this.matchedCards = [];
+    this.scoreCards = 0;
+    this.timeLeft = 60;
+    Object.values(this.infoTexts).forEach(info => {
+      info.claimed = false;
+      info.matched = false;
+    });
 
-  clearInterval(this.timerInterval);
-  this.gameStarted = false; 
-}
+    clearInterval(this.timerInterval);
+    this.gameStarted = false;
+  }
 
   startTimer() {
     this.timerInterval = setInterval(() => {
@@ -123,10 +130,24 @@ resetMemory() {
     }
   }
 
-  claimPoints(icon: string) {
-    if (!this.infoTexts[icon].claimed) {
-      this.infoTexts[icon].claimed = true;
+  markAsRead(icon: string) {
+    const info = this.infoTexts[icon];
+    if (!info.claimed) {
+      info.claimed = true;
       this.scoreCards += 10;
     }
   }
+
+  allRead(): boolean {
+    return Object.values(this.infoTexts).every(info => info.claimed);
+  }
+
+  claimAllPoints() {
+    const puntosTotales = this.scoreCards;
+    this.gamificacionService.addPuntosReclamados(this.hogarId, puntosTotales, 'AQUA_MATCH').subscribe({
+      error: (err: any) => {
+        console.error('Error al registrar puntos:', err);
+      }
+    });
+}
 }

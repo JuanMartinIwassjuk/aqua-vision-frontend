@@ -18,4 +18,14 @@ export class GamificacionService {
   getRecompensas(): Observable<Recompensa[]> {
     return this.http.get<Recompensa[]>(`${this.baseUrl}/recompensas`);
   }
+
+  addPuntosReclamados(hogarId: number, puntos: number, minijuego: string): Observable<any> {
+  const dto = {
+    hogarId,
+    puntos,
+    fecha: new Date(),
+    minijuego
+  }; //TODO pasar a model 
+  return this.http.post(`${this.baseUrl}/${hogarId}/reclamar-puntos`, dto);
+}
 }

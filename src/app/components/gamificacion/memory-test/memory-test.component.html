@@ -5,12 +5,7 @@
 
 <div class="memory-layout">
   <div class="memory-board">
-    <div
-      class="card"
-      *ngFor="let card of cards"
-      (click)="flipCard(card)"
-      [class.disabled]="!gameStarted"
-    >
+    <div class="card" *ngFor="let card of cards" (click)="flipCard(card)" [class.disabled]="!gameStarted">
       <div class="card-inner" [class.flipped]="card.flipped || card.matched">
         <div class="card-front">❓</div>
         <div class="card-back">{{ card.icon }}</div>
@@ -27,14 +22,13 @@
         <h4>{{ infoTexts[icon].title }}</h4>
         <div *ngIf="infoTexts[icon].matched">
           <p>{{ infoTexts[icon].detail }}</p>
-          <button
-            *ngIf="!infoTexts[icon].claimed"
-            (click)="claimPoints(icon)"
-          >
-            💎 Reclamar 10 puntos
+
+          <button *ngIf="!infoTexts[icon].claimed" (click)="markAsRead(icon)">
+            ✅ Entendido
           </button>
-          <span *ngIf="infoTexts[icon].claimed" class="claimed">✅ Puntos reclamados</span>
+
         </div>
+
         <div *ngIf="!infoTexts[icon].matched" class="locked">
           🔒 Esperando coincidencia...
         </div>
@@ -47,8 +41,10 @@
 
       <div class="bottom-buttons">
         <button *ngIf="!gameStarted" class="start-btn" (click)="startGame()">💧 Comenzar juego</button>
-        <button *ngIf="gameStarted" class="reset-btn" (click)="resetMemory()">🔄 Reiniciar</button>
+
+        <button *ngIf="gameStarted" class="reset-btn" (click)="claimAllPoints()" [disabled]="!allRead()">
+          💎 Reclamar puntos
+        </button>
       </div>
     </div>
   </div>
-</div>
