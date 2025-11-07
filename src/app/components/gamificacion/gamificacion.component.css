@@ -45,7 +45,6 @@ h2 {
 
 .bio-micuenta {
   color: var(--azul-fondo);
-  width: 50%;
   font-size: 18px;
   text-align: left;
   font-weight: 300;
@@ -1026,6 +1025,10 @@ h2 {
   width: 35px;
   height: 35px;
   margin-bottom: 5px;
+}
+
+.medallas-image{
+  width: 30px !important;
 }
 
 .hud-button:hover {
