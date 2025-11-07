@@ -232,7 +232,7 @@
   <!--FIN DE MODALS ORIGINALES-->
 
   <!--ACA EMPIEZA LA GRILLA-->
-  <div class="div-block">
+  <div class="container-micuenta">
     <h2 class="heading-2">Panel de usuario</h2>
     <p class="bio-micuenta">Desde aquí podés gestionar tus datos personales, configurar tu hogar y dispositivos, administrar tu acceso y revisar tu facturación.</p>
     <div class="spacer-48"></div>
@@ -240,7 +240,7 @@
       
         <div data-w-id="a1b73ec8-d98a-c8c8-77d5-0bd64f309b33" class="modal-block w-inline-block" (click)="openModal('personal')">
             <img src="images/circle-user.png" loading="lazy" alt="user-icon" class="image-3">
-            <div class="div-block-2">
+            <div class="card-micuenta">
                 <h4 class="micuenta-modal-title">Datos personales</h4>
                 <p class="paragraph-2">Nombre, correo y opciones de cuenta</p>
             </div>
@@ -249,7 +249,7 @@
         
         <div class="modal-block2 w-inline-block" (click)="openModal('home')">
           <img src="images/house.png" alt="house-icon" class="image-3">
-          <div class="div-block-2">
+          <div class="card-micuenta">
             <h4 class="micuenta-modal-title">Tu hogar</h4>
             <p class="paragraph-2">Dirección, tipo de vivienda y ambiente</p>
           </div>
@@ -257,7 +257,7 @@
 
       <div data-w-id="0f4fe727-a0dd-3531-c6ee-b0344cff5d0c" class="modal-block3 w-inline-block" (click)="openModal('billing')">
         <img src="images/credit-card.png" loading="lazy" alt="creditcard-icon" class="image-3">
-        <div class="div-block-2">
+        <div class="card-micuenta">
           <h4 class="micuenta-modal-title">Facturación</h4>
           <p class="paragraph-2">Métodos de pago, ciclo de facturación</p>
         </div>
@@ -265,49 +265,11 @@
 
       <div data-w-id="0f4fe727-a0dd-3531-c6ee-b0344cff5d0c" class="modal-block3 w-inline-block" (click)="openModal('logros')">
         <img src="images/trophy-icon-blanco.png" loading="lazy" alt="trophy-icon" class="image-3">
-        <div class="div-block-2">
+        <div class="card-micuenta">
           <h4 class="micuenta-modal-title">Logros</h4>
           <p class="paragraph-2">Todos tus logros obtenidos</p>
         </div>
       </div>
-
-      <!--
-      <div *ngFor="let sensor of sensores" class="card-sensor" (click)="abrirModal(sensor)">
-        <h3>{{ sensor.nombre }}</h3>
-        <p>{{ sensor.ubicacion }}</p>
-        <span [ngClass]="sensor.estado === 'ONLINE' ? 'estado-online' : 'estado-offline'">
-        {{ sensor.estado }}
-        </span>
-      </div>
-      -->
-
-      <!--
-      <div data-w-id="c0fc98e8-a192-c32a-3af1-373e67541366" class="modal-block4 w-inline-block" (click)="openModal('sensor1')">
-        <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
-        <div class="div-block-2">
-          <h4 class="micuenta-modal-title">Sensor / 1</h4>
-          <div class="estado-container">
-            <p class="paragraph-2">Estado actual: 
-              <span class="estado-cone">Conectado</span>
-            </p>
-            <div class="punto-cone"></div>
-          </div>
-        </div>
-      </div>
-
-      <div data-w-id="d887608c-89d2-fa88-2b16-c05d52332187" href="#" class="modal-block5 w-inline-block" (click)="openModal('sensor2')">
-        <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
-        <div class="div-block-2">
-          <h4 class="micuenta-modal-title">Sensor / 2</h4>
-          <div class="estado-container">
-            <p class="paragraph-2">Estado actual: 
-              <span class="estado-descone">Desconectado</span>
-            </p>
-            <div class="punto-descone"></div>
-          </div>
-        </div>
-      </div>
-      -->
 
       <!-- Cards de sensores -->
       <div
@@ -316,7 +278,7 @@
         (click)="openModal('sensor' + i)"
       >
         <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
-        <div class="div-block-2">
+        <div class="card-micuenta">
           <h4 class="micuenta-modal-title">Sensor / {{ sensor?.nombreSensor }}</h4>
           <div class="estado-container">
             <p class="paragraph-2">
@@ -332,7 +294,7 @@
 
       <a href="https://aquavision-comercial.webflow.io/contacto" target="_blank" rel="noopener noreferrer" class="modal-block modal-plus w-inline-block">
         <img src="images/circle-fading-plus.png" loading="lazy" alt="plus-icon" class="image-3 modal-plus">
-        <div class="div-block-2 modal-plus">
+        <div class="card-micuenta modal-plus">
           <h5 class="micuenta-modal-title modal-plus">Solicitar un nuevo sensor</h5>
         </div>
       </a>
