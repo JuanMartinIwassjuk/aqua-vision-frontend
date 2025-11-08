@@ -2500,6 +2500,7 @@ input:checked:focus + .switch-left + .switch-right {
     width: 25px;
   }
 }
+/**/
 /* Mobile */
 @media (max-width: 480px) {
   .grid {
