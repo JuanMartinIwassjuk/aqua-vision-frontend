@@ -1,0 +1,99 @@
+<!-- eventos-admin.component.html (corregido) -->
+<div class="contenedor-reporte">
+  <div class="exports">
+    <div class="exportar-container">
+      <button class="btn-exportar" (click)="exportarExcel()">📥 Exportar XLSX</button>
+      <button class="btn-exportar pdf" (click)="exportarPDF()">📄 Exportar PDF</button>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="filtros-generales">
+    <div class="inputs-fecha">
+      <label>Desde:
+        <input type="date" [(ngModel)]="fechaDesde">
+      </label>
+      <label>Hasta:
+        <input type="date" [(ngModel)]="fechaHasta">
+      </label>
+      <div class="inputs-fecha-buttom">
+        <button (click)="aplicarFiltro()">Filtrar</button>
+      </div>
+    </div>
+
+    <div class="filtros-tags" style="display:flex; gap:8px; flex-wrap:wrap;">
+      <div *ngFor="let t of tags" class="tag-pill" [style.borderColor]="t.color">
+        <label>
+          <input type="checkbox" [checked]="selectedTags[t.id]" (change)="toggleTag(t.id)" />
+          <span [style.color]="t.color">{{ t.nombre }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="resumen-global" style="margin-top:12px;">
+    <div>
+      <p><strong class="blue_marine_effect">Eventos:</strong> {{ totalEventos }}</p>
+      <p><strong class="blue_marine_effect">Litros totales:</strong> {{ totalLitros | number:'1.0-2' }} L</p>
+    </div>
+    <div>
+      <p><strong class="blue_marine_effect">Costo total:</strong> {{ totalCosto | currency:'ARS':'symbol':'1.0-2' }}</p>
+      <p><strong class="blue_marine_effect">Tags activos:</strong> {{ activeTagsCount }}</p>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="chart-card" style="display:flex; gap:20px;">
+    <div style="flex:1; min-height:260px;">
+      <h4>Eventos por Tag</h4>
+      <canvas baseChart [data]="tagPieData" [type]="'doughnut'" [options]="chartResponsiveOptions"></canvas>
+    </div>
+    <div style="flex:2; min-height:260px;">
+      <h4>Eventos por Día</h4>
+      <canvas baseChart [data]="eventsByDayData" [options]="chartResponsiveOptions" chartType="bar"></canvas>
+    </div>
+  </div>
+
+  <br>
+
+ <div class="card-sector">
+  <h3>Listado de Eventos</h3>
+  <div *ngIf="eventosList.length === 0" class="empty-list">No hay eventos para las selecciones.</div>
+
+  <ul class="event-list" *ngIf="eventosList.length">
+    <li *ngFor="let e of eventosList | slice:0:25" class="event-item">
+      <div class="event-header">
+        <div class="event-title" title="{{ e.titulo }}">{{ e.titulo }}</div>
+        <div class="event-time">{{ formatDateTime(e.fechaInicio) }}</div>
+      </div>
+
+      <div class="event-body">
+        <div class="event-desc" *ngIf="e.descripcion; else noDesc">{{ e.descripcion }}</div>
+        <ng-template #noDesc>
+          <div class="event-desc muted">Sin descripción</div>
+        </ng-template>
+
+        <div class="event-meta">
+          <span class="meta-item">💧 <strong>{{ e.litrosConsumidos || 0 }}</strong> L</span>
+          <span class="meta-sep">•</span>
+          <span class="meta-item">{{ e.costo | currency:'ARS':'symbol':'1.0-2' }}</span>
+          <span class="meta-sep">•</span>
+        </div>
+
+        <div class="tags-inline">
+          <span *ngFor="let t of e.tags" class="tag-inline" [style.background]="t.color">{{ t.nombre }}</span>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+
+
+</div>
+  
+  
+  
+ 
