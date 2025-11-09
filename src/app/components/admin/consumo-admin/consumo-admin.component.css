@@ -1,0 +1,18 @@
+
+.contenedor-reporte { padding: 20px; max-width: 1200px; margin: auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2C2C2C; background-color: #F8FAFB; }
+.filtros-generales { display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap; }
+.inputs-fecha { display:flex; gap:12px; align-items:center; padding:12px; background:#fff; border-radius:10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.inputs-fecha label { display:flex; flex-direction:column; font-size:13px; color:#555; }
+.inputs-fecha input[type="date"] { padding:6px 8px; border-radius:6px; border:1px solid #ddd; }
+.inputs-fecha button { padding:8px 12px; background:#001F3F; color:white; border-radius:6px; border:none; cursor:pointer; }
+.atajos-tiempo { display:flex; gap:10px; }
+.atajos-tiempo button { background:#f0f4f8; border-radius:8px; padding:8px 12px; border:1px solid #cbd5e0; cursor:pointer; }
+.resumen-global { display:flex; justify-content:space-between; gap:20px; background:linear-gradient(135deg,#fff,#f7fbff); padding:18px; border-radius:12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+.grafico-contenedor { margin-top:20px; padding:16px; background:#fff; border-radius:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); height:420px; }
+.exports { display:flex; justify-content:flex-end; }
+.exportar-container { display:flex; gap:8px; }
+.btn-exportar { background:#28a745; color:white; border:none; padding:0.6rem 1rem; border-radius:6px; cursor:pointer; }
+.btn-exportar.pdf { background:#e74c3c; }
+.empty-state { display:flex; justify-content:center; padding:20px; }
+.empty-inner { display:flex; gap:16px; align-items:center; background:#fff; padding:18px; border-radius:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.empty-img { width:80px; height:auto; }

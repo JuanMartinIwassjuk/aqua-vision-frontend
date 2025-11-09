@@ -1,0 +1,63 @@
+
+<div class="contenedor-reporte">
+  <div class="exports">
+    <div class="exportar-container">
+      <button class="btn-exportar" (click)="exportarExcel()">📥 Exportar XLSX</button>
+      <button class="btn-exportar pdf" (click)="exportarPDF()">📄 Exportar PDF</button>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="filtros-generales">
+    <div class="inputs-fecha">
+      <label>Desde:
+        <input type="date" [(ngModel)]="fechaDesde">
+      </label>
+      <label>Hasta:
+        <input type="date" [(ngModel)]="fechaHasta">
+      </label>
+      <div class="inputs-fecha-buttom">
+        <button (click)="aplicarFiltro()">Filtrar</button>
+      </div>
+    </div>
+
+    <div class="atajos-tiempo">
+      <button (click)="setAtajo('7d')">Últimos 7 días</button>
+      <button (click)="setAtajo('1m')">Último mes</button>
+      <button (click)="setAtajo('3m')">Últimos 3 meses</button>
+    </div>
+  </div>
+
+  <div *ngIf="sinDatos" class="empty-state">
+    <div class="empty-inner">
+      <img src="images/avatar-gotita.png" alt="Sin datos" class="empty-img pulse" />
+      <div class="empty-text">
+        <h3>💧 No hay datos para el período seleccionado</h3>
+        <p>Intenta ampliar el rango de fechas.</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!sinDatos" class="resumen-global">
+    <div>
+      <p><strong class="blue_marine_effect">Consumo total:</strong> {{ resumen.total | number:'1.0-2' }} L</p>
+      <p><strong class="blue_marine_effect">Media diaria:</strong> {{ resumen.media | number:'1.0-2' }} L</p>
+    </div>
+    <div>
+      <p><strong class="blue_marine_effect">Pico:</strong> {{ resumen.pico | number:'1.0-2' }} L</p>
+      <p><strong class="blue_marine_effect">Costo total:</strong> {{ resumen.costo | currency:'ARS':'symbol':'1.0-2' }}</p>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="grafico-contenedor" style="height: 420px;">
+    <h3 class="blue_marine_effect">Evolución Consumo Global</h3>
+    <canvas baseChart
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+            chartType="line">
+    </canvas>
+  </div>
+</div>
