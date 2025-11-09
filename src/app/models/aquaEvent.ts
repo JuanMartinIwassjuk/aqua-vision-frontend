@@ -4,7 +4,7 @@ import { Sector } from "./sector";
 export interface AquaEvent {
   id?: number ;
   titulo: string;    
-  descripcion: string; 
+  descripcion?: string;
   fechaInicio?: Date;
   fechaFin?: Date | null;
   estado: string;

@@ -54,11 +54,19 @@
           <li *ngIf="isUser">
             <a routerLink="/gamificacion" (click)="closeMenu()">AquaQuest</a>
           </li>
+                    
+          <li class="submenu" *ngIf="isAdmin">
+            <a (click)="toggleService(1)">Reportes ▾</a>
+            <ul *ngIf="expandedIndex === 1" class="submenu-list">
+              <li><a routerLink="/consumo-admin" (click)="closeMenu()">▸ Consumo</a></li>
+              <li><a routerLink="/eventos-admin" (click)="closeMenu()">▸ Eventos</a></li>
+              <li><a routerLink="/localidad-admin" (click)="closeMenu()">▸ Localidad</a></li>
+            </ul>
+          </li>
            <li><a routerLink="/consumption-alerts" (click)="closeMenu()">Notificaciones</a></li>
 
-          <li *ngIf="isAdmin">
-            <a routerLink="/data-export" (click)="closeMenu()">Exportar Datos</a>
-          </li>
+
+
 
 
           <li *ngIf="isUser || isAdmin">

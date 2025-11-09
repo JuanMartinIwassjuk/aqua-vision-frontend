@@ -153,8 +153,9 @@ const datosExportar = this.sectoresFiltrados.map(s => ({
   }
 
   exportarPDF(): void {
-    const hoy = new Date();
-    this.reporteService.descargarReportePDF(this.homeId, hoy, hoy);
+    const ahora = new Date();
+    const dia = ahora.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+    this.reporteService.descargarReportePDF(this.homeId, dia, dia);
   }
 
 

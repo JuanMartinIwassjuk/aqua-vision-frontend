@@ -84,6 +84,22 @@ export const routes: Routes = [
     loadComponent: () => import('./components/events/event-graphic/event-graphic.component').then(c => c.EventGraphicComponent),
     canActivate: [AuthGuard] 
   },
+      {
+    path: 'consumo-admin',
+    loadComponent: () => import('./components/admin/consumo-admin/consumo-admin.component').then(c => c.ConsumoAdminComponent
+    ),
+    canActivate: [AuthGuard] 
+  },
+    {
+    path: 'eventos-admin',
+    loadComponent: () => import('./components/admin/eventos-admin/eventos-admin.component').then(c => c.EventosAdminComponent),
+    canActivate: [AuthGuard] 
+  },
+    {
+    path: 'localidad-admin',
+    loadComponent: () => import('./components/admin/localidad-admin/localidad-admin.component').then(c => c.LocalidadAdminComponent),
+    canActivate: [AuthGuard] 
+  },
   { path: 'gamificacion', component: GamificacionComponent },
   { path: 'gamificacion/trivia', component: TriviaComponent },
   { path: 'gamificacion/aquasave', component: AquaSaveComponent },
@@ -92,5 +108,6 @@ export const routes: Routes = [
   { path: 'gamificacion/my-home', component: MyHomeComponent },
   { path: '', redirectTo: 'gamificacion', pathMatch: 'full' },
   { path: '**', redirectTo: 'gamificacion' },
-  { path: '**', redirectTo: 'login' } 
+  { path: '**', redirectTo: 'login' } ,
+
 ];
