@@ -22,16 +22,37 @@ export class ConsumoAdminComponent implements OnInit {
 
   resumen: { total: number, media: number, pico: number, costo: number } = { total: 0, media: 0, pico: 0, costo: 0 };
 
-  lineChartData: ChartData<'line'> = { labels: [], datasets: [] };
-  lineChartOptions: ChartOptions = {
+  // chart (barras sólo consumo)
+  chartData: ChartData<'bar'> = { labels: [], datasets: [] };
+  chartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom' } },
-    scales: { y: { beginAtZero: true } }
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: {
+        ticks: { maxRotation: 0, autoSkip: true },
+        grid: { display: false }
+      },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Litros' },
+        ticks: { precision: 0 }
+      }
+    }
   };
 
   loading = false;
   sinDatos = false;
+
+  // Top meses modal + data
+  showTopMeses = false;
+  rankingTopMeses: Array<{ mesLabel: string; mes: number; total: number; media: number }> = [];
+  maxMonthTotal = 0;
+
+  // propiedad para usar en el template
+  currentYear = new Date().getFullYear();
 
   constructor(private reporteService: ReporteAdminService) { }
 
@@ -50,17 +71,117 @@ export class ConsumoAdminComponent implements OnInit {
     return d.toISOString().split('T')[0];
   }
 
+  setAtajo(r: '7d' | '1m' | '3m'): void {
+    const hoy = new Date();
+    const desde = new Date(hoy);
+    if (r === '7d') desde.setDate(hoy.getDate() - 6);
+    if (r === '1m') desde.setMonth(hoy.getMonth() - 1);
+    if (r === '3m') desde.setMonth(hoy.getMonth() - 3);
+    this.fechaDesde = this.formatFechaLocal(desde);
+    this.fechaHasta = this.formatFechaLocal(hoy);
+    this.aplicarFiltro();
+  }
+
+  // Genera un chartData tipo 'bar' solo con consumo (sin costo)
+  generarGrafico(data: { fecha: string, totalLitros: number, costo?: number }[]): void {
+    const labels = (data || []).map(d => {
+      const dt = new Date(d.fecha);
+      return isNaN(dt.getTime()) ? String(d.fecha) : dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    });
+
+    const valores = (data || []).map(d => Math.round((d.totalLitros || 0) * 100) / 100);
+
+    // colores: gradiente ligero por barra
+    const background = valores.map((_, i) => `rgba(3,102,194,${0.18 + Math.min(0.62, i * 0.02)})`);
+    const border = valores.map((_, i) => `rgba(3,102,194,${0.85 - Math.min(0.5, i * 0.01)})`);
+
+    this.chartData = {
+      labels,
+      datasets: [
+        {
+          label: 'Litros',
+          data: valores,
+          backgroundColor: background,
+          borderColor: border,
+          borderWidth: 1,
+          maxBarThickness: 60,    // barras más anchas
+          minBarLength: 6
+        }
+      ]
+    };
+
+    this.chartOptions = {
+      ...this.chartOptions,
+      scales: {
+        x: { ticks: { maxRotation: 0, autoSkip: true }, grid: { display: false } },
+        y: { beginAtZero: true, title: { display: true, text: 'Litros' } }
+      }
+    };
+  }
+
+  exportarExcel(): void {
+    console.warn('Exportar Excel - pendiente implementar backend.');
+  }
+
+  exportarPDF(): void {
+    console.warn('Exportar PDF - pendiente implementar backend.');
+  }
+
+  // Data loader: trae periodo y resumen; calcula gráfico y ranking por meses (año actual)
   aplicarFiltro(): void {
     if (!this.fechaDesde || !this.fechaHasta) return;
     this.loading = true;
+
+    // ahora solo traemos periodo y resumen (sin porLocalidad)
     forkJoin({
       periodo: this.reporteService.getConsumoGlobalPorPeriodo(this.fechaDesde, this.fechaHasta),
       resumen: this.reporteService.getResumenConsumoGlobal(this.fechaDesde, this.fechaHasta)
-    }).subscribe(({ periodo, resumen }) => {
+    }).subscribe(({ periodo, resumen }: any) => {
       this.loading = false;
-      this.resumen = resumen;
-      this.sinDatos = !periodo || periodo.length === 0 || periodo.every(p => p.totalLitros === 0);
-      this.generarGrafico(periodo);
+      this.resumen = resumen || { total: 0, media: 0, pico: 0, costo: 0 };
+      this.sinDatos = !periodo || periodo.length === 0 || periodo.every((p: any) => (p.totalLitros || 0) === 0);
+
+      // Genero el gráfico (solo consumo)
+      this.generarGrafico(periodo || []);
+
+      // --- CALCULO RANKING TOP MESES (AÑO ACTUAL) ---
+      const periodoData = periodo || [];
+      const añoActual = new Date().getFullYear();
+
+      // Inicializo mapa de meses 0..11
+      const monthsMap: Record<number, { total: number; count: number }> = {};
+      for (let m = 0; m < 12; m++) monthsMap[m] = { total: 0, count: 0 };
+
+      periodoData.forEach((p: any) => {
+        const dt = new Date(p.fecha);
+        if (isNaN(dt.getTime())) return;
+        if (dt.getFullYear() !== añoActual) return;
+        const m = dt.getMonth();
+        monthsMap[m].total += Number(p.totalLitros || 0);
+        monthsMap[m].count += 1;
+      });
+
+      const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      const mesesArray: Array<{ mes: number; mesLabel: string; total: number; media: number }> = [];
+
+      Object.keys(monthsMap).forEach(k => {
+        const mi = Number(k);
+        const obj = monthsMap[mi];
+        if (!obj) return;
+        if ((obj.total || 0) <= 0) return; // ignoro meses sin consumo
+        const media = obj.count ? (obj.total / obj.count) : 0;
+        mesesArray.push({
+          mes: mi,
+          mesLabel: `${monthNames[mi]} ${añoActual}`,
+          total: Math.round((obj.total || 0) * 100) / 100,
+          media: Math.round(media * 100) / 100
+        });
+      });
+
+      mesesArray.sort((a, b) => b.total - a.total);
+      this.rankingTopMeses = mesesArray.slice(0, 12);
+      this.maxMonthTotal = this.rankingTopMeses.length ? Math.max(...this.rankingTopMeses.map(x => x.total)) : 0;
+
     }, err => {
       console.error('Error al obtener consumo global', err);
       this.loading = false;
@@ -68,51 +189,14 @@ export class ConsumoAdminComponent implements OnInit {
     });
   }
 
-  generarGrafico(data: { fecha: string, totalLitros: number, costo: number }[]): void {
-    const labels = data.map(d => {
-      const dt = new Date(d.fecha);
-      return dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
-    });
-    const valores = data.map(d => d.totalLitros);
-    const costos = data.map(d => d.costo);
-
-    this.lineChartData = {
-      labels,
-      datasets: [
-        { data: valores, label: 'Litros totales', fill: true, tension: 0.3 },
-        { data: costos, label: 'Costo ($)', yAxisID: 'y1', fill: false, tension: 0.3 }
-      ]
-    };
-
-    // attach dual axis via options
-    this.lineChartOptions = {
-      ...this.lineChartOptions,
-      scales: {
-        x: { title: { display: true, text: 'Fecha' } },
-        y: { beginAtZero: true, title: { display: true, text: 'Litros' } },
-        y1: { position: 'right', beginAtZero: true, grid: { display: false }, title: { display: true, text: 'Costo ($)' } }
-      }
-    };
+  toggleTopMeses(): void {
+    this.showTopMeses = !this.showTopMeses;
   }
 
-  exportarExcel(): void {
-    // TODO: implementar con datos reales del backend más completos
-    console.warn('Exportar Excel - pendiente implementar backend.');
-  }
-
-  exportarPDF(): void {
-    // TODO: descargar PDF desde backend
-    console.warn('Exportar PDF - pendiente implementar backend.');
-  }
-
-  setAtajo(r: '7d' | '1m' | '3m'): void {
-    const hoy = new Date();
-    const desde = new Date();
-    if (r === '7d') desde.setDate(hoy.getDate() - 6);
-    if (r === '1m') desde.setMonth(hoy.getMonth() - 1);
-    if (r === '3m') desde.setMonth(hoy.getMonth() - 3);
-    this.fechaDesde = this.formatFechaLocal(desde);
-    this.fechaHasta = this.formatFechaLocal(hoy);
-    this.aplicarFiltro();
+  // helper para template: porcentaje relativo al máximo (0..100)
+  computePct(value: number): number {
+    if (!this.maxMonthTotal || this.maxMonthTotal <= 0) return 0;
+    const pct = Math.round((value / this.maxMonthTotal) * 100);
+    return Math.max(4, pct); // minimo 4% para que la barra se vea
   }
 }
