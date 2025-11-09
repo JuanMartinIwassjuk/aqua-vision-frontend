@@ -2,7 +2,7 @@
   <div class="titulo-row">
     <h2 class="titulo-principal">Predicción de Consumo</h2>
 
-    <!-- Botón info fachero -->
+
     <button class="info-btn" (click)="toggleInfo()" aria-label="Información sobre parámetros">
       <span class="info-icon">ℹ️</span>
       <span class="info-label">¿Qué significan?</span>
@@ -18,7 +18,7 @@
     </button>
   </div>
 
-  <!-- INFO OVERLAY / PANEL -->
+
   <div class="info-overlay" *ngIf="showInfo" (click)="toggleInfo()">
     <div class="info-panel slide-in" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
       <header class="info-header">

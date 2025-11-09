@@ -101,43 +101,77 @@ export class EventosAdminComponent implements OnInit {
   }
 
   generarCharts(): void {
-    // Pie: proporción por tag (cantidad de eventos)
-    const counts: Record<string, number> = {};
-    const colorMap: Record<string, string> = {};
-    this.tags.forEach(t => { counts[t.nombre] = 0; colorMap[t.nombre] = (t as any).color || '#888'; });
+  // Preparar contadores por tag
+  const counts: Record<string, number> = {};
+  const sumLitros: Record<string, number> = {};
+  const colorMap: Record<string, string> = {};
 
-    this.eventosList.forEach(e => {
-      (e.tags || []).forEach((t: any) => {
-        counts[t.nombre] = (counts[t.nombre] || 0) + 1;
-        if (t.color && !colorMap[t.nombre]) colorMap[t.nombre] = t.color;
-      });
+  // Inicializo con los tags conocidos (evita keys indefinidas)
+  (this.tags || []).forEach(t => {
+    const key = String(t.nombre ?? t.id ?? 'Tag');
+    counts[key] = 0;
+    sumLitros[key] = 0;
+    colorMap[key] = (t as any).color || '#888';
+  });
+
+  // Recorro eventos y acumulo por cada tag que tenga el evento
+  (this.eventosList || []).forEach(e => {
+    const litros = Number(e.litrosConsumidos || 0);
+    (e.tags || []).forEach((t: any) => {
+      const key = String(t.nombre ?? t.id ?? 'Tag');
+      counts[key] = (counts[key] || 0) + 1;
+      sumLitros[key] = (sumLitros[key] || 0) + litros;
+      if (t.color) colorMap[key] = t.color;
     });
+  });
 
-    const labels = Object.keys(counts).filter(k => counts[k] > 0);
-    const values = labels.map(l => counts[l]);
-    const background = labels.map(l => colorMap[l] || '#ccc');
+  // Construir datos del doughnut (solo etiquetas con > 0)
+  const labels = Object.keys(counts).filter(k => counts[k] > 0);
+  const values = labels.map(l => counts[l]);
+  const background = labels.map(l => colorMap[l] || '#ccc');
 
-    this.tagPieData = { labels, datasets: [{ label: 'Eventos por Tag', data: values, backgroundColor: background }] };
+  this.tagPieData = {
+    labels,
+    datasets: [
+      {
+        label: 'Eventos por Tag',
+        data: values,
+        backgroundColor: background,
+        // opcionales: borderWidth: 0
+      }
+    ]
+  };
 
-    // Bar: eventos por día
-    const byDay: Record<string, number> = {};
-    this.eventosList.forEach(e => {
-      const dayDate = (e.fechaInicio instanceof Date) ? e.fechaInicio : new Date(e.fechaInicio || '');
-      const day = isNaN(dayDate.getTime()) ? 'unknown' : dayDate.toISOString().split('T')[0];
-      byDay[day] = (byDay[day] || 0) + 1;
-    });
-    const days = Object.keys(byDay).filter(d => d !== 'unknown').sort();
-    const dayValues = days.map(d => byDay[d]);
-    const labelsDay = days.map(d => {
-      const dt = new Date(d);
-      return dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
-    });
+  // Calcular rankingTop (top 5 por cantidad) con promedio de litros
+  const ranking = labels.map(l => ({
+    nombre: l,
+    count: counts[l],
+    avgLitros: counts[l] ? (sumLitros[l] / counts[l]) : 0
+  }));
+  ranking.sort((a, b) => b.count - a.count);
+  this.rankingTop = ranking.slice(0, 5);
 
-    this.eventsByDayData = {
-      labels: labelsDay,
-      datasets: [{ data: dayValues, label: 'Eventos por día' }]
-    };
-  }
+  // Bar: eventos por día (igual que antes)
+  const byDay: Record<string, number> = {};
+  (this.eventosList || []).forEach(e => {
+    const dayDate = (e.fechaInicio instanceof Date) ? e.fechaInicio : new Date(e.fechaInicio || '');
+    const day = isNaN(dayDate.getTime()) ? 'unknown' : dayDate.toISOString().split('T')[0];
+    byDay[day] = (byDay[day] || 0) + 1;
+  });
+
+  const days = Object.keys(byDay).filter(d => d !== 'unknown').sort();
+  const dayValues = days.map(d => byDay[d]);
+  const labelsDay = days.map(d => {
+    const dt = new Date(d);
+    return dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+  });
+
+  this.eventsByDayData = {
+    labels: labelsDay,
+    datasets: [{ data: dayValues, label: 'Eventos por día' }]
+  };
+}
+
 
   get activeTagsCount(): number {
     return this.tags.filter(t => !!this.selectedTags[t.id]).length;
@@ -205,4 +239,54 @@ export class EventosAdminComponent implements OnInit {
     this.selectedTags[id] = !this.selectedTags[id];
     this.aplicarFiltro();
   }
+
+  showRanking = false;
+rankingTop: Array<{ nombre: string; count: number; avgLitros: number }> = [];
+
+// Método: atajos de fecha
+setAtajo(rango: '7d' | '1m' | '3m' | '6m'): void {
+  const hoy = new Date();
+  const desde = new Date(hoy); // copio la fecha para evitar mutaciones
+
+  switch (rango) {
+    case '7d':
+      desde.setDate(hoy.getDate() - 6);
+      break;
+    case '1m':
+      desde.setMonth(hoy.getMonth() - 1);
+      break;
+    case '3m':
+      desde.setMonth(hoy.getMonth() - 3);
+      break;
+    case '6m':
+      desde.setMonth(hoy.getMonth() - 6);
+      break;
+  }
+
+  this.fechaDesde = this.formatFechaLocal(desde);
+  this.fechaHasta = this.formatFechaLocal(hoy);
+  this.aplicarFiltro();
+}
+
+formatFechaLocal(d: Date): string {
+  return d.toISOString().split('T')[0];
+}
+
+// Método: toggle modal ranking
+toggleRanking(): void {
+  this.showRanking = !this.showRanking;
+}
+
+// Ajuste en generarCharts(): asegúrate de calcular rankingTop después de contar
+// (si ya tienes generarCharts(), solo sustituye la parte de cálculo de ranking por esto)
+private calcularRankingTop(counts: Record<string, number>, sumLitros: Record<string, number>) {
+  const labels = Object.keys(counts).filter(k => counts[k] > 0);
+  const ranking = labels.map(l => ({
+    nombre: l,
+    count: counts[l],
+    avgLitros: counts[l] ? (sumLitros[l] / counts[l]) : 0
+  }));
+  ranking.sort((a, b) => b.count - a.count);
+  this.rankingTop = ranking.slice(0, 5);
+}
 }
