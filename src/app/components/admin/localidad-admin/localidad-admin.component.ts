@@ -45,11 +45,6 @@ export class LocalidadAdminComponent implements OnInit {
     }, err => console.error('Error localidad', err));
   }
 
-  generarGrafico(): void {
-    const labels = this.resumenPorLocalidad.map(r => r.localidad);
-    const totals = this.resumenPorLocalidad.map(r => r.total);
-    this.barChartData = { labels, datasets: [{ data: totals, label: 'Litros totales por localidad' }] };
-  }
 
   exportarExcel(): void {
     // TODO: descargar XLSX desde backend
@@ -60,5 +55,72 @@ export class LocalidadAdminComponent implements OnInit {
     // TODO
     console.warn('Exportar PDF localidad: TODO backend');
   }
+
+  showRanking = false;
+rankingTop: Array<{ localidad: string; total: number; media: number; costo: number }> = [];
+
+// Reemplazar / añadir setAtajo, toggleRanking y formatFechaLocal
+setAtajo(rango: '7d' | '1m' | '3m' | '6m'): void {
+  const hoy = new Date();
+  const desde = new Date(hoy);
+
+  switch (rango) {
+    case '7d':
+      desde.setDate(hoy.getDate() - 6);
+      break;
+    case '1m':
+      desde.setMonth(hoy.getMonth() - 1);
+      break;
+    case '3m':
+      desde.setMonth(hoy.getMonth() - 3);
+      break;
+    case '6m':
+      desde.setMonth(hoy.getMonth() - 6);
+      break;
+  }
+
+  this.fechaDesde = this.formatFechaLocal(desde);
+  this.fechaHasta = this.formatFechaLocal(hoy);
+  this.aplicarFiltro();
+}
+
+formatFechaLocal(d: Date): string {
+  return d.toISOString().split('T')[0];
+}
+
+toggleRanking(): void {
+  this.showRanking = !this.showRanking;
+}
+
+// Reemplazar generarGrafico()
+generarGrafico(): void {
+  // resumenPorLocalidad ya viene ordenado por aplicarFiltro()
+  const labels = (this.resumenPorLocalidad || []).map(r => r.localidad);
+  const totals = (this.resumenPorLocalidad || []).map(r => r.total);
+
+  this.barChartData = {
+    labels,
+    datasets: [
+      {
+        data: totals,
+        label: 'Litros totales por localidad',
+        backgroundColor: labels.map((_, i) => `rgba(3, 102, 194, ${0.08 + Math.min(0.6, 0.08 + i*0.02)})`),
+        borderColor: labels.map((_, i) => `rgba(3, 102, 194, ${0.7 - Math.min(0.45, i*0.03)})`),
+        borderWidth: 1
+      }
+    ]
+  };
+
+  // Calcular rankingTop (top 5 por total)
+  const ranking = (this.resumenPorLocalidad || []).map(r => ({
+    localidad: r.localidad,
+    total: r.total,
+    media: r.media,
+    costo: r.costo
+  }));
+
+  ranking.sort((a, b) => b.total - a.total);
+  this.rankingTop = ranking.slice(0, 5);
+}
 
 }
