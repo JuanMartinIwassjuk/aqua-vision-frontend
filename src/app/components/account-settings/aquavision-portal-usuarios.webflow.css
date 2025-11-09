@@ -2458,6 +2458,19 @@ input:checked:focus + .switch-left + .switch-right {
   margin-bottom: 0;
 }
 
+.tiene-algo-micuenta{
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10rem;
+}
+
+.container-verificado{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 /**********MODO RESPONSIVE***************/
 
 /* Tablet large */
@@ -2484,7 +2497,6 @@ input:checked:focus + .switch-left + .switch-right {
     padding-right: 1rem;
     padding-bottom: 5rem;
   }
-
   .bio-micuenta { width: 100%; } /* evita textos recortados */
   .modal-block4{
     /*grid-column-gap: 1rem !important;*/
@@ -2498,6 +2510,24 @@ input:checked:focus + .switch-left + .switch-right {
     right: 2rem;
     bottom: 0.5rem;
     width: 25px;
+  }
+  .nombre-apellido-container{
+    flex-direction: column;
+    gap: 0;
+  }
+  .mailverificado-text{
+    width: 30%;
+  }
+  .sensor-info-row{
+    gap: 0;
+    align-items: normal;
+  }
+  .correo-container{
+    flex-direction: column;
+    align-items: normal;
+  }
+  .container-verificado{
+    padding-top: 0.5rem;
   }
 }
 /**/
@@ -2513,5 +2543,21 @@ input:checked:focus + .switch-left + .switch-right {
   }
   .modal-block4{
     /*grid-column-gap: 1rem;*/
+  }
+  .mailverificado-text{
+    width: 100%;
+  }
+  .tiene-algo-micuenta{
+    gap: 5rem;
+  }
+  .sensor-info-row{
+    display: block;
+    margin-top: 0;
+  }
+  .sensor-buttons{
+    padding-top: 2rem;
+  }
+  .info-col{
+    gap: 0;
   }
 }

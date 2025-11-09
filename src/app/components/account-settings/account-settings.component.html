@@ -46,17 +46,19 @@
           <div class="correo-container">
             <p class="datoperso">{{user.correo}}</p>
 
-            <!-- Caso verificado -->
-            <ng-container *ngIf="user.correoVerificado; else noVerificado">
-              <img src="images/check.png" loading="lazy" alt="check" class="mailverification-check">
-              <p class="mailverificado-text">Dirección de correo electrónico verificada.</p>
-            </ng-container>
+            <div class="container-verificado">
+              <!-- Caso verificado -->
+              <ng-container *ngIf="user.correoVerificado; else noVerificado">
+                <img src="images/check.png" loading="lazy" alt="check" class="mailverification-check">
+                <p class="mailverificado-text">Dirección de correo electrónico verificada.</p>
+              </ng-container>
 
-            <!-- Caso no verificado -->
-            <ng-template #noVerificado>
-              <img src="images/alert.png" loading="lazy" alt="alert" class="mailverification-alert">
-              <p class="mailnoverificado-text">Tu correo no está verificado. Revisá tu bandeja para completar la verificación.</p>
-            </ng-template>
+              <!-- Caso no verificado -->
+              <ng-template #noVerificado>
+                <img src="images/alert.png" loading="lazy" alt="alert" class="mailverification-alert">
+                <p class="mailnoverificado-text">Tu correo no está verificado. Revisá tu bandeja para completar la verificación.</p>
+              </ng-template>
+            </div>
           </div>
         </div>     
         <div class="dato-perso-container">
@@ -104,7 +106,7 @@
             <p class="datoperso">{{hogar?.cantidadIntegrantes}}</p>
           </div>
         </div>
-        <div class="nombre-apellido-container">
+        <div class="tiene-algo-micuenta">
           <div class="dato-perso-container">
             <h4 class="datoperso-subtitle">Tiene patio</h4>
             <label class="rocker rocker-small">
