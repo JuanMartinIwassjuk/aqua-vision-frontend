@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+
 export interface EventTag {
   id: number;
   nombre: string;
@@ -199,10 +200,7 @@ getConsumoPromedioPorHogar(fechaIso: string): Observable<number> {
   return of(2.50);                             // valor por defecto
 }
 
-/** Devuelve consumo total de todos los hogares (m³) para la fecha dada.
- *  Valores fijos coherentes con promedio * hogares (hogares = this.hogares.length).
- *  Ej.: con 5 hogares, 2.48 * 5 = 12.4 m³
- */
+
 getConsumoTotalPorDia(fechaIso: string): Observable<number> {
   const hogaresCount = this.hogares.length || 1;
   const fechaOnly = (fechaIso || '').split('T')[0];
@@ -211,35 +209,27 @@ getConsumoTotalPorDia(fechaIso: string): Observable<number> {
   ayerDt.setDate(new Date().getDate() - 1);
   const ayer = ayerDt.toISOString().split('T')[0];
 
-  if (fechaOnly === hoy) return of(Math.round((2.48 * hogaresCount) * 1000) / 1000); // ejemplo 12.4
-  if (fechaOnly === ayer) return of(Math.round((2.70 * hogaresCount) * 1000) / 1000); // ejemplo 13.5
+  if (fechaOnly === hoy) return of(Math.round((2.48 * hogaresCount) * 1000) / 1000); 
+  if (fechaOnly === ayer) return of(Math.round((2.70 * hogaresCount) * 1000) / 1000); 
   return of(Math.round((2.50 * hogaresCount) * 1000) / 1000);
 }
 
-/** Total de trivias completadas (valor fijo) */
+
 getTotalTriviasCompletadas(): Observable<number> {
   return of(18); // valor fijo mock
 }
 
-/** Total de eventos (valor fijo) */
 getTotalEventos(): Observable<number> {
-  return of(this.eventos.length); // can use eventos existentes (determinístico si no los generas random)
+  return of(this.eventos.length);
 }
 
-/** Notificaciones globales (valor fijo) */
+
 getNotificacionesCount(): Observable<number> {
   return of(4); // valor fijo mock
 }
 
-/** Consumo por hora total (m³) para la fecha: devuelve 24 valores fijos coherentes */
-// Asegúrate de tener `import { of } from 'rxjs';` arriba del archivo.
 
-/**
- * Devuelve 24 puntos por hora (hora: "HH:00", caudal_m3) determinísticos.
- * - Si fechaIso es hoy => curva "base"
- * - Si fechaIso es ayer => curva "base" modificada (menor en promedio y con ligera variación por hora)
- * - Si es cualquier otra fecha => variante "neutral"
- */
+
 getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: number }[]> {
   const basePerHour = [
     0.12,0.09,0.07,0.06,0.05,0.06,0.18,0.45,0.78,0.95,1.05,1.12,
@@ -255,20 +245,20 @@ getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: 
   let values: number[];
 
   if (onlyDate === today) {
-    // Hoy: la curva base (sin cambios)
+
     values = basePerHour.slice();
   } else if (onlyDate === ayer) {
-    // Ayer: ligeramente menor en promedio y con variación horaria fija para que se vea diferente
+
     values = basePerHour.map((v, i) => {
-      // factor determinístico por índice para crear una forma ligeramente distinta
-      const factor = 0.88 + ( (i % 6) * 0.02 ); // entre 0.88 y 0.98
-      // "ruido" determinístico, negativo o positivo pequeño
-      const noise = (((i * 37) % 11) - 5) / 100; // entre -0.05 y +0.05
+
+      const factor = 0.88 + ( (i % 6) * 0.02 ); 
+
+      const noise = (((i * 37) % 11) - 5) / 100; 
       const val = v * factor + noise;
       return Math.round(val * 100) / 100;
     });
   } else {
-    // Otra fecha: versión neutral (ligeramente suavizada)
+
     values = basePerHour.map((v, i) => {
       const val = v * 0.96 + ((i % 3) - 1) * 0.01; // pequeña variación
       return Math.round(val * 100) / 100;
@@ -277,6 +267,85 @@ getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: 
 
   const result = values.map((v, i) => ({ hora: String(i).padStart(2, '0') + ':00', caudal_m3: v }));
   return of(result);
+}
+
+getHogares(): Observable<Hogar[]> {
+
+  const arr: Hogar[] = this.hogares.map((h: Hogar) => ({
+    ...h,
+
+    rachaDiaria: (h as any).rachaDiaria ?? 0,
+    puntos: (h as any).puntos ?? 0,
+    puntaje_ranking: (h as any).puntaje_ranking ?? 0
+  }));
+  return of(arr);
+}
+
+getPuntosPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string; puntos: number }[]> {
+  const desde = new Date(desdeIso);
+  const hasta = new Date(hastaIso);
+  const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+  const totalBase: number = this.hogares.reduce((s: number, h: Hogar) => s + (Number((h as any).puntos) || 0), 0) || 50;
+
+  const result: { fecha: string; puntos: number }[] = [];
+  for (let i = 0; i < dias; i++) {
+    const day = new Date(desde);
+    day.setDate(desde.getDate() + i);
+    const iso = day.toISOString().split('T')[0];
+
+    // factor determinístico (no random)
+    const factor = 0.02 + ((i % 7) * 0.01); // varía semanalmente
+    const puntos = Math.round(totalBase * factor);
+    result.push({ fecha: iso, puntos });
+  }
+  return of(result);
+}
+
+getResumenGamificacion(desdeIso: string, hastaIso: string): Observable<{ total: number; media: number; mejorRacha: number }> {
+  const total: number = this.hogares.reduce((s: number, h: Hogar) => s + (Number((h as any).puntos) || 0), 0);
+
+  const desde = new Date(desdeIso);
+  const hasta = new Date(hastaIso);
+  const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const media: number = dias ? Math.round((total / dias) * 10) / 10 : 0;
+
+  const mejorRacha: number = this.hogares.reduce((m: number, h: Hogar) => Math.max(m, Number((h as any).rachaDiaria) || 0), 0);
+
+  return of({ total, media, mejorRacha });
+}
+
+getRankingPuntos(desdeIso: string, hastaIso: string): Observable<{ nombre: string; puntos: number; puntaje_ranking: number }[]> {
+  const arr = (this.hogares || []).map((h: Hogar) => ({
+    nombre: h.nombre,
+    puntos: Number((h as any).puntos) || 0,
+    puntaje_ranking: Number((h as any).puntaje_ranking) || 0
+  }));
+  arr.sort((a: { puntos: number }, b: { puntos: number }) => b.puntos - a.puntos);
+  return of(arr);
+}
+
+getRankingRachas(desdeIso: string, hastaIso: string): Observable<{ nombre: string; racha: number; puntos: number }[]> {
+  const arr = (this.hogares || []).map((h: Hogar) => ({
+    nombre: h.nombre,
+    racha: Number((h as any).rachaDiaria) || 0,
+    puntos: Number((h as any).puntos) || 0
+  }));
+  arr.sort((a: { racha: number }, b: { racha: number }) => b.racha - a.racha);
+  return of(arr);
+}
+
+  getMedallasPorHogar(hogarId: number): Observable<string[]> {
+  // ejemplo determinístico según id
+  const mapMedallas: Record<number, string[]> = {
+    1: ['Inicio', 'Ahorro 7d', 'Racha 3d'],
+    2: ['Inicio', 'Racha 5d', 'Top Puntos'],
+    3: ['Inicio'],
+    4: ['Inicio', 'Ahorro 30d', 'Top Racha'],
+    5: ['Inicio', 'Participante']
+  };
+  const meds = mapMedallas[hogarId] ?? ['Participante'];
+  return of(meds);
 }
 
 

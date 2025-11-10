@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RankingResponse, Recompensa } from '../models/gamificacion';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GamificacionService {
-  private baseUrl = 'http://localhost:8080/hogares';
+  private baseUrl = environment.apiUrl + '/hogares';
 
   constructor(private http: HttpClient) {}
 

@@ -73,7 +73,7 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
   }
 
   getConsumoPorHoraBackend(hogarId: number, dia: string): Observable<{ hora: string; caudal_m3: number }[]> {
-  const url = `http://localhost:8080/reportes/${hogarId}/consumo-dia-hora?dia=${dia}`;
+  const url = `${environment.apiUrl}/reportes/${hogarId}/consumo-dia-hora?dia=${dia}`;
   return this.http.get<any>(url).pipe(
     map(response => {
 
