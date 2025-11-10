@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { GamificacionService } from '../../../services/gamificacion.service';
+import { FormsModule } from '@angular/forms';
 
 interface Card {
   id: number;
@@ -13,11 +14,11 @@ interface Card {
 @Component({
   selector: 'app-memory-game',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './memory-test.component.html',
   styleUrls: ['./memory-test.component.css']
 })
-export class MemoryGameComponent {
+export class MemoryGameComponent implements OnInit, OnDestroy {
   icons = ['🚿', '🚽', '🚰', '💧', '🧺', '🌊'];
   cards: Card[] = [];
   flippedCards: Card[] = [];
@@ -27,6 +28,15 @@ export class MemoryGameComponent {
   timeLeft = 60;
   timerInterval: any;
   gameStarted = false;
+
+  hogarId: any;
+  backgroundMusic!: HTMLAudioElement;
+  matchSound!: HTMLAudioElement;
+  notMatchSound!: HTMLAudioElement;
+
+  volume = 50;
+  muted = false;
+  showVolume = false;
 
   infoTexts: { [key: string]: { title: string, detail: string, claimed: boolean, matched: boolean } } = {
     '🚿': {
@@ -66,15 +76,26 @@ export class MemoryGameComponent {
       matched: false
     }
   };
-  hogarId: any;
 
-    constructor(
-      private gamificacionService: GamificacionService
-    ){  }
-    
+  constructor(private gamificacionService: GamificacionService) {}
+
   ngOnInit() {
-    this.resetMemory();
     this.hogarId = Number(sessionStorage.getItem('homeId'));
+    this.resetMemory();
+
+    this.backgroundMusic = new Audio('sounds/aqua-match-bg.mp3');
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.05;
+    this.backgroundMusic.play();
+
+    this.matchSound = new Audio('sounds/match-sound.mp3');
+    this.notMatchSound = new Audio('sounds/not-match.mp3');
+    this.matchSound.volume = 0.2;
+    this.notMatchSound.volume = 0.2;
+  }
+
+  ngOnDestroy() {
+    this.stopAllSounds();
   }
 
   startGame() {
@@ -91,6 +112,7 @@ export class MemoryGameComponent {
     this.matchedCards = [];
     this.scoreCards = 0;
     this.timeLeft = 60;
+
     Object.values(this.infoTexts).forEach(info => {
       info.claimed = false;
       info.matched = false;
@@ -118,11 +140,16 @@ export class MemoryGameComponent {
 
     if (this.flippedCards.length === 2) {
       setTimeout(() => {
-        if (this.flippedCards[0].icon === this.flippedCards[1].icon) {
+        const [first, second] = this.flippedCards;
+        if (first.icon === second.icon) {
+          this.matchSound.currentTime = 0;
+          this.matchSound.play().catch(() => {});
           this.flippedCards.forEach(c => c.matched = true);
           this.matchedCards.push(card.icon);
           this.infoTexts[card.icon].matched = true;
         } else {
+          this.notMatchSound.currentTime = 0;
+          this.notMatchSound.play().catch(() => {});
           this.flippedCards.forEach(c => c.flipped = false);
         }
         this.flippedCards = [];
@@ -144,10 +171,26 @@ export class MemoryGameComponent {
 
   claimAllPoints() {
     const puntosTotales = this.scoreCards;
-    this.gamificacionService.addPuntosReclamados(this.hogarId, puntosTotales, 'AQUA_MATCH').subscribe({
-      error: (err: any) => {
-        console.error('Error al registrar puntos:', err);
-      }
-    });
-}
+    this.gamificacionService.addPuntosReclamados(this.hogarId, puntosTotales, 'AQUA_MATCH')
+      .subscribe({
+        error: (err: any) => console.error('Error al registrar puntos:', err)
+      });
+  }
+
+  stopAllSounds() {
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
+  }
+
+  updateVolume() {
+    const level = this.muted ? 0 : this.volume / 100;
+    if (this.backgroundMusic) this.backgroundMusic.volume = 0.05 * level * 2;
+    if (this.matchSound) this.matchSound.volume = 0.2 * level;
+    if (this.notMatchSound) this.notMatchSound.volume = 0.2 * level;
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    this.updateVolume();
+  }
 }

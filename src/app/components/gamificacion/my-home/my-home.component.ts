@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { GamificacionService } from '../../../services/gamificacion.service';
+import { FormsModule } from '@angular/forms';
 
 interface LeakPoint {
   x: number;
@@ -16,12 +18,13 @@ interface Scene {
   leaks: LeakPoint[];
   expense: number;
   lastRevision: Date;
+  alreadyClaimed?: boolean;
 }
 
 @Component({
   selector: 'app-my-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './my-home.component.html',
   styleUrls: ['./my-home.component.css']
 })
@@ -32,10 +35,15 @@ export class MyHomeComponent implements OnInit, OnDestroy {
   currentIndex = 0;
   backgroundMusic!: HTMLAudioElement;
   fixSound!: HTMLAudioElement;
+  drop!: HTMLAudioElement;
+  hogarId: any;
+  muted = false;
+  volume = 50;
+  showVolume = false;
 
   scenes: Scene[] = [
     {
-      name: 'Baño',
+      name: 'banio',
       title: 'Baño',
       image: 'images/bathroomv2.png',
       leaks: [
@@ -48,7 +56,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
       lastRevision: new Date(2025, 9, 24)
     },
     {
-      name: 'Lavadero',
+      name: 'lavadero',
       title: 'Lavadero',
       image: 'images/laundryv2.png',
       leaks: [
@@ -59,7 +67,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
       lastRevision: new Date(2025, 9, 24)
     },
     {
-      name: 'Patio',
+      name: 'patio',
       title: 'Patio',
       image: 'images/yardv2.png',
       leaks: [
@@ -70,7 +78,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
       lastRevision: new Date(2025, 9, 24)
     },
     {
-      name: 'Cocina',
+      name: 'cocina',
       title: 'Cocina',
       image: 'images/kitchenv2.png',
       leaks: [
@@ -90,23 +98,31 @@ export class MyHomeComponent implements OnInit, OnDestroy {
     return this.currentScene.leaks.filter(l => l.closed).length;
   }
 
-  ngOnInit() {
-    this.backgroundMusic = new Audio('sounds/background-music.mp3');
-    this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.03;
+    constructor(
+      private gamificacionService: GamificacionService
+    ){  }
 
-    this.fixSound = new Audio('sounds/fix-gota-sound.mp3');
+  async ngOnInit() {
+  this.hogarId = Number(sessionStorage.getItem('homeId'));
+  this.backgroundMusic = new Audio('sounds/background-music.mp3');
+  this.backgroundMusic.loop = true;
+  this.backgroundMusic.volume = 0.03;
 
-    this.startGame();
+  this.drop = new Audio('sounds/gota-sound.mp3');
+  this.fixSound = new Audio('sounds/fix-gota-sound.mp3');
+  this.backgroundMusic.play();
+
+  await this.checkAllScenesAlreadyClaimed(); 
+  this.startGame();
   }
 
   ngOnDestroy() {
+    this.drop.volume = 0;
     this.stopAllSounds();
   }
 
   startGame() {
     this.gameStarted = true;
-    this.backgroundMusic.play();
     this.startSceneDrops();
   }
 
@@ -116,14 +132,13 @@ export class MyHomeComponent implements OnInit, OnDestroy {
     this.currentScene.leaks.forEach((leak, i) => {
       if (leak.closed) return;
 
-      const drop = new Audio('sounds/gota-sound.mp3');
-      drop.loop = true;
-      drop.volume = 0.09;
-      leak.dropSound = drop;
+      this.drop.loop = true;
+      this.drop.volume = 0.09;
+      leak.dropSound = this.drop;
 
       setTimeout(() => {
         if (!leak.closed) {
-          drop.play().catch(() => {});
+          this.drop.play().catch(() => {});
         }
       }, i * 1000);
     });
@@ -147,33 +162,30 @@ export class MyHomeComponent implements OnInit, OnDestroy {
     this.stopAllDropSounds();
   }
 
-  closeLeak(leak: LeakPoint) {
-    if (leak.closed) return;
+closeLeak(leak: LeakPoint) {
+  if (leak.closed || this.currentScene.alreadyClaimed) return; 
 
-    leak.closed = true;
+  leak.closed = true;
 
-
-    if (leak.dropSound) {
-      leak.dropSound.pause();
-      leak.dropSound.currentTime = 0;
-      leak.dropSound.loop = false;
-      leak.dropSound = undefined;
-    }
-
-
-    const clickSound = new Audio('sounds/fix-gota-sound.mp3');
-    clickSound.play();
-    clickSound.volume = 0.09
-
-
-    const allClosed = this.currentScene.leaks.every(l => l.closed);
-    if (allClosed) {
-      setTimeout(() => {
-        this.showNextScenePopup = true;
-        this.stopAllDropSounds();
-      }, 500);
-    }
+  if (leak.dropSound) {
+    leak.dropSound.pause();
+    leak.dropSound.currentTime = 0;
+    leak.dropSound.loop = false;
+    leak.dropSound = undefined;
   }
+
+  const clickSound = new Audio('sounds/fix-gota-sound.mp3');
+  clickSound.volume = 0.09;
+  clickSound.play();
+
+  const allClosed = this.currentScene.leaks.every(l => l.closed);
+  if (allClosed) {
+    setTimeout(() => {
+      this.showNextScenePopup = true;
+      this.stopAllDropSounds();
+    }, 500);
+  }
+}
 
   nextScene() {
     this.showNextScenePopup = false;
@@ -193,15 +205,120 @@ export class MyHomeComponent implements OnInit, OnDestroy {
     this.startSceneDrops();
   }
 
-  goToScene(index: number) {
-    if (index < 0 || index >= this.scenes.length) return;
+goToScene(index: number) {
+  if (index < 0 || index >= this.scenes.length) return;
 
-    this.currentIndex = index;
-    this.startSceneDrops();
-    this.showNextScenePopup = false;
-  }
+  this.currentIndex = index;
+  this.startSceneDrops();
+  this.showNextScenePopup = false;
+
+  this.checkIfPointsAlreadyClaimed();
+}
 
   getClosedLeaks(scene: Scene): number {
     return scene.leaks.filter(l => l.closed).length;
   }
+
+allLeaksClosed(): boolean {
+  return this.currentScene.leaks.every(l => l.closed);
+}
+
+claimAllPoints() {
+  if (this.currentScene.alreadyClaimed || !this.allLeaksClosed()) return;
+  this.currentScene.alreadyClaimed = true;
+
+  const puntosTotales = 40;
+
+  this.gamificacionService
+    .addPuntosReclamados(this.hogarId, puntosTotales, 'AQUA_SAVE', this.currentScene.name)
+    .subscribe({
+      next: () => {
+        console.log('Puntos reclamados correctamente');
+        this.currentScene.leaks.forEach(l => l.closed = true);
+      },
+      error: (err: any) => {
+        console.error('Error al registrar puntos:', err);
+        this.currentScene.alreadyClaimed = false;
+      }
+    });
+}
+
+checkIfPointsAlreadyClaimed() {
+  const escena = this.currentScene.name;
+  const minijuego = 'AQUA_SAVE';
+
+  this.gamificacionService
+    .getUltimaFechaReclamo(this.hogarId, minijuego, escena)
+    .subscribe({
+      next: (fecha) => {
+        const yaReclamado = !!fecha;
+        this.currentScene.alreadyClaimed = yaReclamado;
+
+        if (yaReclamado) {
+          this.currentScene.leaks.forEach(leak => leak.closed = true);
+          this.stopAllDropSounds();
+        }
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.currentScene.alreadyClaimed = false;
+        } else {
+          console.error('Error al verificar reclamo:', err);
+        }
+      }
+    });
+}
+
+checkAllScenesAlreadyClaimed(): Promise<void> {
+  const minijuego = 'AQUA_SAVE';
+
+  const checks = this.scenes.map(scene =>
+    new Promise<void>((resolve) => {
+      this.gamificacionService
+        .getUltimaFechaReclamo(this.hogarId, minijuego, scene.name)
+        .subscribe({
+          next: (fecha) => {
+            const yaReclamado = !!fecha;
+            scene.alreadyClaimed = yaReclamado;
+            if (yaReclamado) {
+              scene.leaks.forEach(l => l.closed = true);
+            }
+            resolve();
+          },
+          error: (err) => {
+            if (err.status === 404) {
+              scene.alreadyClaimed = false;
+            } else {
+              console.error('Error al verificar reclamo:', err);
+            }
+            resolve();
+          }
+        });
+    })
+  );
+
+  return Promise.all(checks).then(() => {});
+}
+
+toggleMute() {
+  this.muted = !this.muted;
+  this.updateVolume();
+}
+
+updateVolume() {
+  const volumeLevel = this.muted ? 0 : this.volume / 100;
+
+  if (this.backgroundMusic) this.backgroundMusic.volume = 0.03 * volumeLevel * 3;
+
+  if (this.fixSound) this.fixSound.volume = 0.09 * volumeLevel;
+
+  this.scenes.forEach(scene => {
+    scene.leaks.forEach(leak => {
+      if (leak.dropSound) {
+        leak.dropSound.volume = 0.09 * volumeLevel;
+      }
+    });
+  });
+}
+
 }

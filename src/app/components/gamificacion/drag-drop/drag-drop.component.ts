@@ -1,6 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 interface Card {
   id: number;
@@ -11,6 +12,7 @@ interface Card {
   initialX?: number;
   initialY?: number;
   tip?: string;
+  isWrong?: boolean;
 }
 
 export interface MergedCard {
@@ -24,11 +26,11 @@ export interface MergedCard {
 @Component({
   selector: 'app-drag-drop',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './drag-drop.component.html',
   styleUrls: ['./drag-drop.component.css']
 })
-export class DragDropComponent implements OnInit {
+export class DragDropComponent implements OnInit, OnDestroy {
   private allLeftCards: Card[] = [
     { id: 1, text: 'Si lavás el auto dejando correr la manguera por minutos', matched: false, tip: 'Usá balde y esponja: podés ahorrar hasta 200 L por lavado.' },
     { id: 2, text: 'Si regás el jardín al mediodía, cuando el sol es más fuerte', matched: false, tip: 'Regá temprano o al atardecer para evitar hasta un 50% de evaporación.' },
@@ -61,49 +63,58 @@ export class DragDropComponent implements OnInit {
 
   leftCards: Card[] = [];
   rightCards: Card[] = [];
+  mergedCards: MergedCard[] = [];
 
   currentLevel = 1;
   readonly cardsPerLevel = 3;
   maxLevel = 4;
-
   showIntro = true;
+  showNextLevel = false;
+  finalMessage = false;
 
   draggingCard: Card | null = null;
   offsetX = 0;
   offsetY = 0;
-  mergedCards: MergedCard[] = [];
-  showNextLevel = false;
-  finalMessage = false;
 
   @ViewChild('container', { static: true }) container!: ElementRef;
+
+  backgroundMusic!: HTMLAudioElement;
+  matchSound!: HTMLAudioElement;
+  notMatchSound!: HTMLAudioElement;
+  showVolume = false;
+  volume = 20; 
+  muted = false;
 
   ngOnInit() {
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
+
+    this.backgroundMusic = new Audio('sounds/drag-drop-bg.mp3');
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.02;
+
+    this.matchSound = new Audio('sounds/match-sound.mp3');
+    this.matchSound.volume = 0.1;
+
+    this.notMatchSound = new Audio('sounds/not-match.mp3');
+    this.notMatchSound.volume = 0.1;
+
+    this.backgroundMusic.play()
   }
 
-  private handleResize() {
-    if (!this.container) return;
-
-    const boardWidth = this.container.nativeElement.offsetWidth;
-    const cardWidth = 280;
-
-    if (this.leftCards.length > 0 && this.rightCards.length > 0) {
-      this.leftCards.forEach((c, i) => {
-        c.x = 20;
-        c.y = 50 + i * 140;
-      });
-
-      this.rightCards.forEach((c, i) => {
-        c.x = Math.max(20, boardWidth - cardWidth - 20);
-        c.y = 50 + i * 140;
-      });
-    }
+  ngOnDestroy() {
+    this.stopAllSounds();
   }
 
   startGame() {
     this.showIntro = false;
     this.loadLevel(this.currentLevel);
+    this.backgroundMusic.play().catch(() => {});
+  }
+
+  stopAllSounds() {
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
   }
 
   private loadLevel(level: number) {
@@ -161,49 +172,70 @@ export class DragDropComponent implements OnInit {
     this.draggingCard.y = pos.y - containerRect.top - this.offsetY;
   }
 
-  onEnd(event?: MouseEvent | TouchEvent) {
-    if (!this.draggingCard) return;
-    const card = this.draggingCard;
-    const leftRect = { x: card.x ?? 0, y: card.y ?? 0, width: 280, height: 120 };
+onEnd(event?: MouseEvent | TouchEvent) {
+  if (!this.draggingCard) return;
 
-    const match = this.rightCards.find(rc => !rc.matched && rc.id === card.id);
-    if (match) {
-      const rightRect = { x: match.x ?? 0, y: match.y ?? 0, width: 280, height: 120 };
-      const touching = !(
-        leftRect.x + leftRect.width < rightRect.x ||
-        leftRect.x > rightRect.x + rightRect.width ||
-        leftRect.y + leftRect.height < rightRect.y ||
-        leftRect.y > rightRect.y + rightRect.height
-      );
+  const card = this.draggingCard;
+  const leftRect = { x: card.x ?? 0, y: card.y ?? 0, width: 280, height: 120 };
+  const match = this.rightCards.find(rc => !rc.matched && rc.id === card.id);
 
-      if (touching) {
-        card.matched = true;
-        match.matched = true;
-        this.mergedCards.push({
-          id: card.id,
-          leftText: card.text,
-          rightText: match.text,
-          tip: card.tip ?? ''
-        });
+  if (match) {
+    const rightRect = { x: match.x ?? 0, y: match.y ?? 0, width: 280, height: 120 };
+    const touching = !(
+      leftRect.x + leftRect.width < rightRect.x ||
+      leftRect.x > rightRect.x + rightRect.width ||
+      leftRect.y + leftRect.height < rightRect.y ||
+      leftRect.y > rightRect.y + rightRect.height
+    );
 
-        this.leftCards = this.leftCards.filter(c => c.id !== card.id);
-        this.rightCards = this.rightCards.filter(c => c.id !== match.id);
+    if (touching) {
+      card.matched = true;
+      match.matched = true;
 
-        if (this.leftCards.length === 0 && this.currentLevel < this.maxLevel) {
-          setTimeout(() => this.showNextLevel = true, 100);
-        } else if (this.leftCards.length === 0 && this.currentLevel === this.maxLevel) {
-          setTimeout(() => this.finalMessage = true, 100);
-        }
+      this.mergedCards.push({
+        id: card.id,
+        leftText: card.text,
+        rightText: match.text,
+        tip: card.tip ?? ''
+      });
 
-        this.finishDrag();
-        return;
+      this.leftCards = this.leftCards.filter(c => c.id !== card.id);
+      this.rightCards = this.rightCards.filter(c => c.id !== match.id);
+
+      this.matchSound.currentTime = 0;
+      this.matchSound.play().catch(() => {});
+
+      if (this.leftCards.length === 0 && this.currentLevel < this.maxLevel) {
+        setTimeout(() => (this.showNextLevel = true), 400);
+      } else if (this.leftCards.length === 0 && this.currentLevel === this.maxLevel) {
+        setTimeout(() => (this.finalMessage = true), 400);
       }
-    }
 
-    card.x = card.initialX ?? card.x ?? 0;
-    card.y = card.initialY ?? card.y ?? 0;
+      this.finishDrag();
+      return;
+    }
+  }
+
+  const element = document.getElementById(`card-${card.id}`);
+  if (element) {
+    element.classList.add('shake');
+    setTimeout(() => {
+      element.classList.remove('shake');
+      element.classList.add('returning');
+    }, 400);
+
+    setTimeout(() => {
+      element.classList.remove('returning');
+      this.finishDrag(true); 
+    }, 900);
+  } else {
     this.finishDrag(true);
   }
+  if (this.notMatchSound) {
+    this.notMatchSound.currentTime = 0;
+    this.notMatchSound.play().catch(() => {});
+  }
+}
 
   private getEventPosition(event: MouseEvent | TouchEvent): { x: number; y: number } {
     if (event instanceof MouseEvent) {
@@ -214,57 +246,6 @@ export class DragDropComponent implements OnInit {
       return { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY };
     }
     return { x: 0, y: 0 };
-  }
-
-  onMouseMove(event: MouseEvent) {
-    if (!this.draggingCard) return;
-    const containerRect = (this.container.nativeElement as HTMLElement).getBoundingClientRect();
-    this.draggingCard.x = event.clientX - containerRect.left - this.offsetX;
-    this.draggingCard.y = event.clientY - containerRect.top - this.offsetY;
-  }
-
-  onMouseUp() {
-    if (!this.draggingCard) return;
-    const card = this.draggingCard;
-    const leftRect = { x: card.x ?? 0, y: card.y ?? 0, width: 280, height: 120 };
-
-    const match = this.rightCards.find(rc => !rc.matched && rc.id === card.id);
-    if (match) {
-      const rightRect = { x: match.x ?? 0, y: match.y ?? 0, width: 280, height: 120 };
-      const touching = !(
-        leftRect.x + leftRect.width < rightRect.x ||
-        leftRect.x > rightRect.x + rightRect.width ||
-        leftRect.y + leftRect.height < rightRect.y ||
-        leftRect.y > rightRect.y + rightRect.height
-      );
-
-      if (touching) {
-        card.matched = true;
-        match.matched = true;
-        this.mergedCards.push({
-          id: card.id,
-          leftText: card.text,
-          rightText: match.text,
-          tip: card.tip ?? ''
-        });
-
-        this.leftCards = this.leftCards.filter(c => c.id !== card.id);
-        this.rightCards = this.rightCards.filter(c => c.id !== match.id);
-
-        if (this.leftCards.length === 0 && this.currentLevel < this.maxLevel) {
-          setTimeout(() => this.showNextLevel = true, 100);
-        } else if (this.leftCards.length === 0 && this.currentLevel === this.maxLevel) {
-          setTimeout(() => this.finalMessage = true, 100);
-        }
-
-        this.finishDrag();
-        return;
-      }
-    }
-
-    card.x = card.initialX ?? card.x ?? 0;
-    card.y = card.initialY ?? card.y ?? 0;
-    this.finishDrag(true);
   }
 
   nextLevel() {
@@ -302,4 +283,39 @@ export class DragDropComponent implements OnInit {
     }
   }
 
+  private handleResize() {
+    if (!this.container) return;
+    const boardWidth = this.container.nativeElement.offsetWidth;
+    const cardWidth = 280;
+    if (this.leftCards.length > 0 && this.rightCards.length > 0) {
+      this.leftCards.forEach((c, i) => {
+        c.x = 20;
+        c.y = 50 + i * 140;
+      });
+      this.rightCards.forEach((c, i) => {
+        c.x = Math.max(20, boardWidth - cardWidth - 20);
+        c.y = 50 + i * 140;
+      });
+    }
+  }
+
+   updateVolume() {
+    const vol = this.volume / 100;
+    if (this.backgroundMusic) this.backgroundMusic.volume = this.muted ? 0 : vol * 0.2;
+    if (this.matchSound) this.matchSound.volume = this.muted ? 0 : vol * 0.5;
+    if (this.notMatchSound) this.notMatchSound.volume = this.muted ? 0 : vol * 0.5;
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    if (this.muted) {
+      this.backgroundMusic.volume = 0;
+      this.matchSound.volume = 0;
+      this.notMatchSound.volume = 0;
+    } else {
+      this.updateVolume();
+    }
+  }
+
+  
 }

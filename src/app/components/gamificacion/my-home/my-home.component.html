@@ -1,6 +1,27 @@
 <div class="gamification-header">
   <button class="back-btn" routerLink="/gamificacion">⬅ Volver</button>
   <h2>AquaSave</h2>
+  <div class="sound-control" 
+     (mouseenter)="showVolume = true" 
+     (mouseleave)="showVolume = false">
+
+  <div class="volume-slider" [class.visible]="showVolume">
+    <input 
+      type="range" 
+      min="0" 
+      max="100" 
+      [(ngModel)]="volume" 
+      (input)="updateVolume()" 
+      [disabled]="muted">
+  </div>
+
+  <div class="sound-icon" (click)="toggleMute()">
+    <span *ngIf="muted">🔇</span>
+    <span *ngIf="!muted">
+      {{ volume < 40 ? '🔈' : volume < 80 ? '🔉' : '🔊' }}
+    </span>
+  </div>
+</div>
 </div>
 
 <div class="game-container">
@@ -26,8 +47,18 @@
   <div class="scene-info left-align">
     <h4>Estadísticas generales - {{ currentScene.title }}</h4>
     <p><strong>Total de fugas solucionadas:</strong> {{ closedLeaksCount }}/{{ currentScene.leaks.length }}</p>
-    <p><strong>Gasto:</strong> ${{ currentScene.expense | number:'1.2-2' }}</p>
     <p><strong>Última revisión:</strong> {{ currentScene.lastRevision | date:'dd/MM/yyyy' }}</p>
+
+<button 
+  class="claim-btn" 
+  [disabled]="!allLeaksClosed() || currentScene.alreadyClaimed" 
+  (click)="claimAllPoints()">
+  {{ currentScene.alreadyClaimed
+    ? 'Puntos ya reclamados'
+    : allLeaksClosed()
+      ? 'Reclamar puntos'
+      : 'Fugas pendientes' }}
+</button>
   </div>
 </div>
 </div>

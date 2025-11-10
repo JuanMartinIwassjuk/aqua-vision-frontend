@@ -19,13 +19,22 @@ export class GamificacionService {
     return this.http.get<Recompensa[]>(`${this.baseUrl}/recompensas`);
   }
 
-  addPuntosReclamados(hogarId: number, puntos: number, minijuego: string): Observable<any> {
+  addPuntosReclamados(hogarId: number, puntos: number, minijuego: string, escena?: string): Observable<any> {
   const dto = {
     hogarId,
     puntos,
     fecha: new Date(),
-    minijuego
+    minijuego, 
+    escena
   }; //TODO pasar a model 
   return this.http.post(`${this.baseUrl}/${hogarId}/reclamar-puntos`, dto);
 }
+
+getUltimaFechaReclamo(hogarId: number, minijuego: string, escena: string): Observable<Date | null> {
+  return this.http.get<Date | null>(
+    `${this.baseUrl}/${hogarId}/ultimo-puntaje-reclamado`,
+    { params: { minijuego, escena } }
+  );
+}
+
 }

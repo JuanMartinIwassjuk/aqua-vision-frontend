@@ -1,6 +1,27 @@
 <div class="gamification-header">
   <button class="back-btn" routerLink="/gamificacion">⬅ Volver</button>
   <h2>AquaMatch</h2>
+  <div class="sound-control" 
+     (mouseenter)="showVolume = true" 
+     (mouseleave)="showVolume = false">
+
+  <div class="volume-slider" [class.visible]="showVolume">
+    <input 
+      type="range" 
+      min="0" 
+      max="100" 
+      [(ngModel)]="volume" 
+      (input)="updateVolume()" 
+      [disabled]="muted">
+  </div>
+
+  <div class="sound-icon" (click)="toggleMute()">
+    <span *ngIf="muted">🔇</span>
+    <span *ngIf="!muted">
+      {{ volume < 40 ? '🔈' : volume < 80 ? '🔉' : '🔊' }}
+    </span>
+  </div>
+</div>
 </div>
 
 <div class="aquamatch-layout">
@@ -28,16 +49,25 @@
     </div>
 
 
-    <ng-container *ngIf="!showIntro">
-      <div *ngFor="let card of leftCards" class="card left-card" [style.left.px]="card.x" [style.top.px]="card.y"
-        (mousedown)="startDrag($event, card)" (touchstart)="startDrag($event, card)">
-        <div class="card-text">{{ card.text }}</div>
-      </div>
+<ng-container *ngIf="!showIntro">
+  <div *ngFor="let card of leftCards"
+       class="card left-card"
+       [class.wrong]="card.isWrong"
+       [style.left.px]="card.x"
+       [style.top.px]="card.y"
+       (mousedown)="startDrag($event, card)"
+       (touchstart)="startDrag($event, card)">
+    <div class="card-text">{{ card.text }}</div>
+  </div>
 
-      <div *ngFor="let card of rightCards" class="card right-card" [style.left.px]="card.x" [style.top.px]="card.y">
-        <div class="card-text">{{ card.text }}</div>
-      </div>
-    </ng-container>
+  <div *ngFor="let card of rightCards"
+       class="card right-card"
+       [class.wrong]="card.isWrong"
+       [style.left.px]="card.x"
+       [style.top.px]="card.y">
+    <div class="card-text">{{ card.text }}</div>
+  </div>
+</ng-container>
 
   </div>
 
