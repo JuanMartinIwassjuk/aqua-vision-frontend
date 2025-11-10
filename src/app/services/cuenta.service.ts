@@ -6,12 +6,14 @@ import { Hogar } from '../models/hogar';
 import { Facturacion } from '../models/facturacion';
 import { Sensor } from '../models/sensor';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class CuentaService {
 
-  private apiUrl = 'http://localhost:8080/cuenta';
+  private apiUrl = environment.apiUrl + '/cuenta';
 
   constructor(private http: HttpClient) { }
 
