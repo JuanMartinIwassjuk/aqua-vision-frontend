@@ -148,3 +148,10 @@ h2.titulo-principal {
     font-size: 0.95rem;
   }
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .reportes-container {
+    margin-bottom: 8vh;
+  }
+}

@@ -27,49 +27,49 @@
       <nav id="menu" [ngClass]="{ 'active': isMenuActive }">
         <ul class="un-header">
  
-          <li *ngIf="isUser || isAdmin">
+          <li *ngIf="isUser || isAdmin" class="list-item-navbar">
             <a routerLink="/dashboard" (click)="closeMenu()">Inicio</a>
           </li>
 
       
           <li class="submenu" *ngIf="isUser">
-            <a (click)="toggleService(0)">Consumo ▾</a>
+            <a (click)="toggleService(0)" class="boton-item-navbar">Consumo ▾</a>
             <ul *ngIf="expandedIndex === 0" class="submenu-list">
-              <li><a routerLink="/reportes/diario" (click)="closeMenu()">▸ Reporte diario</a></li>
-              <li><a routerLink="/reportes/historico" (click)="closeMenu()">▸ Reporte histórico</a></li>
-              <li><a routerLink="/consumption-prediction" (click)="closeMenu()">▸ Predicción</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/reportes/diario" (click)="closeMenu()">▸ Reporte diario</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/reportes/historico" (click)="closeMenu()">▸ Reporte histórico</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/consumption-prediction" (click)="closeMenu()">▸ Predicción</a></li>
             </ul>
           </li>
 
           <li class="submenu" *ngIf="isUser">
-            <a (click)="toggleService(1)">Mis Actividades ▾</a>
+            <a (click)="toggleService(1)" class="boton-item-navbar">Mis Actividades ▾</a>
             <ul *ngIf="expandedIndex === 1" class="submenu-list">
-              <li><a routerLink="/events/summary" (click)="closeMenu()">▸ Resumen</a></li>
-              <li><a routerLink="/events" (click)="closeMenu()">▸ Detalle</a></li>
-              <li><a routerLink="/events/create" (click)="closeMenu()">▸ Nueva Actividad</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/events/summary" (click)="closeMenu()">▸ Resumen</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/events" (click)="closeMenu()">▸ Detalle</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/events/create" (click)="closeMenu()">▸ Nueva Actividad</a></li>
             </ul>
           </li>
 
 
-          <li *ngIf="isUser">
+          <li *ngIf="isUser" class="list-item-navbar">
             <a routerLink="/gamificacion" (click)="closeMenu()">AquaQuest</a>
           </li>
                     
           <li class="submenu" *ngIf="isAdmin">
-            <a (click)="toggleService(1)">Reportes ▾</a>
+            <a (click)="toggleService(1)" class="boton-item-navbar">Reportes ▾</a>
             <ul *ngIf="expandedIndex === 1" class="submenu-list">
-              <li><a routerLink="/consumo-admin" (click)="closeMenu()">▸ Consumo</a></li>
-              <li><a routerLink="/eventos-admin" (click)="closeMenu()">▸ Eventos</a></li>
-              <li><a routerLink="/localidad-admin" (click)="closeMenu()">▸ Localidad</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/consumo-admin" (click)="closeMenu()">▸ Consumo</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/eventos-admin" (click)="closeMenu()">▸ Eventos</a></li>
+              <li class="list-subitem-navbar"><a routerLink="/localidad-admin" (click)="closeMenu()">▸ Localidad</a></li>
             </ul>
           </li>
-           <li><a routerLink="/consumption-alerts" (click)="closeMenu()">Notificaciones</a></li>
+           <li class="list-item-navbar"><a routerLink="/consumption-alerts" (click)="closeMenu()">Notificaciones</a></li>
 
 
 
 
 
-          <li *ngIf="isUser || isAdmin">
+          <li *ngIf="isUser || isAdmin" class="list-item-navbar">
             <a routerLink="/account-settings" (click)="closeMenu()">Mi Cuenta</a>
           </li>
         </ul>

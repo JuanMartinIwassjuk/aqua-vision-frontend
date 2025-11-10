@@ -146,8 +146,8 @@ nav ul li a:hover::after {
 
 .submenu-list {
   position: absolute;
-  top: 100%;
-  left: -10%;
+  top: 130%;
+  left: 0%;
   width: 15vw;   
   background-color: #001F3F;
   padding: 0.5rem 1rem;
@@ -378,5 +378,34 @@ box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
   100% {
     transform: scale(1);
     box-shadow: 0 0 6px rgba(229, 57, 53, 0.6);
+  }
+}
+
+/*******RESPONSIVE*******/
+/* Tablet large */
+@media (max-width: 1024px) {
+  .un-header {
+    gap: 0 !important;
+  }
+  .list-subitem-navbar{
+    display: flex;
+    position: relative;
+    width: 145%;
+    left: -1rem;
+  }
+  .submenu-list{
+    width: 16vw;
+  }
+}
+/* Tablet small */
+@media (max-width: 768px) {
+  .un-header {
+    gap: 1rem !important;
+  }
+  .boton-item-navbar{
+    display: flex;
+  }
+  .list-item-navbar{
+    padding: .5rem 0;
   }
 }

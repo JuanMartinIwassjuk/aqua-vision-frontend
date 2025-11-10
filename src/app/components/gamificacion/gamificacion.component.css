@@ -1056,3 +1056,61 @@ h2 {
   flex-direction: row;
   justify-content: space-between;
 }
+
+/*******RESPONSIVE*******/
+/* Tablet large */
+@media (max-width: 1024px) {
+  .user-hud{
+    right: 0;
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+    margin-left: .75rem !important;
+  }
+}
+/* Tablet small */
+@media (max-width: 768px) {
+  .user-hud{
+    height: 52%;
+    right: -2rem;
+  }
+  .grid{
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  .container-trivias{
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  .image-15, .image-16{
+    margin-left: -7rem;
+  }
+}
+/* Mobile */
+@media (max-width: 480px) {
+  .container-trivias{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .container-desafios{
+    margin-left: -3rem;
+    margin-right: -3rem;
+  }
+  .container-bienvenida-gamificacion{
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .user-hud{
+    right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    width: 111%;
+  }
+  .grid{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .prueba{
+    min-width: 13vw;
+    min-height: 10vh;
+  }
+  .modal-popup-medallas{
+    padding: 1.55rem !important;
+  }
+}
