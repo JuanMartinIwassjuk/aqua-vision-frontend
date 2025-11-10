@@ -1,8 +1,8 @@
+<!-- dashboard.component.html (actualizado: card admin restaurada y gráfico con Hoy/Ayer) -->
+
 <div *ngIf="isLoading" class="loading-container">
   <p class="loading-text">Cargando datos del dashboard<span class="dots"></span></p>
 </div>
-
-
 
 <div *ngIf="!isLoading" class="title-greeting">
   <div class="form-image">
@@ -17,43 +17,90 @@
 <div *ngIf="!isLoading" class="dashboard-container">
   <div class="cards-row slide-left">
 
-    <!-- Card Consumo Promedio (Admin) -->
-    <ng-container *ngIf="isAdmin; else userCard1">
-      <div class="card consumo-card">
-        <div class="consumo-main">
-          <span class="consumo-title">Consumo promedio por Hogar</span>
-          <span class="consumo-value">{{ consumoPromedio }} m³</span>
+    <!-- --- ADMIN VIEW: 4 CARDS --- -->
+    <ng-container *ngIf="isAdmin; else userCards">
+
+    <!-- Opción A: routerLink (recomendada si la ruta es estática) -->
+<a routerLink="/consumo-admin" class="card info-card" title="Ir a detalle de consumo">
+  <div class="card-hint">Ir a detalles de consumo</div>
+
+  <div class="consumo-main">
+    <span class="consumo-title">Consumo promedio por Hogar</span>
+    <span class="consumo-value">{{ consumoPromedio | number:'1.2-2' }} m³</span>
+  </div>
+
+  <div class="consumo-indicador" [ngClass]="{ 'positivo': consumoDiff < 0, 'negativo': consumoDiff > 0, 'blink-green': consumoDiff < 0, 'blink-red': consumoDiff > 0 }">
+    <ng-container *ngIf="consumoDiff < 0">
+      <mat-icon>arrow_downward</mat-icon>
+      <span>{{ consumoDiffAbs }}% menor que ayer</span>
+    </ng-container>
+    <ng-container *ngIf="consumoDiff > 0">
+      <mat-icon>arrow_upward</mat-icon>
+      <span>{{ consumoDiffAbs }}% mayor que ayer</span>
+    </ng-container>
+    <span *ngIf="consumoDiff === 0">= igual que ayer</span>
+  </div>
+</a>
+
+
+
+
+
+      <!-- Card 2: Total Trivias completadas -->
+      <a class="card info-card" routerLink="/admin/trivias" title="Ir a detalle de trivias">
+        <div class="card-hint">Ver detalles de trivias</div>
+        <div class="icon-row">
+          <mat-icon>emoji_events</mat-icon>
+          <span>Total de Trivias completadas: <strong>{{ totalTriviasAdmin }}</strong></span>
+        </div>
+      </a>
+
+      <!-- Card 3: Total Eventos -->
+      <a class="card info-card" routerLink="/eventos-admin" title="Ir a detalle de eventos">
+        <div class="card-hint">Ir a listado de eventos</div>
+        <div class="icon-row">
+          <mat-icon>event_available</mat-icon>
+          <span>Total de Eventos: <strong>{{ totalEventosAdmin }}</strong></span>
+        </div>
+      </a>
+
+      <!-- Card 4: Notificaciones (igual que usuario, con link) -->
+      <a routerLink="/consumption-alerts" class="card info-card" title="Ir a notificaciones detalladas">
+        <div class="card-hint">Ir a notificaciones detalladas</div>
+
+        <div class="icon-row">
+          <mat-icon 
+            [ngClass]="{ 'blink-red': cantidadNotificaciones > 0, 'ok-icon': cantidadNotificaciones === 0 }">
+            {{ cantidadNotificaciones > 0 ? 'notification_important' : 'notifications_none' }}
+          </mat-icon>
+
+          <span>
+            <ng-container *ngIf="cantidadNotificaciones > 0; else sinNotifsAdmin">
+              <strong>
+                Tenés 
+                <span class="notif-count blink-red">({{ cantidadNotificaciones }})</span> 
+                notificaciones nuevas
+              </strong>
+            </ng-container>
+            <ng-template #sinNotifsAdmin>
+              <strong>No hay notificaciones nuevas</strong>
+            </ng-template>
+          </span>
         </div>
 
-        <div 
-          class="consumo-indicador" 
-          [ngClass]="{ 
-            'positivo': consumoDiff < 0, 
-            'negativo': consumoDiff > 0, 
-            'blink-green': consumoDiff < 0, 
-            'blink-red': consumoDiff > 0 
-          }"
-        >
-          <ng-container *ngIf="consumoDiff < 0">
-            <mat-icon>arrow_downward</mat-icon>
-            <span>{{ consumoDiffAbs }}% menor que ayer</span>
-          </ng-container>
-          <ng-container *ngIf="consumoDiff > 0">
-            <mat-icon>arrow_upward</mat-icon>
-            <span>{{ consumoDiffAbs }}% mayor que ayer</span>
-          </ng-container>
-          <span *ngIf="consumoDiff === 0">= igual que ayer</span>
-        </div>
-      </div>
+      </a>
+
     </ng-container>
 
-    <!-- Card Consumo Diario (Usuario) -->
-    <ng-template #userCard1>
+    <!-- --- USER CARDS (sin admin) --- -->
+    <ng-template #userCards>
+
+      <!-- Card Consumo Diario (Usuario) -->
       <a routerLink="/reportes/diario" class="card consumo-card">
         <div class="card-hint">Ir a ver detalles de consumo diario</div>
         <div class="consumo-main">
           <span class="consumo-title">Consumo en lo que va del día:</span>
-          <span [style.color]="consumoColor" class="consumo-value">{{ consumoDia }} m³</span>
+          <span [style.color]="consumoColor" class="consumo-value">{{ consumoDia | number:'1.2-2' }} m³</span>
         </div>
 
         <div 
@@ -76,10 +123,8 @@
           <span *ngIf="consumoDiff === 0">= igual que ayer</span>
         </div>
       </a>
-    </ng-template>
 
-    <!-- Card Medidores (Admin) -->
-    <ng-template #userCard2>
+      <!-- Card Medidores (Usuario) -->
       <a routerLink="/account-settings" class="card info-card">
         <div class="icon-row">
           <mat-icon class="ok-icon">check_circle</mat-icon>
@@ -90,52 +135,37 @@
           <span>Medidores desconectados: <strong>{{ medidoresDesconectados }}</strong></span>
         </div>
       </a>
+
+      <!-- Card Alertas (Usuario) -->
+      <a routerLink="/consumption-alerts" class="card info-card">
+        <div class="card-hint">Ir a notificaciones detalladas</div>
+
+        <div class="icon-row">
+          <mat-icon 
+            [ngClass]="{ 'blink-red': cantidadNotificaciones > 0, 'ok-icon': cantidadNotificaciones === 0 }">
+            {{ cantidadNotificaciones > 0 ? 'notification_important' : 'notifications_none' }}
+          </mat-icon>
+
+          <span>
+            <ng-container *ngIf="cantidadNotificaciones > 0; else sinNotificaciones">
+              <strong>
+                Tenés 
+                <span class="notif-count blink-red">({{ cantidadNotificaciones }})</span> 
+                notificaciones nuevas
+              </strong>
+            </ng-container>
+            <ng-template #sinNotificaciones>
+              <strong>No tenés notificaciones nuevas</strong>
+            </ng-template>
+          </span>
+        </div>
+      </a>
+
     </ng-template>
 
-    <!-- Card Hogares y Trivias (Admin) -->
-    <ng-container *ngIf="isAdmin; else userCard3">
-      <div class="card info-card">
-        <div class="icon-row">
-          <mat-icon>home</mat-icon>
-          <span>Total de Hogares: <strong>{{ totalHogaresAdmin }}</strong></span>
-        </div>
-        <div class="icon-row">
-          <mat-icon>celebration</mat-icon>
-          <span>Total de Trivias completadas: <strong>{{ totalTriviasAdmin }}</strong></span>
-        </div>
-      </div>
-    </ng-container>
-
-    <!-- Card Alertas (Usuario) -->
-<ng-template #userCard3>
-  <a routerLink="/consumption-alerts" class="card info-card">
-    <div class="card-hint">Ir a notificaciones detalladas</div>
-
-    <div class="icon-row">
-      <!-- Ícono y contador dinámico -->
-      <mat-icon 
-        [ngClass]="{ 'blink-red': cantidadNotificaciones > 0, 'ok-icon': cantidadNotificaciones === 0 }">
-        {{ cantidadNotificaciones > 0 ? 'notification_important' : 'notifications_none' }}
-      </mat-icon>
-
-      <span>
-        <ng-container *ngIf="cantidadNotificaciones > 0; else sinNotificaciones">
-          <strong>
-            Tenés 
-            <span class="notif-count blink-red">({{ cantidadNotificaciones }})</span> 
-            notificaciones nuevas
-          </strong>
-        </ng-container>
-        <ng-template #sinNotificaciones>
-          <strong>No tenés notificaciones nuevas</strong>
-        </ng-template>
-      </span>
-    </div>
-  </a>
-</ng-template>
   </div>
 
-  <!-- Gráfico -->
+  <!-- Gráfico (ahora admin ve Hoy + Ayer) -->
   <div class="chart-card chart-fullwidth slide-bottom">
     <div class="chart-wrapper">
       <h4 class="consumption-hours-title">

@@ -185,4 +185,99 @@ export class ReporteAdminService {
 
     return of(result);
   }
+
+
+getConsumoPromedioPorHogar(fechaIso: string): Observable<number> {
+  const fechaOnly = (fechaIso || '').split('T')[0];
+  const hoy = new Date().toISOString().split('T')[0];
+  const ayerDt = new Date();
+  ayerDt.setDate(new Date().getDate() - 1);
+  const ayer = ayerDt.toISOString().split('T')[0];
+
+  if (fechaOnly === hoy) return of(2.48);      // m³ promedio por hogar hoy
+  if (fechaOnly === ayer) return of(2.70);     // m³ promedio por hogar ayer
+  return of(2.50);                             // valor por defecto
+}
+
+/** Devuelve consumo total de todos los hogares (m³) para la fecha dada.
+ *  Valores fijos coherentes con promedio * hogares (hogares = this.hogares.length).
+ *  Ej.: con 5 hogares, 2.48 * 5 = 12.4 m³
+ */
+getConsumoTotalPorDia(fechaIso: string): Observable<number> {
+  const hogaresCount = this.hogares.length || 1;
+  const fechaOnly = (fechaIso || '').split('T')[0];
+  const hoy = new Date().toISOString().split('T')[0];
+  const ayerDt = new Date();
+  ayerDt.setDate(new Date().getDate() - 1);
+  const ayer = ayerDt.toISOString().split('T')[0];
+
+  if (fechaOnly === hoy) return of(Math.round((2.48 * hogaresCount) * 1000) / 1000); // ejemplo 12.4
+  if (fechaOnly === ayer) return of(Math.round((2.70 * hogaresCount) * 1000) / 1000); // ejemplo 13.5
+  return of(Math.round((2.50 * hogaresCount) * 1000) / 1000);
+}
+
+/** Total de trivias completadas (valor fijo) */
+getTotalTriviasCompletadas(): Observable<number> {
+  return of(18); // valor fijo mock
+}
+
+/** Total de eventos (valor fijo) */
+getTotalEventos(): Observable<number> {
+  return of(this.eventos.length); // can use eventos existentes (determinístico si no los generas random)
+}
+
+/** Notificaciones globales (valor fijo) */
+getNotificacionesCount(): Observable<number> {
+  return of(4); // valor fijo mock
+}
+
+/** Consumo por hora total (m³) para la fecha: devuelve 24 valores fijos coherentes */
+// Asegúrate de tener `import { of } from 'rxjs';` arriba del archivo.
+
+/**
+ * Devuelve 24 puntos por hora (hora: "HH:00", caudal_m3) determinísticos.
+ * - Si fechaIso es hoy => curva "base"
+ * - Si fechaIso es ayer => curva "base" modificada (menor en promedio y con ligera variación por hora)
+ * - Si es cualquier otra fecha => variante "neutral"
+ */
+getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: number }[]> {
+  const basePerHour = [
+    0.12,0.09,0.07,0.06,0.05,0.06,0.18,0.45,0.78,0.95,1.05,1.12,
+    1.20,1.10,1.00,0.92,0.86,0.80,0.72,0.65,0.58,0.45,0.32,0.20
+  ];
+
+  const onlyDate = (fechaIso || '').split('T')[0];
+  const today = new Date().toISOString().split('T')[0];
+  const ayerDt = new Date();
+  ayerDt.setDate(ayerDt.getDate() - 1);
+  const ayer = ayerDt.toISOString().split('T')[0];
+
+  let values: number[];
+
+  if (onlyDate === today) {
+    // Hoy: la curva base (sin cambios)
+    values = basePerHour.slice();
+  } else if (onlyDate === ayer) {
+    // Ayer: ligeramente menor en promedio y con variación horaria fija para que se vea diferente
+    values = basePerHour.map((v, i) => {
+      // factor determinístico por índice para crear una forma ligeramente distinta
+      const factor = 0.88 + ( (i % 6) * 0.02 ); // entre 0.88 y 0.98
+      // "ruido" determinístico, negativo o positivo pequeño
+      const noise = (((i * 37) % 11) - 5) / 100; // entre -0.05 y +0.05
+      const val = v * factor + noise;
+      return Math.round(val * 100) / 100;
+    });
+  } else {
+    // Otra fecha: versión neutral (ligeramente suavizada)
+    values = basePerHour.map((v, i) => {
+      const val = v * 0.96 + ((i % 3) - 1) * 0.01; // pequeña variación
+      return Math.round(val * 100) / 100;
+    });
+  }
+
+  const result = values.map((v, i) => ({ hora: String(i).padStart(2, '0') + ':00', caudal_m3: v }));
+  return of(result);
+}
+
+
 }
