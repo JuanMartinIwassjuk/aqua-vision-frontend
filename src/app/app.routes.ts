@@ -95,9 +95,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/admin/eventos-admin/eventos-admin.component').then(c => c.EventosAdminComponent),
     canActivate: [AuthGuard] 
   },
-    {
+  {
     path: 'localidad-admin',
     loadComponent: () => import('./components/admin/localidad-admin/localidad-admin.component').then(c => c.LocalidadAdminComponent),
+    canActivate: [AuthGuard] 
+  },
+  {
+    path: 'gamification-admin',
+    loadComponent: () => import('./components/admin/gamification-admin/gamification-admin.component').then(c => c.GamificacionAdminComponent ),
     canActivate: [AuthGuard] 
   },
   { path: 'gamificacion', component: GamificacionComponent },

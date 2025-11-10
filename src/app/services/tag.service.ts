@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { EventTag } from '../models/eventTag';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class TagService {
-  private readonly apiUrl = 'http://localhost:8080/tags';
+  private readonly apiUrl = environment.apiUrl + '/tags';
 
   constructor(private http: HttpClient) {}
 

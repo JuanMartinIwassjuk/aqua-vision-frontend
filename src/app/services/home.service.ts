@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { Sector } from '../models/sector';
 import { Notification } from '../models/notification';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 import { Hogar } from '../models/hogar';
 
@@ -73,10 +74,10 @@ export class HomeService {
   }
 
   getSectorsByHomeId(homeId: number): Observable<Sector[]> {
-    return this.http.get<Sector[]>(`http://localhost:8080/hogares/${homeId}/sectores`);
+    return this.http.get<Sector[]>(`${environment.apiUrl}/hogares/${homeId}/sectores`);
   }
 
-  private apiUrl = 'http://localhost:8080/hogares';
+  private apiUrl = environment.apiUrl + '/hogares';
    
   getPuntosHogar(hogarId: number): Observable<Hogar> {
     return this.http.get<Hogar>(`${this.apiUrl}/${hogarId}/puntos`);
