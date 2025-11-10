@@ -11,6 +11,7 @@ import { forkJoin, of } from 'rxjs';
 import { HomeService } from '../../services/home.service';
 import { NotificationService } from '../../services/notification.service';
 import { switchMap, catchError } from 'rxjs/operators';
+import { ReporteAdminService } from '../../services/reporteAdmin.service';
 
 
 
@@ -19,12 +20,13 @@ import { switchMap, catchError } from 'rxjs/operators';
   selector: 'app-dashboard',
   imports: [NgChartsModule, CommonModule, RouterModule, MatIconModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
 
   isLoading: boolean = true;
 
+  // usuario normal
   consumoDia!: number;
   consumoColor!: string;
   medidoresConectados!: number;
@@ -33,16 +35,17 @@ export class DashboardComponent implements OnInit {
 
   cantidadNotificaciones = 0;
 
-  medidoresConectadosAdmin!: number;
-  medidoresDesconectadosAdmin!: number;
-  totalHogaresAdmin!: number;
+  // admin cards
+  public totalHogaresAdmin!: number;      // usar si querés mostrar
   totalTriviasAdmin!: number;
-  consumoPromedio!: number;
+  totalEventosAdmin!: number;
+  consumoPromedio!: number;        // m3 promedio por hogar hoy
 
   consumoPromedioAnterior!: number;
   consumoDiff!: number;
   consumoDiffAbs!: number;
 
+  // charts
   public lineChartData: ChartData<'line'> = { labels: [], datasets: [] };
   public lineChartDataAdmin: ChartData<'line'> = { labels: [], datasets: [] };
 
@@ -50,7 +53,6 @@ export class DashboardComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { position: 'bottom' } },
-
     scales: {
       y: {
         beginAtZero: true,
@@ -62,102 +64,196 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private reporteService: ReporteService,
+    private reporteAdminService: ReporteAdminService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private homeService: HomeService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
  ngOnInit(): void {
   this.isLoading = true;
 
   this.homeService.waitForHomeId()
-    .pipe(
-      switchMap(hogarId => {
-
+    .subscribe({
+      next: (hogarId) => {
         const hoy = new Date();
         const ayer = new Date(hoy);
         ayer.setDate(hoy.getDate() - 1);
 
-        const diaHoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
-        const diaAyer = new Date(ayer).toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+        const diaHoy = hoy.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+        const diaAyer = ayer.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
 
+        if (this.isAdmin) {
+          // ADMIN: traigo promedio, totals y consumos por hora para hoy y ayer
+          forkJoin({
+            consumoPromHoy: this.reporteAdminService.getConsumoPromedioPorHogar(diaHoy).pipe(catchError(() => of(0))),
+            consumoPromAyer: this.reporteAdminService.getConsumoPromedioPorHogar(diaAyer).pipe(catchError(() => of(0))),
+            trivias: this.reporteAdminService.getTotalTriviasCompletadas().pipe(catchError(() => of(0))),
+            eventos: this.reporteAdminService.getTotalEventos().pipe(catchError(() => of(0))),
+            notifs: this.reporteAdminService.getNotificacionesCount().pipe(catchError(() => of(0))),
+            horasHoy: this.reporteAdminService.getConsumoPorHoraTotal(diaHoy).pipe(catchError(() => of([]))),
+            horasAyer: this.reporteAdminService.getConsumoPorHoraTotal(diaAyer).pipe(catchError(() => of([])))
+          }).subscribe({
+            next: ({ consumoPromHoy, consumoPromAyer, trivias, eventos, notifs, horasHoy, horasAyer }: any) => {
+              // Promedio por hogar (m³)
+              this.consumoPromedio = Number(consumoPromHoy || 0);
+              this.consumoPromedioAnterior = Number(consumoPromAyer || 0);
+              this.calcularDiferencia(this.consumoPromedio, this.consumoPromedioAnterior);
 
-        this.notificationService.getUnreadCount(hogarId).subscribe({
-          next: count => this.cantidadNotificaciones = count,
-          error: err => console.error('Error al obtener notificaciones:', err)
-        });
+              // Otros mocks
+              this.totalTriviasAdmin = Number(trivias || 0);
+              this.totalEventosAdmin = Number(eventos || 0);
+              this.cantidadNotificaciones = Number(notifs || 0);
 
+              // Chart: construyo Hoy/Ayer. Asumo arrays horarios de 24 elementos (00:00..23:00).
+              // Si no, intento mapear por hora en común.
+              const labels = (horasHoy && horasHoy.length) ? horasHoy.map((h: any) => h.hora)
+                            : (horasAyer && horasAyer.length) ? horasAyer.map((h: any) => h.hora)
+                            : Array.from({length:24}, (_,i) => String(i).padStart(2,'0') + ':00');
 
-        return forkJoin({
-          hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy).pipe(
-            catchError(err => { console.error('hoy error', err); return of([]); })
-          ),
-          ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer).pipe(
-            catchError(err => { console.error('ayer error', err); return of([]); })
-          ),
-          consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId).pipe(
-            catchError(err => { console.error('consumoHoy error', err); return of(0); })
-          ),
-          consumoAyer: this.reporteService.getConsumoPromedio(hogarId).pipe(
-            catchError(err => { console.error('consumoAyer error', err); return of(0); })
-          )
-        });
-      })
-    )
-    .subscribe({
-      next: ({ hoy, ayer, consumoHoy, consumoAyer }) => {
-        const horas = (hoy || []).map((d: any) => d.hora);
-        const caudales = (hoy || []).map((d: any) => d.caudal_m3 ?? null);
-        const caudalesAnterior = (ayer || []).map((d: any) => d.caudal_m3 ?? null);
+              const valoresHoy = (labels.map((lbl: string) => {
+                const found = (horasHoy || []).find((h: any) => h.hora === lbl);
+                return found ? found.caudal_m3 : 0;
+              }));
 
-        this.lineChartData = {
-          labels: horas,
-          datasets: [
-            {
-              label: 'Hoy',
-              data: caudales,
-              borderColor: '#2563eb',
-              fill: false,
-              tension: 0.3,
-              borderWidth: 3,
-              pointRadius: 3.5,
-              pointBackgroundColor: '#2563eb',
-              backgroundColor:'transparent'
+              const valoresAyer = (labels.map((lbl: string) => {
+                const found = (horasAyer || []).find((h: any) => h.hora === lbl);
+                return found ? found.caudal_m3 : 0;
+              }));
+
+              this.lineChartDataAdmin = {
+                labels,
+                datasets: [
+                  {
+                    label: 'Hoy',
+                    data: valoresHoy,
+                    borderColor: '#2563eb',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 3,
+                    pointRadius: 3.5,
+                    pointBackgroundColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.08)'
+                  },
+                  {
+                    label: 'Ayer',
+                    data: valoresAyer,
+                    borderColor: '#25a2ebff',
+                    fill: false,
+                    tension: 0.3,
+                    borderWidth: 2,
+                    borderDash: [6, 6],
+                    pointRadius: 3,
+                    pointBackgroundColor: '#25a2ebff',
+                    backgroundColor: 'transparent'
+                  }
+                ]
+              };
+
+              // total hogares (desde service)
+              this.totalHogaresAdmin = (this.reporteAdminService as any).hogares?.length ?? this.totalHogaresAdmin;
+
             },
-            {
-              label: 'Ayer',
-              data: caudalesAnterior,
-              borderColor: '#25a2ebff',
-              fill: false,
-              tension: 0.3,
-              borderWidth: 2,
-              borderDash: [6, 6],
-              pointRadius: 3,
-              pointBackgroundColor: '#25a2ebff',
-              backgroundColor:'transparent'
+            error: err => {
+              console.error('Error cargando datos admin:', err);
+              this.snackBar.open('Error al cargar datos admin', 'Cerrar', { duration: 4000 });
+              this.isLoading = false;
+            },
+            complete: () => {
+              this.isLoading = false;
             }
-            
-          ]
-        };
+          });
 
-        if (!this.isAdmin) {
-          this.consumoDia = consumoHoy as number;
-          const consumoDiaAnterior = consumoAyer as number;
-          this.estadoMedidores = this.reporteService.getEstadoMedidores();
-          this.medidoresConectados = this.estadoMedidores.conectados;
-          this.medidoresDesconectados = this.estadoMedidores.desconectados;
-          this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
+        } else {
+          // USUARIO: mantenemos lógica previa
+          forkJoin({
+            hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy).pipe(catchError(err => { console.error('hoy error', err); return of([]); })),
+            ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer).pipe(catchError(err => { console.error('ayer error', err); return of([]); })),
+            consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId).pipe(catchError(err => { console.error('consumoHoy error', err); return of(0); })),
+            consumoAyer: this.reporteService.getConsumoPromedio(hogarId).pipe(catchError(err => { console.error('consumoAyer error', err); return of(0); }))
+          }).subscribe({
+            next: ({ hoy, ayer, consumoHoy, consumoAyer }: any) => {
+              const horas = (hoy || []).map((d: any) => d.hora);
+              const caudales = (hoy || []).map((d: any) => d.caudal_m3 ?? null);
+              const caudalesAnterior = (ayer || []).map((d: any) => d.caudal_m3 ?? null);
+
+              this.lineChartData = {
+                labels: horas,
+                datasets: [
+                  {
+                    label: 'Hoy',
+                    data: caudales,
+                    borderColor: '#2563eb',
+                    fill: false,
+                    tension: 0.3,
+                    borderWidth: 3,
+                    pointRadius: 3.5,
+                    pointBackgroundColor: '#2563eb',
+                    backgroundColor: 'transparent'
+                  },
+                  {
+                    label: 'Ayer',
+                    data: caudalesAnterior,
+                    borderColor: '#25a2ebff',
+                    fill: false,
+                    tension: 0.3,
+                    borderWidth: 2,
+                    borderDash: [6, 6],
+                    pointRadius: 3,
+                    pointBackgroundColor: '#25a2ebff',
+                    backgroundColor: 'transparent'
+                  }
+                ]
+              };
+
+              // notificaciones para usuario (por hogar)
+              this.notificationService.getUnreadCount(hogarId).subscribe({
+                next: count => this.cantidadNotificaciones = count,
+                error: err => console.error('Error al obtener notificaciones:', err)
+              });
+
+              // medidores y consumo para usuario
+              this.consumoDia = consumoHoy as number;
+              const consumoDiaAnterior = consumoAyer as number;
+              this.estadoMedidores = this.reporteService.getEstadoMedidores();
+              this.medidoresConectados = this.estadoMedidores.conectados;
+              this.medidoresDesconectados = this.estadoMedidores.desconectados;
+              this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
+            },
+            error: err => {
+              console.error('Error al cargar datos del dashboard (usuario):', err);
+              this.snackBar.open('Error al cargar los datos del dashboard', 'Cerrar', { duration: 4000 });
+            },
+            complete: () => {
+              this.isLoading = false;
+            }
+          });
         }
       },
       error: err => {
-        console.error('Error al cargar datos del dashboard:', err);
-        this.snackBar.open('Error al cargar los datos del dashboard', 'Cerrar', { duration: 4000 });
-      },
-      complete: () => {
+        console.error('Error obtaining homeId', err);
         this.isLoading = false;
       }
     });
+}
+
+
+
+// nuevo helper para diferencia de totales (usa mismo formato que calcularDiferencia)
+consumoTotalHoy!: number;
+consumoTotalAyer!: number;
+consumoTotalDiff!: number;
+consumoTotalDiffAbs!: number;
+
+calcularDiferenciaTotal(actual: number, anterior: number): void {
+  if (!anterior || anterior === 0) {
+    this.consumoTotalDiff = 0;
+    this.consumoTotalDiffAbs = 0;
+    return;
+  }
+  this.consumoTotalDiff = ((actual - anterior) / anterior) * 100;
+  this.consumoTotalDiffAbs = Math.abs(Math.round(this.consumoTotalDiff));
 }
 
   calcularDiferencia(actual: number, anterior: number): void {
@@ -174,7 +270,7 @@ export class DashboardComponent implements OnInit {
     return this.authService.isAdmin();
   }
 
-  onChartClick(event: { event?: ChartEvent, active?: any[] }) {
+  onChartClick(event: { event?: any, active?: any[] }) {
     if (event.active && event.active.length > 0) {
       const element = event.active[0];
       const datasetIndex = element.datasetIndex;
