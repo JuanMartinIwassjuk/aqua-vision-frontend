@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RankingResponse, Recompensa } from '../models/gamificacion';
 import { environment } from '../../environments/environment';
+import { Logro } from '../models/logro';
 
 @Injectable({
   providedIn: 'root'
@@ -21,21 +22,25 @@ export class GamificacionService {
   }
 
   addPuntosReclamados(hogarId: number, puntos: number, minijuego: string, escena?: string): Observable<any> {
-  const dto = {
-    hogarId,
-    puntos,
-    fecha: new Date(),
-    minijuego, 
-    escena
-  }; //TODO pasar a model 
-  return this.http.post(`${this.baseUrl}/${hogarId}/reclamar-puntos`, dto);
-}
+    const dto = {
+      hogarId,
+      puntos,
+      fecha: new Date(),
+      minijuego, 
+      escena
+    }; //TODO pasar a model 
+    return this.http.post(`${this.baseUrl}/${hogarId}/reclamar-puntos`, dto);
+  }
 
-getUltimaFechaReclamo(hogarId: number, minijuego: string, escena: string): Observable<Date | null> {
-  return this.http.get<Date | null>(
-    `${this.baseUrl}/${hogarId}/ultimo-puntaje-reclamado`,
-    { params: { minijuego, escena } }
-  );
-}
+  getUltimaFechaReclamo(hogarId: number, minijuego: string, escena: string): Observable<Date | null> {
+    return this.http.get<Date | null>(
+      `${this.baseUrl}/${hogarId}/ultimo-puntaje-reclamado`,
+      { params: { minijuego, escena } }
+    );
+  }
+
+  getLogros(hogarId: number): Observable<Logro[]> {
+    return this.http.get<Logro[]>(`${this.baseUrl}/${hogarId}/logros`);
+  }
 
 }

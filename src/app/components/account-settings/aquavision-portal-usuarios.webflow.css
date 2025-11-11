@@ -2471,6 +2471,91 @@ input:checked:focus + .switch-left + .switch-right {
   align-items: center;
 }
 
+.container-logros{
+  padding-top: 1rem;
+}
+
+.logros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  text-align: center;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.logro-item {
+  /*background: rgba(255, 255, 255, 0.08);*/
+  background: var(--gris-fondo);
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.logro-item.locked {
+  opacity: 0.5;
+  filter: blur(1px) grayscale(0.6);
+  pointer-events: none;
+}
+
+.logro-item.locked h3,
+.logro-item.locked p {
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: none;
+}
+
+.logro-img-container {
+  position: relative;
+  display: inline-block;
+}
+
+.logro-img-container img {
+  width: 12vw;
+  height: 24vh;
+  transition: transform 0.2s ease;
+}
+
+.logro-img-container img:hover {
+  transform: scale(1.05);
+}
+
+.lock-overlay {
+  position: absolute;
+  inset: 0;
+  /*background: rgba(0, 0, 0, 0.4);*/
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.lock-overlay img {
+  width: 4vw;
+  height: 7vh;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.title-logro{
+  font-size: 24px;
+  line-height: 30px;
+  margin-top: 0px;
+}
+
+.tooltip-flotante {
+  position: fixed;
+  background-color: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 99999;
+  transition: opacity 0.1s ease-in-out;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+
 /**********MODO RESPONSIVE***************/
 
 /* Tablet large */
@@ -2486,6 +2571,14 @@ input:checked:focus + .switch-left + .switch-right {
     position: relative;
     right: 1rem;
     width: 25px;
+  }
+  .logro-img-container img{
+    width: 15vw;
+    height: 19vh;
+  }
+  .candado-blanco-logro{
+    width: 6vw !important;
+    height: 7vh !important;
   }
 }
 /* Tablet / small */
@@ -2529,6 +2622,9 @@ input:checked:focus + .switch-left + .switch-right {
   .container-verificado{
     padding-top: 0.5rem;
   }
+  .logros-grid{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 /**/
 /* Mobile */
@@ -2559,5 +2655,15 @@ input:checked:focus + .switch-left + .switch-right {
   }
   .info-col{
     gap: 0;
+  }
+  .logros-grid{
+    grid-template-columns: 1fr 1fr;
+  }
+  .logro-img-container img{
+    width: 23vw;
+    height: 15vh;
+  }
+  .candado-blanco-logro{
+    height: 5vh !important;
   }
 }

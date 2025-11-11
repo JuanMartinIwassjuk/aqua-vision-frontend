@@ -13,6 +13,9 @@ import { Hogar } from '../../models/hogar';
 import { Facturacion } from '../../models/facturacion';
 import { Sensor } from '../../models/sensor';
 
+import { GamificacionService } from '../../services/gamificacion.service';
+import { Logro } from '../../models/logro';
+
 @Component({
   selector: 'app-account-settings',
   imports: [CommonModule],
@@ -42,7 +45,8 @@ export class AccountSettingsComponent implements OnInit{
     private router: Router,
     private homeService: HomeService,
     private userService: UserService,
-    private cuentaService: CuentaService
+    private cuentaService: CuentaService,
+    private gamificacionService: GamificacionService
   ){  }
 
    logout(){
@@ -81,6 +85,7 @@ export class AccountSettingsComponent implements OnInit{
       next: (hogarId: number) => {
         console.log('Hogar ID obtenido:', hogarId);
        this.cargarDatos(hogarId);
+       this.cargarLogros(hogarId);
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
@@ -104,4 +109,55 @@ export class AccountSettingsComponent implements OnInit{
     this.cuentaService.getFacturacion(hogarId).subscribe(data => this.facturacion = data);
     this.cuentaService.getSensores(hogarId).subscribe(data => this.sensores = data);
   }
+
+  logros: Logro[] = [
+    { nombre: 'Registro', descripcion: 'Te registraste en AquaVision'},
+    { nombre: 'Primer sensor', descripcion: 'Instalaste tu primer sensor'},
+    { nombre: 'Primer ahorro', descripcion: 'Reduciste tu consumo de agua'},
+    { nombre: 'Sabio acuatico', descripcion: 'Participaste en 7 trivias seguidas', pista: 'Completa todas las trivia durante una semana entera para conseguir este logro'},
+    { nombre: 'Primer Reto', descripcion: 'Completá tu primera trivia', pista: 'Participá en una trivia para conseguir este logro' },
+    { nombre: 'Eco Heroe', descripcion: 'Ahorra agua durante 7 días seguidos', pista: 'Controlá tu consumo diario en el dashboard' }
+  ];
+
+  logrosDesbloqueados: Logro[] = [];
+  
+  cargarLogros(hogarId: number): void {
+    this.gamificacionService.getLogros(hogarId).subscribe({
+      next: (data) => {
+        this.logrosDesbloqueados = data;
+        console.log('Logros desbloqueados:', data);
+      },
+      error: (err) => console.error('Error al cargar logros', err)
+    });
+  }
+
+  esLogroDesbloqueado(nombre: string): boolean {
+    return this.logrosDesbloqueados.some(l => l.nombre === nombre);
+  }
+
+  tooltipVisible = false;
+  tooltipText = '';
+  tooltipX = 0;
+  tooltipY = 0;
+
+  showTooltip(event: MouseEvent, logro: Logro): void {
+    console.log('entro a show pero no a if');
+    if (!this.esLogroDesbloqueado(logro.nombre)) {
+      console.log('entro a if en show');
+      this.tooltipText = logro.pista || 'Completa más desafíos para desbloquear este logro';
+      this.tooltipVisible = true;
+      this.moveTooltip(event);
+      console.log('hover sobre', logro.nombre)
+    }
+  }
+
+  moveTooltip(event: MouseEvent): void {
+    this.tooltipX = event.clientX + 10;
+    this.tooltipY = event.clientY + 10;
+  }
+
+  hideTooltip(): void {
+    this.tooltipVisible = false;
+  }
+
 }
