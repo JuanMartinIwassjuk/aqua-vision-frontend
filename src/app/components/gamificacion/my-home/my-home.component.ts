@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GamificacionService } from '../../../services/gamificacion.service';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ interface Scene {
   image: string;
   leaks: LeakPoint[];
   expense: number;
-  lastRevision: Date;
+  lastRevision?: Date;
   alreadyClaimed?: boolean;
 }
 
@@ -40,6 +40,7 @@ export class MyHomeComponent implements OnInit, OnDestroy {
   muted = false;
   volume = 50;
   showVolume = false;
+  hideVolumeTimeout: any = null;
 
   scenes: Scene[] = [
     {
@@ -53,7 +54,6 @@ export class MyHomeComponent implements OnInit, OnDestroy {
         { x: 58, y: 16, closed: false }
       ],
       expense: 5454,
-      lastRevision: new Date(2025, 9, 24)
     },
     {
       name: 'lavadero',
@@ -64,7 +64,6 @@ export class MyHomeComponent implements OnInit, OnDestroy {
         { x: 46, y: 53, closed: false }
       ],
       expense: 15524,
-      lastRevision: new Date(2025, 9, 24)
     },
     {
       name: 'patio',
@@ -75,7 +74,6 @@ export class MyHomeComponent implements OnInit, OnDestroy {
         { x: 31, y: 85, closed: false }
       ],
       expense: 12115,
-      lastRevision: new Date(2025, 9, 24)
     },
     {
       name: 'cocina',
@@ -86,7 +84,6 @@ export class MyHomeComponent implements OnInit, OnDestroy {
         { x: 69, y: 45, closed: false }
       ],
       expense: 87845,
-      lastRevision: new Date(2025, 9, 24)
     }
   ];
 
@@ -235,6 +232,7 @@ claimAllPoints() {
       next: () => {
         console.log('Puntos reclamados correctamente');
         this.currentScene.leaks.forEach(l => l.closed = true);
+        this.currentScene.lastRevision = new Date();
       },
       error: (err: any) => {
         console.error('Error al registrar puntos:', err);
@@ -257,6 +255,8 @@ checkIfPointsAlreadyClaimed() {
         if (yaReclamado) {
           this.currentScene.leaks.forEach(leak => leak.closed = true);
           this.stopAllDropSounds();
+
+          this.currentScene.lastRevision = new Date(fecha);
         }
       },
       error: (err) => {
@@ -282,6 +282,7 @@ checkAllScenesAlreadyClaimed(): Promise<void> {
             scene.alreadyClaimed = yaReclamado;
             if (yaReclamado) {
               scene.leaks.forEach(l => l.closed = true);
+              scene.lastRevision = new Date(fecha);
             }
             resolve();
           },
@@ -309,16 +310,36 @@ updateVolume() {
   const volumeLevel = this.muted ? 0 : this.volume / 100;
 
   if (this.backgroundMusic) this.backgroundMusic.volume = 0.03 * volumeLevel * 3;
-
   if (this.fixSound) this.fixSound.volume = 0.09 * volumeLevel;
 
   this.scenes.forEach(scene => {
     scene.leaks.forEach(leak => {
-      if (leak.dropSound) {
-        leak.dropSound.volume = 0.09 * volumeLevel;
-      }
+      if (leak.dropSound) leak.dropSound.volume = 0.09 * volumeLevel;
     });
   });
+
+  clearTimeout(this.hideVolumeTimeout);
+  this.hideVolumeTimeout = setTimeout(() => {
+    this.showVolume = false;
+  }, 3000);
+}
+
+toggleVolumeVisibility() {
+  this.showVolume = true;
+
+
+  clearTimeout(this.hideVolumeTimeout);
+  this.hideVolumeTimeout = setTimeout(() => {
+    this.showVolume = false;
+  }, 3000); 
+}
+
+@HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+  if (!target.closest('.sound-control')) {
+    this.showVolume = false;
+  }
 }
 
 }

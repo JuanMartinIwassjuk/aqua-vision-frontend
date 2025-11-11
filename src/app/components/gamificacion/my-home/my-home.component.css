@@ -3,7 +3,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -18,6 +17,7 @@
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0,0,0,0.15);
+  margin-bottom: 80px
 }
 
 .scene-panel {
@@ -299,3 +299,179 @@
   cursor: pointer;
   vertical-align: middle;
 }
+
+.claim-btn {
+  background-color: #4CAF50; 
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.claim-btn[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.claim-btn.pending[disabled] {
+  background-color: #e53c3c; 
+  color: #fff;
+  opacity: 1; 
+}
+
+@media (max-width: 1024px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+    width: 95%;
+    margin-bottom: 80px
+  }
+
+  .scene-panel {
+    order: 1;
+  }
+
+  .scene-container {
+    order: 2;
+  }
+
+  .scene-image {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .gamification-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .claim-btn {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    padding: 10px;
+  }
+
+  .game-layout {
+    padding: 15px;
+    gap: 15px;
+    margin-bottom: 80px
+  }
+
+  .scene-card {
+    font-size: 0.9rem;
+  }
+
+  .scene-image {
+    width: 100%;
+    max-width: none;
+    border-radius: 10px;
+  }
+
+  .popup-content {
+    width: 85%;
+    padding: 20px;
+  }
+
+  .claim-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+
+@media (max-width: 400px) {
+  .scene-image {
+    width: 100%;
+  }
+
+  .scene-card img {
+    height: 60px;
+  }
+
+  .scene-info h4 {
+    font-size: 12px;
+  }
+
+  .scene-info p {
+    font-size: 11px;
+  }
+
+  .claim-btn {
+    padding: 7px 10px;
+    font-size: 0.85rem;
+  }
+
+  .popup-content {
+    width: 90%;
+    font-size: 0.9rem;
+  }
+}
+
+.leak {
+  width: 3vw;
+  height: 3vw;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 30px;
+  max-height: 30px;
+}
+
+.sound-control {
+  position: absolute;
+  top: 1px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+.sound-control.volume-visible {
+  transform: translateX(-110px);
+}
+
+.sound-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.sound-icon:hover {
+  transform: scale(1.1);
+  color: #2ea0ff;
+}
+
+.sound-icon.muted {
+  color: #aaa;
+}
+
+.volume-slider {
+  opacity: 0;
+  transform: scaleX(0.8);
+  transform-origin: left center; 
+  transition: all 0.3s ease;
+  pointer-events: none;
+  position: absolute;
+  left: 40px; 
+}
+
+.volume-slider.visible {
+  opacity: 1;
+  transform: scaleX(1);
+  pointer-events: all;
+}
+
+.volume-slider input[type="range"] {
+  width: 100px;
+  accent-color: #2ea0ff;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
