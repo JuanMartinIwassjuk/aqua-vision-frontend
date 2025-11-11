@@ -166,7 +166,38 @@
       <h1 class="modal-datosperso-title">Logros</h1>
       <div class="div-block-2">
         <h4 class="descr-datosperso">Acá podrás ver todos tus logros obtenidos.</h4>
-                
+          <div class="container-logros">
+            <div class="logros-grid">
+              <div *ngFor="let logro of logros" class="logro-item" [class.locked]="!esLogroDesbloqueado(logro.nombre)"
+                (mouseenter)="!esLogroDesbloqueado(logro.nombre) && showTooltip($event, logro)"
+                (mousemove)="!esLogroDesbloqueado(logro.nombre) && moveTooltip($event)"
+                (mouseleave)="hideTooltip()">
+                <div class="logro-img-container">
+                  <img [src]="esLogroDesbloqueado(logro.nombre)
+                    ? 'images/logro-' + logro.nombre + '.png'
+                    : 'images/logro-bloqueado.png'"/>
+                  <div class="lock-overlay" *ngIf="!esLogroDesbloqueado(logro.nombre)">
+                    <img src="images/candado-blanco.png" class="candado-blanco-logro" alt="locked" />
+                  </div>
+                </div>
+
+                <!-- Mostrar nombre y descripción solo si está desbloqueado -->
+                <ng-container *ngIf="esLogroDesbloqueado(logro.nombre)">
+                  <h3 class="title-logro">{{ logro.nombre }}</h3>
+                  <p class="descr-logro">{{ logro.descripcion }}</p>
+                </ng-container>
+
+                <!-- Tooltip flotante -->
+                <div class="tooltip-flotante" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
+                  {{ tooltipText }}
+                </div>
+
+              </div>
+            </div>
+
+            
+          </div>
+
       </div>
     </div>
     <div data-w-id="e57b3ffc-87ee-d653-5ca6-917b17c4da3f" class="div-block-4"></div>
