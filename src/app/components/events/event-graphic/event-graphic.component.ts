@@ -119,7 +119,25 @@ ngOnInit(): void {
         maintainAspectRatio: false,
         plugins: {
           legend: { position: 'bottom' },
-          annotation: { annotations: annotations as any } as any
+          annotation: { annotations: annotations as any } as any,
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || '';
+
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += context.parsed.y + ' m³'; //Puse m³ porque asi esta el grafico pero no sería L? 
+                }
+                return label;
+              },
+              title: function(context) {
+                return context[0].label;
+              }
+            }
+          }
         },
         scales: {
           y: {

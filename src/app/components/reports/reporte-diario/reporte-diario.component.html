@@ -101,7 +101,7 @@
         <div class="costo-card" *ngFor="let sector of sectoresFiltrados">
           <div class="costo-header">
             <span class="sector-nombre">{{ sector.nombre_sector }}</span>
-            <span class="costo-precio">{{ sector.costo }}</span>
+            <span class="costo-precio">{{ sector.costo | currency:'$ ':'symbol':'1.0-2'}}</span>
           </div>
           <div class="costo-detalle">
             <span>{{ sector.consumo_total }} Litros</span>
