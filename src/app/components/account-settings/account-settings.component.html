@@ -182,20 +182,17 @@
                 </div>
 
                 <!-- Mostrar nombre y descripción solo si está desbloqueado -->
-                <ng-container *ngIf="esLogroDesbloqueado(logro.nombre)">
+                <div *ngIf="esLogroDesbloqueado(logro.nombre)">
                   <h3 class="title-logro">{{ logro.nombre }}</h3>
                   <p class="descr-logro">{{ logro.descripcion }}</p>
-                </ng-container>
-
-                <!-- Tooltip flotante -->
-                <div class="tooltip-flotante" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
-                  {{ tooltipText }}
                 </div>
-
               </div>
             </div>
+          </div>
 
-            
+          <!-- Tooltip flotante -->
+          <div class="tooltip-flotante" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
+            {{ tooltipText }}
           </div>
 
       </div>

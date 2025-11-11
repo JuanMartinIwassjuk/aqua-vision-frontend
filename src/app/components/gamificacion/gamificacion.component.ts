@@ -178,8 +178,23 @@ export class GamificacionComponent implements OnInit{
   }
 
   moveTooltip(event: MouseEvent) {
-    this.tooltipX = event.pageX + 15;
-    this.tooltipY = event.pageY + 15;
+    const tooltipWidth = 300; // Usamos el max-width definido en CSS
+    const offset = 15; // Distancia desde el cursor
+  
+    // Obtener el ancho de la ventana
+    const windowWidth = window.innerWidth;
+
+    // Si la posición del mouse + el ancho del tooltip excede el ancho de la ventana,
+    // posiciona el tooltip a la izquierda
+    if (event.pageX + offset + tooltipWidth > windowWidth) {
+      // Posicionar a la izquierda
+      this.tooltipX = event.pageX - tooltipWidth - offset;
+    } else {
+      // Posicionar a la derecha (normal)
+      this.tooltipX = event.pageX + offset;
+    }
+  
+    this.tooltipY = event.pageY + offset;
   }
 
   hideTooltip() {
