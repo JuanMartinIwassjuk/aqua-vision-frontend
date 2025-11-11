@@ -1,25 +1,21 @@
 <div class="gamification-header">
   <button class="back-btn" routerLink="/gamificacion">⬅ Volver</button>
   <h2>AquaSave</h2>
-  <div class="sound-control" 
-     (mouseenter)="showVolume = true" 
-     (mouseleave)="showVolume = false">
+<div class="sound-control" [class.volume-visible]="showVolume">
+  <span 
+    class="sound-icon" 
+    [class.muted]="muted"
+    (click)="toggleVolumeVisibility()">
+    🔊
+  </span>
 
   <div class="volume-slider" [class.visible]="showVolume">
     <input 
       type="range" 
       min="0" 
       max="100" 
-      [(ngModel)]="volume" 
-      (input)="updateVolume()" 
-      [disabled]="muted">
-  </div>
-
-  <div class="sound-icon" (click)="toggleMute()">
-    <span *ngIf="muted">🔇</span>
-    <span *ngIf="!muted">
-      {{ volume < 40 ? '🔈' : volume < 80 ? '🔉' : '🔊' }}
-    </span>
+      [(ngModel)]="volume"
+      (input)="updateVolume()" />
   </div>
 </div>
 </div>
@@ -47,17 +43,21 @@
   <div class="scene-info left-align">
     <h4>Estadísticas generales - {{ currentScene.title }}</h4>
     <p><strong>Total de fugas solucionadas:</strong> {{ closedLeaksCount }}/{{ currentScene.leaks.length }}</p>
-    <p><strong>Última revisión:</strong> {{ currentScene.lastRevision | date:'dd/MM/yyyy' }}</p>
+    <p>
+  <strong>Última revisión:</strong>
+  {{ currentScene.lastRevision ? (currentScene.lastRevision | date:'dd/MM/yyyy - HH:mm') : 'Aún no corregiste ninguna fuga' }}
+</p>
 
 <button 
-  class="claim-btn" 
-  [disabled]="!allLeaksClosed() || currentScene.alreadyClaimed" 
+  class="claim-btn"
+  [class.pending]="!allLeaksClosed() && !currentScene.alreadyClaimed"
+  [disabled]="!allLeaksClosed() || currentScene.alreadyClaimed"
   (click)="claimAllPoints()">
   {{ currentScene.alreadyClaimed
-    ? 'Puntos ya reclamados'
+    ? 'Ya reclamaste los puntos diarios. Volvé mañana para reclamar más.'
     : allLeaksClosed()
       ? 'Reclamar puntos'
-      : 'Fugas pendientes' }}
+      : 'Tenés fugas pendientes para reparar.' }}
 </button>
   </div>
 </div>
