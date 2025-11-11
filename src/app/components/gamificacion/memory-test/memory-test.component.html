@@ -2,71 +2,79 @@
   <button class="back-btn" routerLink="/gamificacion">⬅ Volver</button>
   <h2>Memory Test</h2>
 
-<div class="sound-control" 
-     (mouseenter)="showVolume = true" 
-     (mouseleave)="showVolume = false">
-
-  <div class="volume-slider" [class.visible]="showVolume">
-    <input 
-      type="range" 
-      min="0" 
-      max="100" 
-      [(ngModel)]="volume" 
-      (input)="updateVolume()" 
-      [disabled]="muted">
-  </div>
-
-  <div class="sound-icon" (click)="toggleMute()">
-    <span *ngIf="muted">🔇</span>
-    <span *ngIf="!muted">
-      {{ volume < 40 ? '🔈' : volume < 80 ? '🔉' : '🔊' }}
+  <div class="sound-control" [class.volume-visible]="showVolume">
+    <span class="sound-icon" [class.muted]="muted" (click)="toggleVolumeVisibility()">
+      🔊
     </span>
+
+    <div class="volume-slider" [class.visible]="showVolume">
+      <input type="range" min="0" max="100" [(ngModel)]="volume" (input)="updateVolume()" />
+    </div>
   </div>
-</div>
 </div>
 
 <div class="memory-layout">
-  <div class="memory-board">
-    <div class="card" *ngFor="let card of cards" (click)="flipCard(card)" [class.disabled]="!gameStarted">
-      <div class="card-inner" [class.flipped]="card.flipped || card.matched">
-        <div class="card-front">❓</div>
-        <div class="card-back">{{ card.icon }}</div>
-      </div>
-    </div>
-  </div>
-
-
   <div class="memory-info">
-    <h3>Mis Aprendizajes</h3>
 
-    <div *ngFor="let icon of icons">
-      <div class="info-card" [class.unlocked]="infoTexts[icon].matched">
-        <h4>{{ infoTexts[icon].title }}</h4>
-        <div *ngIf="infoTexts[icon].matched">
-          <p>{{ infoTexts[icon].detail }}</p>
-
-          <button *ngIf="!infoTexts[icon].claimed" (click)="markAsRead(icon)">
-            ✅ Entendido
-          </button>
-
-        </div>
-
-        <div *ngIf="!infoTexts[icon].matched" class="locked">
-          🔒 Esperando coincidencia...
-        </div>
-      </div>
+    <div *ngIf="!gameStarted" class="start-panel">
+      <p>¡Descubrí consejos de ahorro de agua jugando al Memory Test de AquaVision!</p>
+      <button class="start-btn" (click)="startGame()">💧 Comenzar juego</button>
     </div>
 
-    <div class="bottom-info">
-      <p>Tiempo restante: {{ timeLeft }}s</p>
-      <p>Puntos totales: {{ scoreCards }}</p>
+    <div *ngIf="gameStarted">
+      <h3>Mis Aprendizajes</h3>
 
-      <div class="bottom-buttons">
-        <button *ngIf="!gameStarted" class="start-btn" (click)="startGame()">💧 Comenzar juego</button>
-
-        <button *ngIf="gameStarted" class="reset-btn" (click)="claimAllPoints()" [disabled]="!allRead()">
-          💎 Reclamar puntos
-        </button>
+      <div *ngFor="let icon of icons">
+        <div class="info-card" [class.unlocked]="infoTexts[icon].matched">
+          <h4>{{ infoTexts[icon].title }}</h4>
+          <div *ngIf="infoTexts[icon].matched">
+            <p>{{ infoTexts[icon].detail }}</p>
+            <button *ngIf="!infoTexts[icon].claimed" (click)="markAsRead(icon)">
+              ✅ Entendido
+            </button>
+          </div>
+          <div *ngIf="!infoTexts[icon].matched" class="locked">
+            🔒 Esperando coincidencia...
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="memory-board-wrapper">
+    <div class="memory-board">
+      <div class="card" *ngFor="let card of cards" (click)="flipCard(card)" [class.disabled]="!gameStarted">
+        <div class="card-inner" [class.flipped]="card.flipped || card.matched">
+          <div class="card-front">❓</div>
+          <div class="card-back">{{ card.icon }}</div>
+        </div>
+      </div>
+    </div>
+
+
+<div class="scene-card current-info below-cards">
+  <div class="scene-info left-align">
+    <h4>Estadísticas generales</h4>
+    <p><strong>Matcheos restantes:</strong> {{ remainingMatches }}</p>
+    <p>
+      <strong>Última obtención:</strong>
+      {{ lastClaimDate ? (lastClaimDate | date:'dd/MM/yyyy - HH:mm') : 'Aún no reclamaste puntos' }}
+    </p>
+    <button
+      class="claim-btn"
+      [class.claimed]="alreadyClaimed"
+      (click)="claimAllPoints()"
+      [disabled]="alreadyClaimed || !allRead()"
+    >
+      {{
+        alreadyClaimed
+          ? 'Ya reclamaste los puntos diarios. Volvé mañana para reclamar más.'
+          : (allRead()
+              ? 'Reclamar puntos'
+              : 'Completá todos los pares para reclamar.')
+      }}
+    </button>
+  </div>
+</div>
+  </div>
+</div>

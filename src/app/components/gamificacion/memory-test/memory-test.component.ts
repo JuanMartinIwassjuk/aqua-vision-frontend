@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GamificacionService } from '../../../services/gamificacion.service';
@@ -37,6 +37,9 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
   volume = 50;
   muted = false;
   showVolume = false;
+  hideVolumeTimeout: any = null;
+  lastClaimDate: Date | null = null;
+  alreadyClaimed = false;
 
   infoTexts: { [key: string]: { title: string, detail: string, claimed: boolean, matched: boolean } } = {
     '🚿': {
@@ -81,12 +84,20 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.hogarId = Number(sessionStorage.getItem('homeId'));
+    this.checkIfPointsAlreadyClaimed();
     this.resetMemory();
+    this.setupSounds();
+  }
 
+  ngOnDestroy() {
+    this.stopAllSounds();
+  }
+
+  setupSounds() {
     this.backgroundMusic = new Audio('sounds/aqua-match-bg.mp3');
     this.backgroundMusic.loop = true;
     this.backgroundMusic.volume = 0.05;
-    this.backgroundMusic.play();
+    this.backgroundMusic.play().catch(() => {});
 
     this.matchSound = new Audio('sounds/match-sound.mp3');
     this.notMatchSound = new Audio('sounds/not-match.mp3');
@@ -94,13 +105,8 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
     this.notMatchSound.volume = 0.2;
   }
 
-  ngOnDestroy() {
-    this.stopAllSounds();
-  }
-
   startGame() {
     this.gameStarted = true;
-    this.startTimer();
   }
 
   resetMemory() {
@@ -111,25 +117,13 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
     this.flippedCards = [];
     this.matchedCards = [];
     this.scoreCards = 0;
-    this.timeLeft = 60;
 
     Object.values(this.infoTexts).forEach(info => {
       info.claimed = false;
       info.matched = false;
     });
 
-    clearInterval(this.timerInterval);
     this.gameStarted = false;
-  }
-
-  startTimer() {
-    this.timerInterval = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        clearInterval(this.timerInterval);
-      }
-    }, 1000);
   }
 
   flipCard(card: Card) {
@@ -169,12 +163,10 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
     return Object.values(this.infoTexts).every(info => info.claimed);
   }
 
-  claimAllPoints() {
-    const puntosTotales = this.scoreCards;
-    this.gamificacionService.addPuntosReclamados(this.hogarId, puntosTotales, 'AQUA_MATCH')
-      .subscribe({
-        error: (err: any) => console.error('Error al registrar puntos:', err)
-      });
+  get remainingMatches(): number {
+    const totalPairs = this.icons.length;
+    const matchedPairs = this.matchedCards.length;
+    return totalPairs - matchedPairs;
   }
 
   stopAllSounds() {
@@ -187,10 +179,77 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
     if (this.backgroundMusic) this.backgroundMusic.volume = 0.05 * level * 2;
     if (this.matchSound) this.matchSound.volume = 0.2 * level;
     if (this.notMatchSound) this.notMatchSound.volume = 0.2 * level;
+
+    clearTimeout(this.hideVolumeTimeout);
+    this.hideVolumeTimeout = setTimeout(() => {
+      this.showVolume = false;
+    }, 3000);
   }
 
   toggleMute() {
     this.muted = !this.muted;
     this.updateVolume();
+  }
+
+  toggleVolumeVisibility() {
+    this.showVolume = true;
+    clearTimeout(this.hideVolumeTimeout);
+    this.hideVolumeTimeout = setTimeout(() => {
+      this.showVolume = false;
+    }, 3000);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sound-control')) {
+      this.showVolume = false;
+    }
+  }
+
+    claimAllPoints() {
+    if (this.alreadyClaimed || !this.allRead()) return;
+
+    const puntosTotales = 40;
+    const minijuego = 'AQUA_MATCH';
+    const escena = 'MEMORY';
+
+    this.gamificacionService
+      .addPuntosReclamados(this.hogarId, puntosTotales, minijuego, escena)
+      .subscribe({
+        next: () => {
+          this.alreadyClaimed = true;
+          this.lastClaimDate = new Date();
+          console.log('Puntos reclamados correctamente');
+        },
+        error: (err: any) => {
+          console.error('Error al reclamar puntos:', err);
+        }
+      });
+  }
+
+  checkIfPointsAlreadyClaimed() {
+    const minijuego = 'AQUA_MATCH';
+    const escena = 'MEMORY';
+
+    this.gamificacionService
+      .getUltimaFechaReclamo(this.hogarId, minijuego, escena)
+      .subscribe({
+        next: (fecha) => {
+          const yaReclamado = !!fecha;
+          this.alreadyClaimed = yaReclamado;
+
+          if (yaReclamado) {
+            this.lastClaimDate = new Date(fecha);
+          }
+        },
+        error: (err) => {
+          if (err.status === 404) {
+            this.alreadyClaimed = false;
+          } else {
+            console.error('Error al verificar reclamo:', err);
+          }
+        }
+      });
   }
 }
