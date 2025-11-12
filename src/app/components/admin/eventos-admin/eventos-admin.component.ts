@@ -8,6 +8,8 @@ import { AquaEvent, } from '../../../models/aquaEvent';
 import { EventTag } from '../../../models/eventTag';
 import { ReporteAdminService } from '../../../services/reporteAdmin.service';
 import { map } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-eventos-admin',
@@ -225,15 +227,48 @@ export class EventosAdminComponent implements OnInit {
     return '—';
   }
 
-  exportarExcel(): void {
-    // TODO: implementar export con backend
-    console.warn('Exportar Excel eventos: TODO backend');
+exportarExcel(): void {
+  if (!this.fechaDesde || !this.fechaHasta) {
+    console.warn('Debes seleccionar fechaDesde y fechaHasta');
+    return;
   }
 
-  exportarPDF(): void {
-    // TODO
-    console.warn('Exportar PDF eventos: TODO backend');
+  // Usamos los mismos filtros que la pantalla: fechas + tags seleccionados
+  const tagIds = Object.keys(this.selectedTags)
+    .filter(k => this.selectedTags[+k])
+    .map(k => +k);
+
+  this.reporteService.getEventosFiltro(this.fechaDesde, this.fechaHasta, tagIds).subscribe({
+    next: (eventos: any[]) => {
+      if (!eventos || eventos.length === 0) {
+        console.warn('No hay eventos para exportar');
+        return;
+      }
+      // Exporta el JSON crudo (cada objeto -> fila; claves -> columnas)
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(eventos);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Eventos');
+
+      const wbout: ArrayBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const filename = `reporte_eventos_admin_${this.fechaDesde}_a_${this.fechaHasta}.xlsx`;
+      saveAs(blob, filename);
+    },
+    error: (err) => {
+      console.error('Error obteniendo eventos para exportar', err);
+    }
+  });
+}
+exportarPDF(): void {
+  if (!this.fechaDesde || !this.fechaHasta) {
+    console.warn('Debes seleccionar fechaDesde y fechaHasta');
+    return;
   }
+  const tagIds = Object.keys(this.selectedTags)
+    .filter(k => this.selectedTags[+k])
+    .map(k => +k);
+  this.reporteService.descargarReporteEventosPDF(this.fechaDesde, this.fechaHasta, tagIds);
+}
 
   toggleTag(id: number): void {
     this.selectedTags[id] = !this.selectedTags[id];

@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit {
             }
           });
 
-        } else {
+        } else { //adminnnn
           // USUARIO: mantenemos lógica previa
           forkJoin({
             hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy).pipe(catchError(err => { console.error('hoy error', err); return of([]); })),

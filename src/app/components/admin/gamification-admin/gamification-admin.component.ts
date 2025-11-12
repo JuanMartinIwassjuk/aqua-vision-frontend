@@ -7,6 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { ReporteAdminService } from '../../../services/reporteAdmin.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 
 interface PuntosDia { fecha: string; puntos: number; }
@@ -213,8 +216,94 @@ export class GamificacionAdminComponent implements OnInit {
     this.aplicarFiltro();
   }
 
-  exportarExcel(): void { console.warn('Exportar Excel gamificacion: TODO backend'); }
-  exportarPDF(): void { console.warn('Exportar PDF gamificacion: TODO backend'); }
+exportarPDF(): void {
+  if (!this.fechaDesde || !this.fechaHasta) {
+    console.warn('Debes seleccionar fechaDesde y fechaHasta');
+    return;
+  }
+  // llama al método existente del service que abre el PDF en una nueva pestaña
+  this.reporteAdminService.descargarReporteGamificacionPDF(this.fechaDesde, this.fechaHasta);
+}
+
+exportarExcel(): void {
+  if (!this.fechaDesde || !this.fechaHasta) {
+    console.warn('Debes seleccionar fechaDesde y fechaHasta');
+    return;
+  }
+
+  // Solicito todos los datos necesarios en paralelo
+  forkJoin({
+    puntosPeriodo: this.reporteAdminService.getPuntosPorPeriodo(this.fechaDesde, this.fechaHasta).pipe(catchError(() => of([]))),
+    resumen: this.reporteAdminService.getResumenGamificacion(this.fechaDesde, this.fechaHasta).pipe(catchError(() => of({ total: 0, media: 0, mejorRacha: 0 }))),
+    rankingPoints: this.reporteAdminService.getRankingPuntos(this.fechaDesde, this.fechaHasta).pipe(catchError(() => of([]))),
+    rankingRachas: this.reporteAdminService.getRankingRachas(this.fechaDesde, this.fechaHasta).pipe(catchError(() => of([]))),
+    hogares: this.reporteAdminService.getHogares().pipe(catchError(() => of([])))
+  }).subscribe({
+    next: ({ puntosPeriodo, resumen, rankingPoints, rankingRachas, hogares }) => {
+      // Compruebo datos
+      const anyEmpty = !puntosPeriodo && !resumen && !rankingPoints && !rankingRachas && !hogares;
+      if (anyEmpty) {
+        console.warn('No hay datos para exportar');
+        return;
+      }
+
+      // Creamos el workbook con varias hojas:
+      const wb = XLSX.utils.book_new();
+
+      // Hoja: puntos por periodo (array de {fecha, puntos})
+      if (puntosPeriodo && (puntosPeriodo as any[]).length) {
+        const wsPuntos = XLSX.utils.json_to_sheet(puntosPeriodo);
+        XLSX.utils.book_append_sheet(wb, wsPuntos, 'PuntosPorDia');
+      } else {
+        // hoja vacía con fila explicativa
+        const ws = XLSX.utils.json_to_sheet([{ info: 'No hay puntos en el periodo' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'PuntosPorDia');
+      }
+
+      // Hoja: resumen (objeto -> fila única)
+      const resumenRow = [{ total: resumen.total ?? 0, media: resumen.media ?? 0, mejorRacha: resumen.mejorRacha ?? 0 }];
+      const wsResumen = XLSX.utils.json_to_sheet(resumenRow);
+      XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
+
+      // Hoja: ranking puntos
+      if (rankingPoints && (rankingPoints as any[]).length) {
+        const wsRankPts = XLSX.utils.json_to_sheet(rankingPoints);
+        XLSX.utils.book_append_sheet(wb, wsRankPts, 'RankingPuntos');
+      } else {
+        const ws = XLSX.utils.json_to_sheet([{ info: 'No hay ranking de puntos' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'RankingPuntos');
+      }
+
+      // Hoja: ranking rachas
+      if (rankingRachas && (rankingRachas as any[]).length) {
+        const wsRankR = XLSX.utils.json_to_sheet(rankingRachas);
+        XLSX.utils.book_append_sheet(wb, wsRankR, 'RankingRachas');
+      } else {
+        const ws = XLSX.utils.json_to_sheet([{ info: 'No hay ranking de rachas' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'RankingRachas');
+      }
+
+      // Hoja: hogares (lista cruda)
+      if (hogares && (hogares as any[]).length) {
+        const wsHogares = XLSX.utils.json_to_sheet(hogares);
+        XLSX.utils.book_append_sheet(wb, wsHogares, 'Hogares');
+      } else {
+        const ws = XLSX.utils.json_to_sheet([{ info: 'No hay hogares' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'Hogares');
+      }
+
+      // Generar buffer y disparar descarga (sin formato, JSON crudo en cada hoja)
+      const wbout: ArrayBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const filename = `reporte_gamificacion_${this.fechaDesde}_a_${this.fechaHasta}.xlsx`;
+      saveAs(blob, filename);
+    },
+    error: (err) => {
+      console.error('Error al generar XLSX de gamificación', err);
+    }
+  });
+}
+
 
   toggleRankingPoints(): void { this.showRankingPoints = !this.showRankingPoints; }
   toggleRankingRachas(): void { this.showRankingRachas = !this.showRankingRachas; }

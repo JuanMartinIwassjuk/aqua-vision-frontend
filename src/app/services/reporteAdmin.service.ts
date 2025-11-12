@@ -1,6 +1,8 @@
 
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 export interface EventTag {
@@ -40,6 +42,8 @@ export interface Hogar {
 
 @Injectable({ providedIn: 'root' })
 export class ReporteAdminService {
+
+  private readonly baseUrl = environment.apiUrl + '/reportes/admin';
 
   private tags: EventTag[] = [
     { id: 1, nombre: 'Limpieza', color: '#2F80ED' },
@@ -94,7 +98,15 @@ export class ReporteAdminService {
     return events;
   })();
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+    descargarReporteConsumoPDF(fechaDesde: string, fechaHasta: string): void {
+    const params = new HttpParams().set('fechaInicio', fechaDesde).set('fechaFin', fechaHasta);
+    const url = `${this.baseUrl}/consumo/descargar-pdf?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+    window.open(url, '_blank');
+  }
+
+
 
   // Consumo agregado por día para todos los hogares -> mock lineal por fecha
   getConsumoGlobalPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string, totalLitros: number, costo: number }[]> {
@@ -159,33 +171,11 @@ export class ReporteAdminService {
     return of(this.tags);
   }
 
-  // Consumo agrupado por localidad
-  getConsumoPorLocalidad(desdeIso: string, hastaIso: string): Observable<{ localidad: string, total: number, media: number, costo: number, hogares: number }[]> {
-    const desde = new Date(desdeIso);
-    const hasta = new Date(hastaIso);
-    const filtered = this.eventos.filter(e => {
-      const d = new Date(e.fechaInicio || '');
-      return d >= desde && d <= (new Date(hasta.getFullYear(), hasta.getMonth(), hasta.getDate(), 23,59,59,999));
-    });
-    const agrup: Record<string, { total: number, count: number, costo: number, hogaresSet: Set<number> }> = {};
-    filtered.forEach(ev => {
-      const loc = ev.localidad || 'Sin Localidad';
-      if (!agrup[loc]) agrup[loc] = { total: 0, count: 0, costo: 0, hogaresSet: new Set() };
-      agrup[loc].total += ev.litrosConsumidos || 0;
-      agrup[loc].count++;
-      agrup[loc].costo += ev.costo || 0;
-      if (ev.hogarId) agrup[loc].hogaresSet.add(ev.hogarId);
-    });
-    const result = Object.keys(agrup).map(k => ({
-      localidad: k,
-      total: Math.round(agrup[k].total * 100) / 100,
-      media: agrup[k].count ? Math.round((agrup[k].total / agrup[k].count) * 100) / 100 : 0,
-      costo: Math.round(agrup[k].costo * 100) / 100,
-      hogares: agrup[k].hogaresSet.size
-    }));
+getConsumoPorLocalidad(desdeIso: string, hastaIso: string): Observable<{ localidad: string, total: number, media: number, costo: number, hogares: number }[]> {
+  const url = `${this.baseUrl}/localidad?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+  return this.http.get<any[]>(url);
+}
 
-    return of(result);
-  }
 
 
 getConsumoPromedioPorHogar(fechaIso: string): Observable<number> {
@@ -269,84 +259,62 @@ getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: 
   return of(result);
 }
 
-getHogares(): Observable<Hogar[]> {
 
-  const arr: Hogar[] = this.hogares.map((h: Hogar) => ({
-    ...h,
-
-    rachaDiaria: (h as any).rachaDiaria ?? 0,
-    puntos: (h as any).puntos ?? 0,
-    puntaje_ranking: (h as any).puntaje_ranking ?? 0
-  }));
-  return of(arr);
-}
-
-getPuntosPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string; puntos: number }[]> {
-  const desde = new Date(desdeIso);
-  const hasta = new Date(hastaIso);
-  const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-  const totalBase: number = this.hogares.reduce((s: number, h: Hogar) => s + (Number((h as any).puntos) || 0), 0) || 50;
-
-  const result: { fecha: string; puntos: number }[] = [];
-  for (let i = 0; i < dias; i++) {
-    const day = new Date(desde);
-    day.setDate(desde.getDate() + i);
-    const iso = day.toISOString().split('T')[0];
-
-    // factor determinístico (no random)
-    const factor = 0.02 + ((i % 7) * 0.01); // varía semanalmente
-    const puntos = Math.round(totalBase * factor);
-    result.push({ fecha: iso, puntos });
+ getPuntosPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string; puntos: number }[]> {
+    const url = `${this.baseUrl}/gamificacion/puntos-periodo?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any[]>(url);
   }
-  return of(result);
-}
 
-getResumenGamificacion(desdeIso: string, hastaIso: string): Observable<{ total: number; media: number; mejorRacha: number }> {
-  const total: number = this.hogares.reduce((s: number, h: Hogar) => s + (Number((h as any).puntos) || 0), 0);
+  getResumenGamificacion(desdeIso: string, hastaIso: string): Observable<{ total: number; media: number; mejorRacha: number }> {
+    const url = `${this.baseUrl}/gamificacion/resumen?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any>(url);
+  }
 
-  const desde = new Date(desdeIso);
-  const hasta = new Date(hastaIso);
-  const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-  const media: number = dias ? Math.round((total / dias) * 10) / 10 : 0;
+  getRankingPuntos(desdeIso: string, hastaIso: string): Observable<any[]> {
+    const url = `${this.baseUrl}/gamificacion/ranking-puntos?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any[]>(url);
+  }
 
-  const mejorRacha: number = this.hogares.reduce((m: number, h: Hogar) => Math.max(m, Number((h as any).rachaDiaria) || 0), 0);
+  getRankingRachas(desdeIso: string, hastaIso: string): Observable<any[]> {
+    const url = `${this.baseUrl}/gamificacion/ranking-rachas?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any[]>(url);
+  }
 
-  return of({ total, media, mejorRacha });
-}
-
-getRankingPuntos(desdeIso: string, hastaIso: string): Observable<{ nombre: string; puntos: number; puntaje_ranking: number }[]> {
-  const arr = (this.hogares || []).map((h: Hogar) => ({
-    nombre: h.nombre,
-    puntos: Number((h as any).puntos) || 0,
-    puntaje_ranking: Number((h as any).puntaje_ranking) || 0
-  }));
-  arr.sort((a: { puntos: number }, b: { puntos: number }) => b.puntos - a.puntos);
-  return of(arr);
-}
-
-getRankingRachas(desdeIso: string, hastaIso: string): Observable<{ nombre: string; racha: number; puntos: number }[]> {
-  const arr = (this.hogares || []).map((h: Hogar) => ({
-    nombre: h.nombre,
-    racha: Number((h as any).rachaDiaria) || 0,
-    puntos: Number((h as any).puntos) || 0
-  }));
-  arr.sort((a: { racha: number }, b: { racha: number }) => b.racha - a.racha);
-  return of(arr);
-}
+  getHogares(): Observable<any[]> {
+    const url = `${this.baseUrl}/gamificacion/hogares`;
+    return this.http.get<any[]>(url);
+  }
 
   getMedallasPorHogar(hogarId: number): Observable<string[]> {
-  // ejemplo determinístico según id
-  const mapMedallas: Record<number, string[]> = {
-    1: ['Inicio', 'Ahorro 7d', 'Racha 3d'],
-    2: ['Inicio', 'Racha 5d', 'Top Puntos'],
-    3: ['Inicio'],
-    4: ['Inicio', 'Ahorro 30d', 'Top Racha'],
-    5: ['Inicio', 'Participante']
-  };
-  const meds = mapMedallas[hogarId] ?? ['Participante'];
-  return of(meds);
+    const url = `${this.baseUrl}/gamificacion/hogares/${hogarId}/medallas`;
+    return this.http.get<string[]>(url);
+  }
+
+  descargarReporteGamificacionPDF(fechaDesde: string, fechaHasta: string): void {
+    const url = `${this.baseUrl}/gamificacion/descargar-pdf?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+    window.open(url, '_blank');
+  }
+
+
+descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
+  const params = [];
+  params.push(`fechaInicio=${encodeURIComponent(fechaDesde)}`);
+  params.push(`fechaFin=${encodeURIComponent(fechaHasta)}`);
+  if (tagIds && tagIds.length) {
+
+    tagIds.forEach(id => params.push(`tagIds=${encodeURIComponent(String(id))}`));
+  }
+  const url = `${this.baseUrl}/eventos/descargar-pdf?${params.join('&')}`;
+  window.open(url, '_blank');
 }
+
+
+descargarReporteLocalidadPDF(fechaDesde: string, fechaHasta: string): void {
+  const params = `fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+  const url = `${this.baseUrl}/localidad/descargar-pdf?${params}`;
+  window.open(url, '_blank');
+}
+
 
 
 }
