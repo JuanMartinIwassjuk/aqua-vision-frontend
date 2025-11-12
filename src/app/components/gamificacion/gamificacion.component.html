@@ -391,140 +391,67 @@
     <h2 class="heading-2">Desafíos</h2>
     <p class="bio-micuenta">Cumplí misiones diarias o semanales para sumar puntos.</p>
     <div class="spacer-40"></div>
+    
     <div class="container-desafios">
+  
       <ul role="list" class="desafios-list">
+        
         <li class="titulo-desafios">
           <div class="div-block-12">
-            <div class="div-block-9">
+            <div class="con-numero-desafio">
               <h3 class="heading-5">#</h3>
             </div>
-            <div class="div-block-10">
-              <h3 class="heading-6">Nombre desafío</h3>
+            <div class="descripcion-desafio">
+              <h3 class="heading-6">Descripción</h3>
             </div>
           </div>
           <div class="div-block-13">
             <h3 class="heading-7">Estado</h3>
           </div>
         </li>
-        <li class="item-desafio">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>1</h3>
+
+        <!--LISTADO DINAMICO DE DESAFIOS-->
+        
+        <li class="item-desafio" *ngFor="let desafio of desafiosPendientes; let i = index">
+          <div class="container-desafio-numYdesc">
+            <div class="con-numero-desafio">
+              <h3 class="text-numero-desafio">{{ i + 1 }}</h3>
             </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>Reducir el consumo mensual</h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio"><img src="images/progress-bar.png" loading="lazy" alt="" class="image-15"></div>
-        </li>
-        <li class="item-desafio">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>2</h3>
-            </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>Reciclar materiales</h3>
-              </div>
+            <div class="descripcion-desafio">
+              <p class="text-descripcion-desafio">{{ desafio.descripcion }}</p>
             </div>
           </div>
-          <div class="estado-desafio">
-            <h3>3/6</h3>
-          </div>
-        </li>
-        <li class="item-desafio item-desafio-completado">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>3</h3>
+
+          <div class="container-estado-desafio">
+            <div class="estado-desafio">
+              <h3 class="progreso-texto">{{ desafio.progresoActual }} / {{ desafio.progresoTotal }}</h3>
+                  
+              <ng-container [ngSwitch]="desafio.tipoValidacion">
+                <button 
+                  *ngSwitchCase="'manual'" 
+                  (click)="aumentarProgreso(desafio)"
+                  [disabled]="isLoadingDesafio[desafio.idDesafioGlobal]"
+                  class="btn-manual"
+                >
+                  {{ desafio.progresoActual < desafio.progresoTotal ? 'Aumentar Progreso' : 'Canjear Puntos' }}
+                </button>
+                <span *ngSwitchCase="'sistema'" class="estado-sistema">
+                  Progreso Automático
+                </span>
+              </ng-container>
             </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>Utilizar el transporte </h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio">
-            <h3 class="heading-8">Completado</h3>
           </div>
         </li>
-        <li class="item-desafio">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>4</h3>
-            </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>&lt;otro desafio&gt;</h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio"><img src="images/progress-bar-2.png" loading="lazy" alt="" class="image-16"></div>
-        </li>
-        <li class="item-desafio">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>5</h3>
-            </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>&lt;otro desafio&gt;</h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio">
-            <h3>0/10</h3>
-          </div>
-        </li>
-        <li class="item-desafio">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>6</h3>
-            </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>&lt;otro desafio&gt;</h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio">
-            <h3>0/5</h3>
-          </div>
-        </li>
-        <li class="item-desafio item-desafio-completado">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>7</h3>
-            </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>&lt;otro desafio&gt;</h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio">
-            <h3 class="heading-8">Completado</h3>
-          </div>
-        </li>
-        <li class="item-desafio">
-          <div class="desafio">
-            <div class="numero-desafio">
-              <h3>8</h3>
-            </div>
-            <div class="user-rank-container">
-              <div>
-                <h3>&lt;otro desafio&gt;</h3>
-              </div>
-            </div>
-          </div>
-          <div class="estado-desafio">
-            <h3>1/3</h3>
-          </div>
-        </li>
+
       </ul>
+      <p class="no-desafios-mensaje" *ngIf="desafios.length > 0 && desafiosPendientes.length === 0">
+        ¡Excelente! No tienes desafíos activos. 🎉
+      </p>
+
+
     </div>
   </div>
+
   <div class="div-block">
     <h2 class="heading-2">Ranking de hogares</h2>
     <p class="bio-micuenta">Competí con otros hogares para ver quién cuida más el agua.</p>

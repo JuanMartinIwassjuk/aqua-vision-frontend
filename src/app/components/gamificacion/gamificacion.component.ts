@@ -15,6 +15,9 @@ import { GamificacionService } from '../../services/gamificacion.service';
 import { HogarRanking, Recompensa, RecompensaCanjeada } from '../../models/gamificacion';
 import { Medalla } from '../../models/medalla';
 
+import { Desafio } from '../../models/desafio';
+import { Observable, BehaviorSubject, switchMap, tap, map } from 'rxjs';
+
 @Component({
   selector: 'app-gamificacion',
   imports: [CommonModule, RouterModule],
@@ -126,6 +129,7 @@ export class GamificacionComponent implements OnInit{
         });
         this.cargarPuntos(hogarId);
         this.cargarRecompensasGlobales();
+        this.cargarDesafiosPorHogar(hogarId);
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
@@ -389,5 +393,74 @@ export class GamificacionComponent implements OnInit{
   esMedallaDesbloqueada(nombre: string): boolean {
     return this.medallasDesbloqueadas.some(m => m.nombre === nombre);
   }
+
+  desafios: Desafio[] = []; 
+  desafiosPendientes: Desafio[] = []; 
+  desafiosCompletados: Desafio[] = []; 
+
+  isLoadingDesafio: { [id: number]: boolean } = {};
+
+  /**
+    * Carga todos los desafíos de un hogar y los almacena en la propiedad 'desafios'.
+    * @param hogarId El ID del hogar.
+    */
+  cargarDesafiosPorHogar(hogarId: number): void {
+    this.gamificacionService.getDesafiosPorHogar(hogarId).subscribe({
+      next: (data) => {
+        this.desafios = data;
+
+        this.desafiosPendientes = data.filter(d => d.puntosRecompensa > 0);
+        //this.desafiosPendientes = data.filter(d => !d.completado);
+        this.desafiosCompletados = data.filter(d => d.completado);
+        
+        console.log(`Cargados: ${this.desafios.length} desafíos.`);
+        console.log(`Pendientes: ${this.desafiosPendientes.length}`);
+        console.log(`Completados: ${this.desafiosCompletados.length}`);
+        console.log('Todo pendientes: ', this.desafiosPendientes);
+      },
+      error: (err) => console.error('Error al cargar desafíos del hogar', err)
+    });
+  }
+
+  aumentarProgreso(desafio: Desafio): void {
+    if (desafio.tipoValidacion !== 'manual' || !this.hogar?.id) return;
+       
+    if (desafio.progresoActual < desafio.progresoTotal) {
+      const id = desafio.idDesafioGlobal;
+      this.isLoadingDesafio[id] = true;
+            
+      this.gamificacionService.aumentarProgreso(this.hogar.id, id).subscribe({
+        next: () => {
+          this.cargarDesafiosPorHogar(this.hogar!.id);
+          alert(`Progreso de ${desafio.titulo} aumentado.`);
+        },
+        error: (err) => {
+          console.error('Error al aumentar progreso', err);
+          this.isLoadingDesafio[id] = false;
+        }
+      });
+    } else {
+        this.completarDesafio(desafio);
+      }
+  }
+
+  completarDesafio(desafio: Desafio): void {
+    if (!this.hogar?.id || !desafio.completado) return;
+
+    const id = desafio.idDesafioGlobal; 
+    this.isLoadingDesafio[id] = true;
+
+    this.gamificacionService.completarDesafio(this.hogar.id, id).subscribe({
+      next: (res) => {
+        this.cargarDesafiosPorHogar(this.hogar!.id);
+        alert(`¡Desafío completado: ${desafio.titulo}! Has ganado ${desafio.puntosRecompensa} puntos.`);
+      },
+      error: (err) => {
+        console.error('Error al completar desafío', err);
+        this.isLoadingDesafio[id] = false;
+      }
+    });
+  }
+
 
 }

@@ -6,6 +6,9 @@ import { environment } from '../../environments/environment';
 import { Logro } from '../models/logro';
 import { Medalla } from '../models/medalla';
 
+import { Desafio, HogarDesafiosResponse, DesafioHogarApi } from '../models/desafio';
+import { map } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -53,6 +56,25 @@ export class GamificacionService {
 
   getMedallas(hogarId: number): Observable<Medalla[]> {
     return this.http.get<Medalla[]>(`${this.baseUrl}/${hogarId}/medallas`);
+  }
+
+  getDesafiosPorHogar(hogarId: number): Observable<Desafio[]> {
+    return this.http.get<HogarDesafiosResponse>(`${this.baseUrl}/${hogarId}/desafios`)
+      .pipe(
+        map(response => 
+          response.desafisoHogar.map(
+            (desafioHogarApi: DesafioHogarApi) => new Desafio(desafioHogarApi)
+          )
+        )
+      );
+  }
+
+  completarDesafio(hogarId: number, desafioId: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${hogarId}/desafios/${desafioId}/completar`, {});
+  }
+
+  aumentarProgreso(hogarId: number, desafioId: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${hogarId}/desafios/${desafioId}/progreso-manual`, {});
   }
 
 }
