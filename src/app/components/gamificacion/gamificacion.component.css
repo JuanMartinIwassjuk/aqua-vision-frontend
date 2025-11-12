@@ -435,6 +435,12 @@ h2 {
 
 .image-7 {
   max-width: 120px;
+  max-height: 14vh;
+}
+
+.aquamatch-png{
+  width: 20rem;
+  padding-right: 2rem;
 }
 
 .minijuego-modal {
