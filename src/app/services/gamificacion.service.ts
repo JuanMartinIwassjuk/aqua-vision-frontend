@@ -62,7 +62,7 @@ export class GamificacionService {
     return this.http.get<HogarDesafiosResponse>(`${this.baseUrl}/${hogarId}/desafios`)
       .pipe(
         map(response => 
-          response.desafisoHogar.map(
+          response.desafiosHogar.map(
             (desafioHogarApi: DesafioHogarApi) => new Desafio(desafioHogarApi)
           )
         )

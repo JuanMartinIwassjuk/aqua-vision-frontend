@@ -16,7 +16,7 @@ export interface DesafioHogarApi {
 
 export interface HogarDesafiosResponse {
     hogarId: number;
-    desafisoHogar: DesafioHogarApi[];
+    desafiosHogar: DesafioHogarApi[];
 }
 
 export class Desafio {
