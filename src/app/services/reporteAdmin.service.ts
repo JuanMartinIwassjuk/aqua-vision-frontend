@@ -1,5 +1,5 @@
 
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -98,7 +98,7 @@ export class ReporteAdminService {
     return events;
   })();
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
     descargarReporteConsumoPDF(fechaDesde: string, fechaHasta: string): void {
     const params = new HttpParams().set('fechaInicio', fechaDesde).set('fechaFin', fechaHasta);
@@ -171,33 +171,11 @@ export class ReporteAdminService {
     return of(this.tags);
   }
 
-  // Consumo agrupado por localidad
-  getConsumoPorLocalidad(desdeIso: string, hastaIso: string): Observable<{ localidad: string, total: number, media: number, costo: number, hogares: number }[]> {
-    const desde = new Date(desdeIso);
-    const hasta = new Date(hastaIso);
-    const filtered = this.eventos.filter(e => {
-      const d = new Date(e.fechaInicio || '');
-      return d >= desde && d <= (new Date(hasta.getFullYear(), hasta.getMonth(), hasta.getDate(), 23,59,59,999));
-    });
-    const agrup: Record<string, { total: number, count: number, costo: number, hogaresSet: Set<number> }> = {};
-    filtered.forEach(ev => {
-      const loc = ev.localidad || 'Sin Localidad';
-      if (!agrup[loc]) agrup[loc] = { total: 0, count: 0, costo: 0, hogaresSet: new Set() };
-      agrup[loc].total += ev.litrosConsumidos || 0;
-      agrup[loc].count++;
-      agrup[loc].costo += ev.costo || 0;
-      if (ev.hogarId) agrup[loc].hogaresSet.add(ev.hogarId);
-    });
-    const result = Object.keys(agrup).map(k => ({
-      localidad: k,
-      total: Math.round(agrup[k].total * 100) / 100,
-      media: agrup[k].count ? Math.round((agrup[k].total / agrup[k].count) * 100) / 100 : 0,
-      costo: Math.round(agrup[k].costo * 100) / 100,
-      hogares: agrup[k].hogaresSet.size
-    }));
+getConsumoPorLocalidad(desdeIso: string, hastaIso: string): Observable<{ localidad: string, total: number, media: number, costo: number, hogares: number }[]> {
+  const url = `${this.baseUrl}/localidad?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+  return this.http.get<any[]>(url);
+}
 
-    return of(result);
-  }
 
 
 getConsumoPromedioPorHogar(fechaIso: string): Observable<number> {
@@ -370,6 +348,13 @@ descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: numb
     tagIds.forEach(id => params.push(`tagIds=${encodeURIComponent(String(id))}`));
   }
   const url = `${this.baseUrl}/eventos/descargar-pdf?${params.join('&')}`;
+  window.open(url, '_blank');
+}
+
+
+descargarReporteLocalidadPDF(fechaDesde: string, fechaHasta: string): void {
+  const params = `fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+  const url = `${this.baseUrl}/localidad/descargar-pdf?${params}`;
   window.open(url, '_blank');
 }
 
