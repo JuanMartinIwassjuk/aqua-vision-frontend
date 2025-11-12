@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-aqua-save',
+  selector: 'aqua-bucket',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './aquasave.component.html',
-  styleUrls: ['./aquasave.component.css']
+  templateUrl: './aqua-bucket.component.html',
+  styleUrls: ['./aqua-bucket.component.css']
 })
-export class AquaSaveComponent implements OnDestroy {
+export class AquaBucketComponent implements OnDestroy {
 
   @ViewChild('gameContainer', { static: true }) gameContainer!: ElementRef;
 

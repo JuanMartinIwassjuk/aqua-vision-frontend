@@ -12,13 +12,13 @@ interface Card {
 }
 
 @Component({
-  selector: 'app-memory-game',
+  selector: 'aqua-cards',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './memory-test.component.html',
-  styleUrls: ['./memory-test.component.css']
+  templateUrl: './aqua-cards.component.html',
+  styleUrls: ['./aqua-cards.component.css']
 })
-export class MemoryGameComponent implements OnInit, OnDestroy {
+export class AquaCardsComponent implements OnInit, OnDestroy {
   icons = ['🚿', '🚽', '🚰', '💧', '🧺', '🌊'];
   cards: Card[] = [];
   flippedCards: Card[] = [];

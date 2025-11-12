@@ -3,10 +3,10 @@ import { AuthGuard } from './auth/guards/auth';
 import { LoginGuard } from './auth/guards/login';
 import { GamificacionComponent } from './components/gamificacion/gamificacion.component';
 import { TriviaComponent } from './components/gamificacion/trivia/trivia.component';
-import { AquaSaveComponent } from './components/gamificacion/aquasave/aquasave.component';
-import { MemoryGameComponent } from './components/gamificacion/memory-test/memory-test.component';
-import { DragDropComponent } from './components/gamificacion/drag-drop/drag-drop.component';
-import { MyHomeComponent } from './components/gamificacion/my-home/my-home.component';
+import { AquaBucketComponent } from './components/gamificacion/aqua-bucket/aqua-bucket.component';
+import { AquaCardsComponent } from './components/gamificacion/aqua-cards/aqua-cards.component';
+import { AquaMatchComponent } from './components/gamificacion/aqua-match/aqua-match.component';
+import { AquaSaveComponent } from './components/gamificacion/aqua-save/aqua-save.component';
 
 export const routes: Routes = [
   {
@@ -107,10 +107,10 @@ export const routes: Routes = [
   },
   { path: 'gamificacion', component: GamificacionComponent },
   { path: 'gamificacion/trivia', component: TriviaComponent },
-  { path: 'gamificacion/aquasave', component: AquaSaveComponent },
-  { path: 'gamificacion/memory-test', component: MemoryGameComponent },
-  { path: 'gamificacion/drag-drop', component: DragDropComponent },
-  { path: 'gamificacion/my-home', component: MyHomeComponent },
+  { path: 'gamificacion/aqua-bucket', component: AquaBucketComponent },
+  { path: 'gamificacion/aqua-cards', component: AquaCardsComponent },
+  { path: 'gamificacion/aqua-match', component: AquaMatchComponent },
+  { path: 'gamificacion/aqua-save', component: AquaSaveComponent },
   { path: '', redirectTo: 'gamificacion', pathMatch: 'full' },
   { path: '**', redirectTo: 'gamificacion' },
   { path: '**', redirectTo: 'login' } ,

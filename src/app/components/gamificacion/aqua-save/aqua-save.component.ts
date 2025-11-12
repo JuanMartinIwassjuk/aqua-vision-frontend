@@ -22,13 +22,13 @@ interface Scene {
 }
 
 @Component({
-  selector: 'app-my-home',
+  selector: 'aqua-save',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
-  templateUrl: './my-home.component.html',
-  styleUrls: ['./my-home.component.css']
+  templateUrl: './aqua-save.component.html',
+  styleUrls: ['./aqua-save.component.css']
 })
-export class MyHomeComponent implements OnInit, OnDestroy {
+export class AquaSaveComponent implements OnInit, OnDestroy {
   gameStarted = false;
   showNextScenePopup = false;
 

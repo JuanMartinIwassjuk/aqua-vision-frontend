@@ -24,13 +24,13 @@ export interface MergedCard {
 }
 
 @Component({
-  selector: 'app-drag-drop',
+  selector: 'app-match',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './drag-drop.component.html',
-  styleUrls: ['./drag-drop.component.css']
+  templateUrl: './aqua-match.component.html',
+  styleUrls: ['./aqua-match.component.css']
 })
-export class DragDropComponent implements OnInit, OnDestroy {
+export class AquaMatchComponent implements OnInit, OnDestroy {
   private allLeftCards: Card[] = [
     { id: 1, text: 'Si lavás el auto dejando correr la manguera por minutos', matched: false, tip: 'Usá balde y esponja: podés ahorrar hasta 200 L por lavado.' },
     { id: 2, text: 'Si regás el jardín al mediodía, cuando el sol es más fuerte', matched: false, tip: 'Regá temprano o al atardecer para evitar hasta un 50% de evaporación.' },
