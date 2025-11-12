@@ -397,11 +397,12 @@
 }
 
 .claim-btn[disabled] {
-  background: #ccc;
-  color: #666;
+  background: #e53c3c;
+  color: #FFF;
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
+  opacity: 0.6;
 }
 
 @media (max-width: 600px) {
