@@ -82,4 +82,8 @@ export class HomeService {
   getPuntosHogar(hogarId: number): Observable<Hogar> {
     return this.http.get<Hogar>(`${this.apiUrl}/${hogarId}/puntos`);
   }
+
+  getHogar(hogarId: number): Observable<Hogar> {
+    return this.http.get<Hogar>(`${this.apiUrl}/${hogarId}`);
+  }
 }

@@ -225,7 +225,12 @@
         </li>
 
         <!--TABLA DINAMICA TOMANDO RECOMPENSAS-->
-        <li class="item-recompensa" *ngFor="let recompensa of recompensas; let i = index">
+        <li class="item-recompensa" *ngFor="let recompensa of recompensas; let i = index"
+          [ngClass]="{
+            'canjeada': recompensasCanjeadas.has(recompensa.id),
+            'insuficiente': (hogar?.puntos ?? 0) < recompensa.puntosNecesarios,
+            'canjeando': isLoadingCanje[recompensa.id]
+          }">
           <div class="user-container-ranking">
             <div class="user-posicion-rank">
               <h3>{{ i + 1 }}</h3>
@@ -234,18 +239,41 @@
               <h3>{{ recompensa.descripcion }}</h3>
             </div>
           </div>
+
           <div class="recompensa-canjearpuntos-boton">
             <h3>{{ recompensa.puntosNecesarios }}</h3>
-            <button class="animated-button">
+
+            <button
+              class="animated-button"
+              [ngClass]="{
+                'cargando': isLoadingCanje[recompensa.id],
+                'canjeado': recompensasCanjeadas.has(recompensa.id)
+              }"  
+              [disabled]="recompensasCanjeadas.has(recompensa.id) || (hogar?.puntos ?? 0) < recompensa.puntosNecesarios || isLoadingCanje[recompensa.id]"
+              (click)="canjear(recompensa)"
+              >
               <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                 <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
               </svg>
-              <span class="text">Canjear</span>
               <span class="circle"></span>
               <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
                 <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
               </svg>
+              
+              <span class="text">
+                {{ recompensasCanjeadas.has(recompensa.id)
+                  ? 'Canjeado'
+                  : isLoadingCanje[recompensa.id]
+                  ? 'Canjeando...'
+                  : (hogar?.puntos ?? 0) < recompensa.puntosNecesarios
+                  ? 'No disponible' 
+                  : 'Canjear' }}
+              </span>
+
+              <span class="circle"></span>
             </button>
+
+
           </div>
         </li>
       </ul>

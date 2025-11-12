@@ -21,6 +21,13 @@ export class GamificacionService {
     return this.http.get<Recompensa[]>(`${this.baseUrl}/recompensas`);
   }
 
+  canjearRecompensa(hogarId: number, recompensaId: number): Observable<{ nuevoPuntaje: number, estado: string, fechaCanjeo?: string }> {
+    console.log('canjeando recompensa: ', recompensaId);
+    return this.http.post<{ nuevoPuntaje: number, estado: string, fechaCanjeo?: string }>(
+      `${this.baseUrl}/${hogarId}/recompensas/${recompensaId}/canjear`, {}
+    );
+  }
+
   addPuntosReclamados(hogarId: number, puntos: number, minijuego: string, escena?: string): Observable<any> {
     const dto = {
       hogarId,
