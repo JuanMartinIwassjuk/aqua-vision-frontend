@@ -1,6 +1,8 @@
 
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 export interface EventTag {
@@ -40,6 +42,8 @@ export interface Hogar {
 
 @Injectable({ providedIn: 'root' })
 export class ReporteAdminService {
+
+  private readonly baseUrl = environment.apiUrl + '/reportes/admin';
 
   private tags: EventTag[] = [
     { id: 1, nombre: 'Limpieza', color: '#2F80ED' },
@@ -95,6 +99,14 @@ export class ReporteAdminService {
   })();
 
   constructor() { }
+
+    descargarReporteConsumoPDF(fechaDesde: string, fechaHasta: string): void {
+    const params = new HttpParams().set('fechaInicio', fechaDesde).set('fechaFin', fechaHasta);
+    const url = `${this.baseUrl}/consumo/descargar-pdf?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+    window.open(url, '_blank');
+  }
+
+
 
   // Consumo agregado por día para todos los hogares -> mock lineal por fecha
   getConsumoGlobalPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string, totalLitros: number, costo: number }[]> {

@@ -6,6 +6,9 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { FormsModule } from '@angular/forms';
 import { ReporteAdminService } from '../../../services/reporteAdmin.service';
 import { forkJoin } from 'rxjs';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 
 @Component({
@@ -119,12 +122,42 @@ export class ConsumoAdminComponent implements OnInit {
     };
   }
 
-  exportarExcel(): void {
-    console.warn('Exportar Excel - pendiente implementar backend.');
+exportarExcel(): void {
+  if (!this.fechaDesde || !this.fechaHasta) {
+    console.warn('Debes seleccionar fechaDesde y fechaHasta');
+    return;
   }
 
+  // Pedimos los datos crudos que usa la pantalla (mismo endpoint que genera el gráfico)
+  this.reporteService.getConsumoGlobalPorPeriodo(this.fechaDesde, this.fechaHasta).subscribe({
+    next: (periodo: any[]) => {
+      if (!periodo || periodo.length === 0) {
+        console.warn('No hay datos para exportar');
+        return;
+      }
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(periodo);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Periodo');
+
+      const wbout: ArrayBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const filename = `reporte_consumo_admin_${this.fechaDesde}_a_${this.fechaHasta}.xlsx`;
+      saveAs(blob, filename);
+    },
+    error: (err) => {
+      console.error('Error al obtener datos para exportar XLSX', err);
+    }
+  });
+}
+
   exportarPDF(): void {
-    console.warn('Exportar PDF - pendiente implementar backend.');
+    if (!this.fechaDesde || !this.fechaHasta) {
+      console.warn('Debes seleccionar fechaDesde y fechaHasta');
+      return;
+    }
+
+    this.reporteService.descargarReporteConsumoPDF(this.fechaDesde, this.fechaHasta);
   }
 
   // Data loader: trae periodo y resumen; calcula gráfico y ranking por meses (año actual)
