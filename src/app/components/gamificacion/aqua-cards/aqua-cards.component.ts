@@ -211,8 +211,8 @@ export class AquaCardsComponent implements OnInit, OnDestroy {
     if (this.alreadyClaimed || !this.allRead()) return;
 
     const puntosTotales = 40;
-    const minijuego = 'AQUA_MATCH';
-    const escena = 'MEMORY';
+    const minijuego = 'AQUA_CARDS';
+    const escena = 'CARDS';
 
     this.gamificacionService
       .addPuntosReclamados(this.hogarId, puntosTotales, minijuego, escena)
@@ -229,8 +229,8 @@ export class AquaCardsComponent implements OnInit, OnDestroy {
   }
 
   checkIfPointsAlreadyClaimed() {
-    const minijuego = 'AQUA_MATCH';
-    const escena = 'MEMORY';
+    const minijuego = 'AQUA_CARDS';
+    const escena = 'CARDS';
 
     this.gamificacionService
       .getUltimaFechaReclamo(this.hogarId, minijuego, escena)

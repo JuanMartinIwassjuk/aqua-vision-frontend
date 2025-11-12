@@ -1,7 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { GamificacionService } from '../../../services/gamificacion.service';
 
 interface Card {
   id: number;
@@ -82,10 +83,17 @@ export class AquaMatchComponent implements OnInit, OnDestroy {
   matchSound!: HTMLAudioElement;
   notMatchSound!: HTMLAudioElement;
   showVolume = false;
-  volume = 20; 
+  volume = 20;
   muted = false;
 
+  hogarId: any;
+  alreadyClaimed = false;
+  lastClaimDate: Date | null = null;
+  hideVolumeTimeout: any = null;
+
   ngOnInit() {
+    this.hogarId = Number(sessionStorage.getItem('homeId'));
+    this.checkIfPointsAlreadyClaimed();
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
 
@@ -99,8 +107,10 @@ export class AquaMatchComponent implements OnInit, OnDestroy {
     this.notMatchSound = new Audio('sounds/not-match.mp3');
     this.notMatchSound.volume = 0.1;
 
-    this.backgroundMusic.play()
+    this.backgroundMusic.play();
   }
+
+  constructor(private gamificacionService: GamificacionService) { }
 
   ngOnDestroy() {
     this.stopAllSounds();
@@ -109,12 +119,7 @@ export class AquaMatchComponent implements OnInit, OnDestroy {
   startGame() {
     this.showIntro = false;
     this.loadLevel(this.currentLevel);
-    this.backgroundMusic.play().catch(() => {});
-  }
-
-  stopAllSounds() {
-    this.backgroundMusic.pause();
-    this.backgroundMusic.currentTime = 0;
+    this.backgroundMusic.play().catch(() => { });
   }
 
   private loadLevel(level: number) {
@@ -141,6 +146,8 @@ export class AquaMatchComponent implements OnInit, OnDestroy {
       c.initialX = c.x;
       c.initialY = c.y;
     });
+
+    setTimeout(() => this.handleResize(), 50);
   }
 
   private shuffle<T>(array: T[]): T[] {
@@ -172,70 +179,70 @@ export class AquaMatchComponent implements OnInit, OnDestroy {
     this.draggingCard.y = pos.y - containerRect.top - this.offsetY;
   }
 
-onEnd(event?: MouseEvent | TouchEvent) {
-  if (!this.draggingCard) return;
+  onEnd(event?: MouseEvent | TouchEvent) {
+    if (!this.draggingCard) return;
 
-  const card = this.draggingCard;
-  const leftRect = { x: card.x ?? 0, y: card.y ?? 0, width: 280, height: 120 };
-  const match = this.rightCards.find(rc => !rc.matched && rc.id === card.id);
+    const card = this.draggingCard;
+    const leftRect = { x: card.x ?? 0, y: card.y ?? 0, width: 280, height: 120 };
+    const match = this.rightCards.find(rc => !rc.matched && rc.id === card.id);
 
-  if (match) {
-    const rightRect = { x: match.x ?? 0, y: match.y ?? 0, width: 280, height: 120 };
-    const touching = !(
-      leftRect.x + leftRect.width < rightRect.x ||
-      leftRect.x > rightRect.x + rightRect.width ||
-      leftRect.y + leftRect.height < rightRect.y ||
-      leftRect.y > rightRect.y + rightRect.height
-    );
+    if (match) {
+      const rightRect = { x: match.x ?? 0, y: match.y ?? 0, width: 280, height: 120 };
+      const touching = !(
+        leftRect.x + leftRect.width < rightRect.x ||
+        leftRect.x > rightRect.x + rightRect.width ||
+        leftRect.y + leftRect.height < rightRect.y ||
+        leftRect.y > rightRect.y + rightRect.height
+      );
 
-    if (touching) {
-      card.matched = true;
-      match.matched = true;
+      if (touching) {
+        card.matched = true;
+        match.matched = true;
 
-      this.mergedCards.push({
-        id: card.id,
-        leftText: card.text,
-        rightText: match.text,
-        tip: card.tip ?? ''
-      });
+        this.mergedCards.unshift({
+          id: card.id,
+          leftText: card.text,
+          rightText: match.text,
+          tip: card.tip ?? ''
+        });
 
-      this.leftCards = this.leftCards.filter(c => c.id !== card.id);
-      this.rightCards = this.rightCards.filter(c => c.id !== match.id);
+        this.leftCards = this.leftCards.filter(c => c.id !== card.id);
+        this.rightCards = this.rightCards.filter(c => c.id !== match.id);
 
-      this.matchSound.currentTime = 0;
-      this.matchSound.play().catch(() => {});
+        this.matchSound.currentTime = 0;
+        this.matchSound.play().catch(() => { });
 
-      if (this.leftCards.length === 0 && this.currentLevel < this.maxLevel) {
-        setTimeout(() => (this.showNextLevel = true), 400);
-      } else if (this.leftCards.length === 0 && this.currentLevel === this.maxLevel) {
-        setTimeout(() => (this.finalMessage = true), 400);
+        if (this.leftCards.length === 0 && this.currentLevel < this.maxLevel) {
+          setTimeout(() => (this.showNextLevel = true), 400);
+        } else if (this.leftCards.length === 0 && this.currentLevel === this.maxLevel) {
+          setTimeout(() => (this.finalMessage = true), 400);
+        }
+
+        this.finishDrag();
+        return;
       }
+    }
 
-      this.finishDrag();
-      return;
+    const element = document.getElementById(`card-${card.id}`);
+    if (element) {
+      element.classList.add('shake');
+      setTimeout(() => {
+        element.classList.remove('shake');
+        element.classList.add('returning');
+      }, 400);
+
+      setTimeout(() => {
+        element.classList.remove('returning');
+        this.finishDrag(true);
+      }, 900);
+    } else {
+      this.finishDrag(true);
+    }
+    if (this.notMatchSound) {
+      this.notMatchSound.currentTime = 0;
+      this.notMatchSound.play().catch(() => { });
     }
   }
-
-  const element = document.getElementById(`card-${card.id}`);
-  if (element) {
-    element.classList.add('shake');
-    setTimeout(() => {
-      element.classList.remove('shake');
-      element.classList.add('returning');
-    }, 400);
-
-    setTimeout(() => {
-      element.classList.remove('returning');
-      this.finishDrag(true); 
-    }, 900);
-  } else {
-    this.finishDrag(true);
-  }
-  if (this.notMatchSound) {
-    this.notMatchSound.currentTime = 0;
-    this.notMatchSound.play().catch(() => {});
-  }
-}
 
   private getEventPosition(event: MouseEvent | TouchEvent): { x: number; y: number } {
     if (event instanceof MouseEvent) {
@@ -287,35 +294,133 @@ onEnd(event?: MouseEvent | TouchEvent) {
     if (!this.container) return;
     const boardWidth = this.container.nativeElement.offsetWidth;
     const cardWidth = 280;
-    if (this.leftCards.length > 0 && this.rightCards.length > 0) {
-      this.leftCards.forEach((c, i) => {
-        c.x = 20;
-        c.y = 50 + i * 140;
-      });
-      this.rightCards.forEach((c, i) => {
-        c.x = Math.max(20, boardWidth - cardWidth - 20);
-        c.y = 50 + i * 140;
-      });
-    }
+
+    const margin = 20;
+    const verticalSpacing = 140;
+
+    let rightX = boardWidth - cardWidth - margin;
+    if (boardWidth < 700) rightX = boardWidth - cardWidth - 10;
+    if (boardWidth < 550) rightX = boardWidth - cardWidth + 20;
+    if (boardWidth < 420) rightX = boardWidth - cardWidth + 40;
+
+    this.leftCards.forEach((c, i) => {
+      c.x = margin;
+      c.y = 50 + i * verticalSpacing;
+    });
+
+    this.rightCards.forEach((c, i) => {
+      c.x = Math.max(margin, rightX);
+      c.y = 50 + i * verticalSpacing;
+    });
   }
 
-   updateVolume() {
-    const vol = this.volume / 100;
-    if (this.backgroundMusic) this.backgroundMusic.volume = this.muted ? 0 : vol * 0.2;
-    if (this.matchSound) this.matchSound.volume = this.muted ? 0 : vol * 0.5;
-    if (this.notMatchSound) this.notMatchSound.volume = this.muted ? 0 : vol * 0.5;
+  checkIfPointsAlreadyClaimed() {
+    const minijuego = 'AQUA_MATCH';
+    const escena = 'MATCH';
+
+    this.gamificacionService
+      .getUltimaFechaReclamo(this.hogarId, minijuego, escena)
+      .subscribe({
+        next: (fecha) => {
+          const yaReclamado = !!fecha;
+          this.alreadyClaimed = yaReclamado;
+          if (yaReclamado) {
+            this.lastClaimDate = new Date(fecha);
+          }
+        },
+        error: (err) => {
+          if (err.status === 404) {
+            this.alreadyClaimed = false;
+          } else {
+            console.error('Error al verificar reclamo:', err);
+          }
+        }
+      });
+  }
+
+  claimAllPoints() {
+    if (this.alreadyClaimed) return;
+
+    if (!this.mergedCards || this.mergedCards.length === 0) return;
+
+    const todosReclamados = this.mergedCards.every(m => m.claimed);
+    if (!todosReclamados) return;
+
+
+    const puntosTotales = 120;
+    const minijuego = 'AQUA_MATCH';
+    const escena = 'MATCH';
+
+    this.gamificacionService
+      .addPuntosReclamados(this.hogarId, puntosTotales, minijuego, escena)
+      .subscribe({
+        next: () => {
+          this.alreadyClaimed = true;
+          this.lastClaimDate = new Date();
+          console.log('Puntos reclamados correctamente');
+        },
+        error: (err: any) => {
+          console.error('Error al reclamar puntos:', err);
+        }
+      });
+  }
+
+  isClaimButtonDisabled(): boolean {
+    if (this.alreadyClaimed) return true;
+
+    if (this.showIntro) return true;
+
+    if (!this.mergedCards || this.mergedCards.length === 0) return true;
+
+    const consejosCompletados = this.mergedCards.filter(m => m.claimed).length;
+    const totalConsejos = 12;
+
+    if (consejosCompletados < totalConsejos) return true;
+
+    return false;
+  }
+
+  allClaimed(): boolean {
+    const totalConsejos = 12;
+    return this.mergedCards?.filter(m => m.claimed).length === totalConsejos;
+  }
+
+  stopAllSounds() {
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
+  }
+
+  updateVolume() {
+    const level = this.muted ? 0 : this.volume / 100;
+    if (this.backgroundMusic) this.backgroundMusic.volume = 0.05 * level * 2;
+    if (this.matchSound) this.matchSound.volume = 0.2 * level;
+    if (this.notMatchSound) this.notMatchSound.volume = 0.2 * level;
+
+    clearTimeout(this.hideVolumeTimeout);
+    this.hideVolumeTimeout = setTimeout(() => {
+      this.showVolume = false;
+    }, 3000);
   }
 
   toggleMute() {
     this.muted = !this.muted;
-    if (this.muted) {
-      this.backgroundMusic.volume = 0;
-      this.matchSound.volume = 0;
-      this.notMatchSound.volume = 0;
-    } else {
-      this.updateVolume();
+    this.updateVolume();
+  }
+
+  toggleVolumeVisibility() {
+    this.showVolume = true;
+    clearTimeout(this.hideVolumeTimeout);
+    this.hideVolumeTimeout = setTimeout(() => {
+      this.showVolume = false;
+    }, 3000);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sound-control')) {
+      this.showVolume = false;
     }
   }
 
-  
 }
