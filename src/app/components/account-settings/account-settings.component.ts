@@ -141,9 +141,7 @@ export class AccountSettingsComponent implements OnInit{
   tooltipY = 0;
 
   showTooltip(event: MouseEvent, logro: Logro): void {
-    console.log('entro a show pero no a if');
     if (!this.esLogroDesbloqueado(logro.nombre)) {
-      console.log('entro a if en show');
       this.tooltipText = logro.pista || 'Completa más desafíos para desbloquear este logro';
       this.tooltipVisible = true;
       this.moveTooltip(event);

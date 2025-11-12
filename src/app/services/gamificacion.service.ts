@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { RankingResponse, Recompensa } from '../models/gamificacion';
 import { environment } from '../../environments/environment';
 import { Logro } from '../models/logro';
+import { Medalla } from '../models/medalla';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,10 @@ export class GamificacionService {
 
   getLogros(hogarId: number): Observable<Logro[]> {
     return this.http.get<Logro[]>(`${this.baseUrl}/${hogarId}/logros`);
+  }
+
+  getMedallas(hogarId: number): Observable<Medalla[]> {
+    return this.http.get<Medalla[]>(`${this.baseUrl}/${hogarId}/medallas`);
   }
 
 }

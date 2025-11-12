@@ -13,6 +13,7 @@ import { Hogar } from '../../models/hogar';
 
 import { GamificacionService } from '../../services/gamificacion.service';
 import { HogarRanking, Recompensa, RecompensaCanjeada } from '../../models/gamificacion';
+import { Medalla } from '../../models/medalla';
 
 @Component({
   selector: 'app-gamificacion',
@@ -138,8 +139,12 @@ export class GamificacionComponent implements OnInit{
   tooltipText = '';
   tooltipX = 0;
   tooltipY = 0;
-
   private intervalId: any = null;
+
+  tooltipVisibleMedalla = false;
+  tooltipTextMedalla = '';
+  tooltipXMedalla = 0;
+  tooltipYMedalla = 0;
 
   /*Calcula el tiempo restante hasta el inicio del día de la trivia.*/
   calcularTiempoRestante(diaTrivia: number): string {
@@ -168,6 +173,7 @@ export class GamificacionComponent implements OnInit{
     return texto;
   }
 
+  /* LOGICA PARA TOOLTIP DE TRIVIAS */
   showTooltip(event: MouseEvent, trivia: any) {
     this.tooltipVisible = true;
     this.moveTooltip(event);
@@ -184,7 +190,7 @@ export class GamificacionComponent implements OnInit{
 
   moveTooltip(event: MouseEvent) {
     const tooltipWidth = 300; // Usamos el max-width definido en CSS
-    const offset = 15; // Distancia desde el cursor
+    const offset = 20; // Distancia desde el cursor
   
     // Obtener el ancho de la ventana
     const windowWidth = window.innerWidth;
@@ -208,6 +214,48 @@ export class GamificacionComponent implements OnInit{
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+  }
+
+  /* LOGICA PARA TOOLTIP DE MEDALLAS */
+  showTooltipMedalla(event: MouseEvent, medalla: any) {
+    this.tooltipVisibleMedalla = true;
+    this.moveTooltipMedalla(event);
+    this.tooltipTextMedalla = medalla.descripcion || 'Medalla bloqueada';
+  }
+
+  moveTooltipMedalla(event: MouseEvent): void {
+    const tooltipWidth = 280;  // un poco más angosto que logros
+    const offset = 20;         // leve separación del cursor
+    const minMargin = 5;       // margen mínimo con el borde
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let newX = event.pageX + offset; 
+    let newY = event.pageY + offset;
+
+    if (event.pageX + offset + tooltipWidth > windowWidth) {
+      newX = event.pageX - tooltipWidth - offset;
+    }
+
+    if (newX < minMargin) {
+      newX = minMargin;
+    }
+
+    const tooltipHeight = 80;
+    if (event.clientY + tooltipHeight + offset > windowHeight) {
+      newY = event.pageY - tooltipHeight - offset;
+    }
+
+    if (newY < minMargin) {
+      newY = minMargin;
+    }
+
+    this.tooltipXMedalla = newX;
+    this.tooltipYMedalla = newY;
+  }
+
+  hideTooltipMedalla() {
+    this.tooltipVisibleMedalla = false;
   }
 
   hogar?: Hogar;
@@ -314,6 +362,32 @@ export class GamificacionComponent implements OnInit{
         this.isLoadingCanje[id] = false;
       }
     });
+  }
+
+  //MUCHAS DE ESTAS MEDALLAS EN REALIDAD SON MAS LOGROS QUE MEDALLA PERO ES 
+  //POR TENER ALGO Y ME LO TIRO GPT COMO PARA QUE NO QUEDAN DOS MEDALLAS SOLAS
+  medallas: Medalla[] = [
+    { nombre: 'Ahorro Semanal', descripcion: 'Reduciste tu consumo durante una semana completa.' },
+    { nombre: 'Consumo Eficiente', descripcion: 'Mantuviste un consumo óptimo durante un mes.' },
+    { nombre: 'Guardian del Agua', descripcion: 'Completaste todos los desafíos mensuales.' },
+    { nombre: 'Participante Activo', descripcion: 'Participaste en todas las trivias del mes.' },
+    { nombre: 'Sensor Maestro', descripcion: 'Instalaste más de 3 sensores en tu hogar.' }
+  ];
+
+  medallasDesbloqueadas: Medalla[] = [];
+
+  cargarMedallas(hogarId: number): void {
+    this.gamificacionService.getMedallas(hogarId).subscribe({
+      next: (data) => {
+        this.medallasDesbloqueadas = data;
+        console.log('Medallas desbloqueadas:', data);
+      },
+      error: (err) => console.error('Error al cargar medallas', err)
+    });
+  }
+
+  esMedallaDesbloqueada(nombre: string): boolean {
+    return this.medallasDesbloqueadas.some(m => m.nombre === nombre);
   }
 
 }

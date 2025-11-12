@@ -28,67 +28,41 @@
       <div class="container-modal-medallas">
         <p class="descr-medallas">En este apartado podrás ver todas tus medallas conseguidas, las medallas oscurecidas se podrán ver una vez las desbloquees.</p>
         <div class="grid-medallas grid">
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
+          <!--div class="medalla">
             <img class="prueba" src="images/medalla_oro.png" loading="lazy" alt="medalla oro">
             <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
           </div>
           <div class="medalla">
             <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
             <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
-          </div>
-          <div class="medalla">
-            <img class="prueba" src="images/medalla_oro_bloqueada.png" loading="lazy" alt="medalla oro">
-            <h4 class="nombre-medalla">&lt;nombre medalla&gt;</h4>
+          </div-->
+          <div
+            class="medalla"
+            *ngFor="let medalla of medallas"
+            [class.bloqueada]="!esMedallaDesbloqueada(medalla.nombre)"
+            (mouseenter)="showTooltipMedalla($event, medalla)"
+            (mousemove)="moveTooltipMedalla($event)"
+            (mouseleave)="hideTooltipMedalla()"
+          >
+            <img class="prueba"
+              [src]="esMedallaDesbloqueada(medalla.nombre)
+                ? 'images/medalla_oro.png'
+                : 'images/medalla_oro_bloqueada.png'"
+              alt="{{ medalla.nombre }}"
+            />
+            <h4 class="nombre-medalla">{{ medalla.nombre }}</h4>
           </div>
         </div>
+
+        <div
+          class="tooltip-flotante"
+          *ngIf="tooltipVisibleMedalla"
+          [style.top.px]="tooltipYMedalla"
+          [style.left.px]="tooltipXMedalla"
+        >
+          {{ tooltipTextMedalla }}
+        </div>
+
       </div>
     </div>
     <div data-w-id="fbec1e20-8656-8bce-35c1-ea665c7ad832" class="div-block-4">
@@ -408,7 +382,7 @@
     
     <!-- Tooltip flotante -->
     <div
-      class="tooltip-flotante" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
+      class="tooltip-flotante2" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
       {{ tooltipText }}
     </div>
   </div>
