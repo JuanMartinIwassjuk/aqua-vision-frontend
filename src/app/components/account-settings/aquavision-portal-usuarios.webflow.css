@@ -2495,7 +2495,6 @@ input:checked:focus + .switch-left + .switch-right {
 .logro-item.locked {
   opacity: 0.5;
   filter: blur(1px) grayscale(0.6);
-  pointer-events: none;
 }
 
 .logro-item.locked h3,
@@ -2554,6 +2553,10 @@ input:checked:focus + .switch-left + .switch-right {
   z-index: 99999;
   transition: opacity 0.1s ease-in-out;
   box-shadow: 0 0 6px rgba(0,0,0,0.3);
+
+  max-width: 300px;
+  text-align: left;
+  word-wrap: break-word;
 }
 
 /**********MODO RESPONSIVE***************/

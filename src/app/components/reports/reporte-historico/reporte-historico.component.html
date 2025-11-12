@@ -37,10 +37,10 @@
 
 
   <div class="resumen-global">
-    <p><strong class="blue_marine_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }}</p>
-    <p><strong class="blue_marine_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }}</p>
-    <p><strong class="blue_marine_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }}</p>
-    <p><strong class="blue_marine_effect">Costo total:</strong> {{ costoGlobal | currency:'USD':'symbol':'1.0-2' }}</p>
+    <p><strong class="blue_marine_effect">Consumo total:</strong> {{ totalGlobal | number:'1.0-2' }} L</p>
+    <p><strong class="blue_marine_effect">Media promedio:</strong> {{ mediaGlobal | number:'1.0-2' }} L</p>
+    <p><strong class="blue_marine_effect">Pico máximo:</strong> {{ picoGlobal | number:'1.0-2' }} L</p>
+    <p><strong class="blue_marine_effect">Costo total:</strong> {{ costoGlobal | currency:'$ ':'symbol':'1.0-2' }}</p>
     <br>
   </div>
  <br>
@@ -48,10 +48,10 @@
   <ng-container *ngFor="let sector of resumenPorSector | keyvalue">
     <div *ngIf="sector.key !== 'HOGAR'" class="card-sector">
       <h3>{{ sector.key }}</h3>
-      <p>Total: {{ sector.value.total | number:'1.0-2' }}</p>
-      <p>Media: {{ sector.value.media | number:'1.0-2' }}</p>
-      <p>Pico: {{ sector.value.pico | number:'1.0-2' }}</p>
-      <p>Costo: {{ sector.value.costo | currency:'USD':'symbol':'1.0-2' }}</p>
+      <p>Total: {{ sector.value.total | number:'1.0-2' }} L</p>
+      <p>Media: {{ sector.value.media | number:'1.0-2' }} L</p>
+      <p>Pico: {{ sector.value.pico | number:'1.0-2' }} L</p>
+      <p>Costo: {{ sector.value.costo | currency:'$ ':'symbol':'1.0-2' }}</p>
     </div>
   </ng-container>
 </div>

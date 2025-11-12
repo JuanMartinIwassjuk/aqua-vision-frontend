@@ -171,9 +171,10 @@ export class DashboardComponent implements OnInit {
             hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy).pipe(catchError(err => { console.error('hoy error', err); return of([]); })),
             ayer: this.reporteService.getConsumoPorHoraBackend(hogarId, diaAyer).pipe(catchError(err => { console.error('ayer error', err); return of([]); })),
             consumoHoy: this.reporteService.getConsumoUltimoDia(hogarId).pipe(catchError(err => { console.error('consumoHoy error', err); return of(0); })),
-            consumoAyer: this.reporteService.getConsumoPromedio(hogarId).pipe(catchError(err => { console.error('consumoAyer error', err); return of(0); }))
+            consumoAyer: this.reporteService.getConsumoPromedio(hogarId).pipe(catchError(err => { console.error('consumoAyer error', err); return of(0); })),
+            estadoMedidores: this.reporteService.getEstadoMedidores(hogarId).pipe(catchError(() => of({ conectados: 0, desconectados: 0 })))
           }).subscribe({
-            next: ({ hoy, ayer, consumoHoy, consumoAyer }: any) => {
+            next: ({ hoy, ayer, consumoHoy, consumoAyer, estadoMedidores }: any) => {
               const horas = (hoy || []).map((d: any) => d.hora);
               const caudales = (hoy || []).map((d: any) => d.caudal_m3 ?? null);
               const caudalesAnterior = (ayer || []).map((d: any) => d.caudal_m3 ?? null);
@@ -216,9 +217,10 @@ export class DashboardComponent implements OnInit {
               // medidores y consumo para usuario
               this.consumoDia = consumoHoy as number;
               const consumoDiaAnterior = consumoAyer as number;
-              this.estadoMedidores = this.reporteService.getEstadoMedidores();
-              this.medidoresConectados = this.estadoMedidores.conectados;
-              this.medidoresDesconectados = this.estadoMedidores.desconectados;
+              //this.estadoMedidores = this.reporteService.getEstadoMedidores();
+              this.estadoMedidores = estadoMedidores;
+              this.medidoresConectados = estadoMedidores.conectados;
+              this.medidoresDesconectados = estadoMedidores.desconectados;
               this.calcularDiferencia(this.consumoDia, consumoDiaAnterior);
             },
             error: err => {

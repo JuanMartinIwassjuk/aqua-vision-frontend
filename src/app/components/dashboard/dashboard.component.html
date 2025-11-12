@@ -21,26 +21,26 @@
     <ng-container *ngIf="isAdmin; else userCards">
 
     <!-- Opción A: routerLink (recomendada si la ruta es estática) -->
-<a routerLink="/consumo-admin" class="card info-card" title="Ir a detalle de consumo">
-  <div class="card-hint">Ir a detalles de consumo</div>
+      <a routerLink="/consumo-admin" class="card info-card" title="Ir a detalle de consumo">
+      <div class="card-hint">Ir a detalles de consumo</div>
 
-  <div class="consumo-main">
-    <span class="consumo-title">Consumo promedio por Hogar</span>
-    <span class="consumo-value">{{ consumoPromedio | number:'1.2-2' }} m³</span>
-  </div>
+        <div class="consumo-main">
+          <span class="consumo-title">Consumo promedio por Hogar</span>
+          <span class="consumo-value">{{ consumoPromedio | number:'1.2-2' }} m³</span>
+        </div>
 
-  <div class="consumo-indicador" [ngClass]="{ 'positivo': consumoDiff < 0, 'negativo': consumoDiff > 0, 'blink-green': consumoDiff < 0, 'blink-red': consumoDiff > 0 }">
-    <ng-container *ngIf="consumoDiff < 0">
-      <mat-icon>arrow_downward</mat-icon>
-      <span>{{ consumoDiffAbs }}% menor que ayer</span>
-    </ng-container>
-    <ng-container *ngIf="consumoDiff > 0">
-      <mat-icon>arrow_upward</mat-icon>
-      <span>{{ consumoDiffAbs }}% mayor que ayer</span>
-    </ng-container>
-    <span *ngIf="consumoDiff === 0">= igual que ayer</span>
-  </div>
-</a>
+        <div class="consumo-indicador" [ngClass]="{ 'positivo': consumoDiff < 0, 'negativo': consumoDiff > 0, 'blink-green': consumoDiff < 0, 'blink-red': consumoDiff > 0 }">
+          <ng-container *ngIf="consumoDiff < 0">
+            <mat-icon>arrow_downward</mat-icon>
+            <span>{{ consumoDiffAbs }}% menor que ayer</span>
+          </ng-container>
+          <ng-container *ngIf="consumoDiff > 0">
+            <mat-icon>arrow_upward</mat-icon>
+            <span>{{ consumoDiffAbs }}% mayor que ayer</span>
+          </ng-container>
+          <span *ngIf="consumoDiff === 0">= igual que ayer</span>
+        </div>
+      </a>
 
 
 
