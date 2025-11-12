@@ -10,7 +10,8 @@ import { PrediccionSector } from '../models/prediction/prediccionSector';
 import { SectorProyeccion } from '../models/prediction/sectorProyeccion';
 import { PrediccionPorDia } from '../models/prediction/prediccionPorDia';
 
-
+import { Sensor } from '../models/sensor';
+import { CuentaService } from './cuenta.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,28 +22,29 @@ export class ReporteService {
 
     constructor(
     private http: HttpClient,
-    private dateUtils: DateUtilsService
+    private dateUtils: DateUtilsService,
+    private cuentaService: CuentaService
   ) {}
 
-getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> {
-  const fechaDesde = this.dateUtils.formatDateToJava(new Date(fecha.setHours(0, 0, 0, 0)));
-  const fechaHasta = this.dateUtils.formatDateToJava(new Date(fecha.setHours(23, 59, 59, 999)));
+  getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> {
+    const fechaDesde = this.dateUtils.formatDateToJava(new Date(fecha.setHours(0, 0, 0, 0)));
+    const fechaHasta = this.dateUtils.formatDateToJava(new Date(fecha.setHours(23, 59, 59, 999)));
 
-  const url = `${this.baseUrl}/${id}/consumo-fecha?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+    const url = `${this.baseUrl}/${id}/consumo-fecha?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
 
-  return this.http.get<any>(url).pipe(
-    map((response: any) => {
-      return response.consumosPorSector.map((item: any) => ({
-        nombre_sector: item.nombreSector,
-        consumo_total: item.consumoTotal,
-        media_consumo: item.consumoPromedio,
-        pico_maximo: item.consumoPico,
-        timestamp: fecha.toISOString(),
-        costo: this.calcularCosto(item.consumoTotal).toFixed(2)
-      }));
-    })
-  );
-}
+    return this.http.get<any>(url).pipe(
+      map((response: any) => {
+        return response.consumosPorSector.map((item: any) => ({
+          nombre_sector: item.nombreSector,
+          consumo_total: item.consumoTotal,
+          media_consumo: item.consumoPromedio,
+          pico_maximo: item.consumoPico,
+          timestamp: fecha.toISOString(),
+          costo: this.calcularCosto(item.consumoTotal).toFixed(2)
+        }));
+      })
+    );
+  }
 
 
 
@@ -118,8 +120,8 @@ getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> 
 }
 
 
-getConsumoTotalHogaresPorHora(): { hora: string; caudal_m3?: number }[] {
-   return [ 
+  getConsumoTotalHogaresPorHora(): { hora: string; caudal_m3?: number }[] {
+    return [ 
       { hora: '00:00', caudal_m3: 300 },
       { hora: '01:00', caudal_m3: 150 },
       { hora: '02:00', caudal_m3: 230 },
@@ -148,85 +150,105 @@ getConsumoTotalHogaresPorHora(): { hora: string; caudal_m3?: number }[] {
   }
 
   getConsumoPorHoraDiaAnterior(): { hora: string; caudal_m3?: number }[] {
-  return [
-    { hora: '00:00', caudal_m3: 4 },
-    { hora: '01:00', caudal_m3: 3.5 },
-    { hora: '02:00', caudal_m3: 3 },
-    { hora: '03:00', caudal_m3: 3.2 },
-    { hora: '04:00', caudal_m3: 4 },
-    { hora: '05:00', caudal_m3: 4.5 },
-    { hora: '06:00', caudal_m3: 6 },
-    { hora: '07:00', caudal_m3: 7.5 },
-    { hora: '08:00', caudal_m3: 9 },
-    { hora: '09:00', caudal_m3: 11 },
-    { hora: '10:00', caudal_m3: 10 },
-    { hora: '11:00', caudal_m3: 9 },
-    { hora: '12:00', caudal_m3: 8 },
-    { hora: '13:00', caudal_m3: 7 },
-    { hora: '14:00', caudal_m3: 6 },
-    { hora: '15:00', caudal_m3: 7 },
-    { hora: '16:00', caudal_m3: 9 },
-    { hora: '17:00', caudal_m3: 12 },
-    { hora: '18:00', caudal_m3: 14 },
-    { hora: '19:00', caudal_m3: 15 },
-    { hora: '20:00' },
-    { hora: '21:00' },
-    { hora: '22:00' },
-    { hora: '23:00' }
-  ];
-}
+    return [
+      { hora: '00:00', caudal_m3: 4 },
+      { hora: '01:00', caudal_m3: 3.5 },
+      { hora: '02:00', caudal_m3: 3 },
+      { hora: '03:00', caudal_m3: 3.2 },
+      { hora: '04:00', caudal_m3: 4 },
+      { hora: '05:00', caudal_m3: 4.5 },
+      { hora: '06:00', caudal_m3: 6 },
+      { hora: '07:00', caudal_m3: 7.5 },
+      { hora: '08:00', caudal_m3: 9 },
+      { hora: '09:00', caudal_m3: 11 },
+      { hora: '10:00', caudal_m3: 10 },
+      { hora: '11:00', caudal_m3: 9 },
+      { hora: '12:00', caudal_m3: 8 },
+      { hora: '13:00', caudal_m3: 7 },
+      { hora: '14:00', caudal_m3: 6 },
+      { hora: '15:00', caudal_m3: 7 },
+      { hora: '16:00', caudal_m3: 9 },
+      { hora: '17:00', caudal_m3: 12 },
+      { hora: '18:00', caudal_m3: 14 },
+      { hora: '19:00', caudal_m3: 15 },
+      { hora: '20:00' },
+      { hora: '21:00' },
+      { hora: '22:00' },
+      { hora: '23:00' }
+    ];
+  }
 
-getConsumoPromedioPorHoraMensual(): { hora: string; caudal_m3?: number }[] {
-  return [
-    { hora: '00:00', caudal_m3: 5 },
-    { hora: '01:00', caudal_m3: 5 },
-    { hora: '02:00', caudal_m3: 4.5 },
-    { hora: '03:00', caudal_m3: 4.7 },
-    { hora: '04:00', caudal_m3: 4.9 },
-    { hora: '05:00', caudal_m3: 5.3 },
-    { hora: '06:00', caudal_m3: 6 },
-    { hora: '07:00', caudal_m3: 7 },
-    { hora: '08:00', caudal_m3: 9 },
-    { hora: '09:00', caudal_m3: 10 },
-    { hora: '10:00', caudal_m3: 11 },
-    { hora: '11:00', caudal_m3: 11.5 },
-    { hora: '12:00', caudal_m3: 12 },
-    { hora: '13:00', caudal_m3: 10 },
-    { hora: '14:00', caudal_m3: 9 },
-    { hora: '15:00', caudal_m3: 8 },
-    { hora: '16:00', caudal_m3: 10 },
-    { hora: '17:00', caudal_m3: 12 },
-    { hora: '18:00', caudal_m3: 13 },
-    { hora: '19:00', caudal_m3: 14 },
-    { hora: '20:00' },
-    { hora: '21:00' },
-    { hora: '22:00' },
-    { hora: '23:00' }
-  ];
-}
+  getConsumoPromedioPorHoraMensual(): { hora: string; caudal_m3?: number }[] {
+    return [
+      { hora: '00:00', caudal_m3: 5 },
+      { hora: '01:00', caudal_m3: 5 },
+      { hora: '02:00', caudal_m3: 4.5 },
+      { hora: '03:00', caudal_m3: 4.7 },
+      { hora: '04:00', caudal_m3: 4.9 },
+      { hora: '05:00', caudal_m3: 5.3 },
+      { hora: '06:00', caudal_m3: 6 },
+      { hora: '07:00', caudal_m3: 7 },
+      { hora: '08:00', caudal_m3: 9 },
+      { hora: '09:00', caudal_m3: 10 },
+      { hora: '10:00', caudal_m3: 11 },
+      { hora: '11:00', caudal_m3: 11.5 },
+      { hora: '12:00', caudal_m3: 12 },
+      { hora: '13:00', caudal_m3: 10 },
+      { hora: '14:00', caudal_m3: 9 },
+      { hora: '15:00', caudal_m3: 8 },
+      { hora: '16:00', caudal_m3: 10 },
+      { hora: '17:00', caudal_m3: 12 },
+      { hora: '18:00', caudal_m3: 13 },
+      { hora: '19:00', caudal_m3: 14 },
+      { hora: '20:00' },
+      { hora: '21:00' },
+      { hora: '22:00' },
+      { hora: '23:00' }
+    ];
+  }
 
 
 
-getConsumoUltimoDia(idHogar: number): Observable<number> {
-  const hoy = new Date();
-  return this.getConsumoDiarioPorSector(idHogar, hoy).pipe(
-    map((reportes: any[]) =>
-      reportes.reduce((total, r) => total + Number(r.consumo_total || 0), 0)
-    )
-  );
-}
+  getConsumoUltimoDia(idHogar: number): Observable<number> {
+    const hoy = new Date();
+    return this.getConsumoDiarioPorSector(idHogar, hoy).pipe(
+      map((reportes: any[]) =>
+        reportes.reduce((total, r) => total + Number(r.consumo_total || 0), 0)
+      )
+    );
+  }
 
-getConsumoPromedio(idHogar: number): Observable<number> {
-  const ayer = new Date();
-  ayer.setDate(ayer.getDate() - 1);
-  return this.getConsumoDiarioPorSector(idHogar, ayer).pipe(
-    map((reportes: any[]) =>
-      reportes.reduce((total, r) => total + Number(r.consumo_total || 0), 0)
-    )
-  );
-}
-  getEstadoMedidores(): { conectados: number; desconectados: number } {
+  getConsumoPromedio(idHogar: number): Observable<number> {
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    return this.getConsumoDiarioPorSector(idHogar, ayer).pipe(
+      map((reportes: any[]) =>
+        reportes.reduce((total, r) => total + Number(r.consumo_total || 0), 0)
+      )
+    );
+  }
+  
+  getEstadoMedidores_viejo(): { conectados: number; desconectados: number } {
     return {conectados: 3, desconectados: 1};
+  }
+
+  getEstadoMedidores(hogarId: number): Observable<{ conectados: number; desconectados: number }> {
+    return this.cuentaService.getSensores(hogarId).pipe(
+      map((sensores: Sensor[]) => {
+        let conectados = 0;
+        let desconectados = 0;
+        
+        sensores.forEach(sensor => {
+          if (sensor.estadoActual && sensor.estadoActual.toUpperCase() === 'ON') {
+            conectados++;
+          } else {
+            desconectados++;
+          }
+        });
+        
+        return { conectados, desconectados };
+      })
+    );
   }
 
   getTotalMedidoresConectados(): number {

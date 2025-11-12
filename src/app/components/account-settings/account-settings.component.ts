@@ -151,32 +151,32 @@ export class AccountSettingsComponent implements OnInit{
     }
   }
 
-moveTooltip(event: MouseEvent): void {
-  const tooltipWidth = 300; // Mantenemos el mismo max-width definido en CSS
-  const offset = 15; // Distancia estándar desde el cursor
-  const minMargin = 5; // Margen mínimo desde el borde izquierdo de la pantalla (para que no se pegue al borde)
+  moveTooltip(event: MouseEvent): void {
+    const tooltipWidth = 300; // Mantenemos el mismo max-width definido en CSS
+    const offset = 15; // Distancia estándar desde el cursor
+    const minMargin = 5; // Margen mínimo desde el borde izquierdo de la pantalla (para que no se pegue al borde)
 
-  // 1. Obtener el ancho de la ventana
-  const windowWidth = window.innerWidth;
+    // 1. Obtener el ancho de la ventana
+    const windowWidth = window.innerWidth;
 
-  let newX = event.pageX + offset; // Posición inicial por defecto (a la derecha del cursor)
+    let newX = event.pageX + offset; // Posición inicial por defecto (a la derecha del cursor)
 
-  // 2. VERIFICACIÓN DEL BORDE DERECHO
-  // Si el tooltip se sale por la derecha, lo posicionamos a la izquierda del cursor.
-  if (event.pageX + offset + tooltipWidth > windowWidth) {
-    newX = event.pageX - tooltipWidth - offset;
+    // 2. VERIFICACIÓN DEL BORDE DERECHO
+    // Si el tooltip se sale por la derecha, lo posicionamos a la izquierda del cursor.
+    if (event.pageX + offset + tooltipWidth > windowWidth) {
+      newX = event.pageX - tooltipWidth - offset;
+    }
+    
+    // 3. VERIFICACIÓN DEL BORDE IZQUIERDO (¡NUEVO!)
+    // Si después de cualquier ajuste, la posición resultante es menor que el margen mínimo (newX < minMargin),
+    // significa que el tooltip se está saliendo por la izquierda. Lo ajustamos al margen.
+    if (newX < minMargin) {
+      newX = minMargin;
+    }
+    
+    this.tooltipX = newX;
+    this.tooltipY = event.pageY + offset;
   }
-  
-  // 3. VERIFICACIÓN DEL BORDE IZQUIERDO (¡NUEVO!)
-  // Si después de cualquier ajuste, la posición resultante es menor que el margen mínimo (newX < minMargin),
-  // significa que el tooltip se está saliendo por la izquierda. Lo ajustamos al margen.
-  if (newX < minMargin) {
-    newX = minMargin;
-  }
-  
-  this.tooltipX = newX;
-  this.tooltipY = event.pageY + offset;
-}
 
   hideTooltip(): void {
     this.tooltipVisible = false;
