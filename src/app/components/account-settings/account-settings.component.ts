@@ -111,12 +111,12 @@ export class AccountSettingsComponent implements OnInit{
   }
 
   logros: Logro[] = [
-    { nombre: 'Registro', descripcion: 'Te registraste en AquaVision'},
-    { nombre: 'Primer sensor', descripcion: 'Instalaste tu primer sensor'},
-    { nombre: 'Primer ahorro', descripcion: 'Reduciste tu consumo de agua'},
-    { nombre: 'Sabio acuatico', descripcion: 'Participaste en 7 trivias seguidas', pista: 'Completa todas las trivias durante una semana entera para conseguir este logro'},
-    { nombre: 'Primer Reto', descripcion: 'Completá tu primera trivia', pista: 'Participá en una trivia para conseguir este logro' },
-    { nombre: 'Eco Heroe', descripcion: 'Ahorra agua durante 7 días seguidos', pista: 'Controlá tu consumo diario en el dashboard' }
+    { nombre: 'Registro', descripcion: 'Te registraste en AquaVision', pista: 'El viaje comienza con el primer paso.'},
+    { nombre: 'Primer sensor', descripcion: 'Instalaste tu primer sensor', pista: 'Conecta tu primer ojo bajo el agua.'},
+    { nombre: 'Primer ahorro', descripcion: 'Reduciste tu consumo de agua', pista: 'La primera gota que no se desperdicia es la más significativa.'},
+    { nombre: 'Sabio acuatico', descripcion: 'Participaste en 7 trivias seguidas', pista: 'Demuestra tu constancia al aceptar todos los desafíos semanales.'},
+    { nombre: 'Primer Reto', descripcion: 'Completá tu primera trivia', pista: 'Poné a prueba tu conocimiento participando en una trivia.' },
+    { nombre: 'Eco Heroe', descripcion: 'Ahorra agua durante 7 días seguidos', pista: 'Siete amaneceres de compromiso con el planeta.' }
   ];
 
   logrosDesbloqueados: Logro[] = [];
