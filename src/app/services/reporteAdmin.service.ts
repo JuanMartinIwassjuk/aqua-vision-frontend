@@ -259,84 +259,41 @@ getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: 
   return of(result);
 }
 
-getHogares(): Observable<Hogar[]> {
 
-  const arr: Hogar[] = this.hogares.map((h: Hogar) => ({
-    ...h,
-
-    rachaDiaria: (h as any).rachaDiaria ?? 0,
-    puntos: (h as any).puntos ?? 0,
-    puntaje_ranking: (h as any).puntaje_ranking ?? 0
-  }));
-  return of(arr);
-}
-
-getPuntosPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string; puntos: number }[]> {
-  const desde = new Date(desdeIso);
-  const hasta = new Date(hastaIso);
-  const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-  const totalBase: number = this.hogares.reduce((s: number, h: Hogar) => s + (Number((h as any).puntos) || 0), 0) || 50;
-
-  const result: { fecha: string; puntos: number }[] = [];
-  for (let i = 0; i < dias; i++) {
-    const day = new Date(desde);
-    day.setDate(desde.getDate() + i);
-    const iso = day.toISOString().split('T')[0];
-
-    // factor determinístico (no random)
-    const factor = 0.02 + ((i % 7) * 0.01); // varía semanalmente
-    const puntos = Math.round(totalBase * factor);
-    result.push({ fecha: iso, puntos });
+ getPuntosPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string; puntos: number }[]> {
+    const url = `${this.baseUrl}/gamificacion/puntos-periodo?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any[]>(url);
   }
-  return of(result);
-}
 
-getResumenGamificacion(desdeIso: string, hastaIso: string): Observable<{ total: number; media: number; mejorRacha: number }> {
-  const total: number = this.hogares.reduce((s: number, h: Hogar) => s + (Number((h as any).puntos) || 0), 0);
+  getResumenGamificacion(desdeIso: string, hastaIso: string): Observable<{ total: number; media: number; mejorRacha: number }> {
+    const url = `${this.baseUrl}/gamificacion/resumen?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any>(url);
+  }
 
-  const desde = new Date(desdeIso);
-  const hasta = new Date(hastaIso);
-  const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-  const media: number = dias ? Math.round((total / dias) * 10) / 10 : 0;
+  getRankingPuntos(desdeIso: string, hastaIso: string): Observable<any[]> {
+    const url = `${this.baseUrl}/gamificacion/ranking-puntos?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any[]>(url);
+  }
 
-  const mejorRacha: number = this.hogares.reduce((m: number, h: Hogar) => Math.max(m, Number((h as any).rachaDiaria) || 0), 0);
+  getRankingRachas(desdeIso: string, hastaIso: string): Observable<any[]> {
+    const url = `${this.baseUrl}/gamificacion/ranking-rachas?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
+    return this.http.get<any[]>(url);
+  }
 
-  return of({ total, media, mejorRacha });
-}
-
-getRankingPuntos(desdeIso: string, hastaIso: string): Observable<{ nombre: string; puntos: number; puntaje_ranking: number }[]> {
-  const arr = (this.hogares || []).map((h: Hogar) => ({
-    nombre: h.nombre,
-    puntos: Number((h as any).puntos) || 0,
-    puntaje_ranking: Number((h as any).puntaje_ranking) || 0
-  }));
-  arr.sort((a: { puntos: number }, b: { puntos: number }) => b.puntos - a.puntos);
-  return of(arr);
-}
-
-getRankingRachas(desdeIso: string, hastaIso: string): Observable<{ nombre: string; racha: number; puntos: number }[]> {
-  const arr = (this.hogares || []).map((h: Hogar) => ({
-    nombre: h.nombre,
-    racha: Number((h as any).rachaDiaria) || 0,
-    puntos: Number((h as any).puntos) || 0
-  }));
-  arr.sort((a: { racha: number }, b: { racha: number }) => b.racha - a.racha);
-  return of(arr);
-}
+  getHogares(): Observable<any[]> {
+    const url = `${this.baseUrl}/gamificacion/hogares`;
+    return this.http.get<any[]>(url);
+  }
 
   getMedallasPorHogar(hogarId: number): Observable<string[]> {
-  // ejemplo determinístico según id
-  const mapMedallas: Record<number, string[]> = {
-    1: ['Inicio', 'Ahorro 7d', 'Racha 3d'],
-    2: ['Inicio', 'Racha 5d', 'Top Puntos'],
-    3: ['Inicio'],
-    4: ['Inicio', 'Ahorro 30d', 'Top Racha'],
-    5: ['Inicio', 'Participante']
-  };
-  const meds = mapMedallas[hogarId] ?? ['Participante'];
-  return of(meds);
-}
+    const url = `${this.baseUrl}/gamificacion/hogares/${hogarId}/medallas`;
+    return this.http.get<string[]>(url);
+  }
+
+  descargarReporteGamificacionPDF(fechaDesde: string, fechaHasta: string): void {
+    const url = `${this.baseUrl}/gamificacion/descargar-pdf?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+    window.open(url, '_blank');
+  }
 
 
 descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
