@@ -361,4 +361,18 @@ getRankingRachas(desdeIso: string, hastaIso: string): Observable<{ nombre: strin
 }
 
 
+descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
+  const params = [];
+  params.push(`fechaInicio=${encodeURIComponent(fechaDesde)}`);
+  params.push(`fechaFin=${encodeURIComponent(fechaHasta)}`);
+  if (tagIds && tagIds.length) {
+
+    tagIds.forEach(id => params.push(`tagIds=${encodeURIComponent(String(id))}`));
+  }
+  const url = `${this.baseUrl}/eventos/descargar-pdf?${params.join('&')}`;
+  window.open(url, '_blank');
+}
+
+
+
 }
