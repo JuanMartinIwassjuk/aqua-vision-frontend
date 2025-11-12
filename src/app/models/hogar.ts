@@ -1,3 +1,5 @@
+import { RecompensaCanjeada } from "./gamificacion";
+
 export class Hogar {
   
     nombreHogar!: string;
@@ -11,5 +13,8 @@ export class Hogar {
     tieneTanquePropio!: boolean;
     tieneTermotanqueElectrico!: boolean;
     puntos!: number;
+
+    recompensas!: RecompensaCanjeada[];
+    id!: number;
 
 }

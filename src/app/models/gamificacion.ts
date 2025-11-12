@@ -13,3 +13,10 @@ export class Recompensa {
   descripcion!: string;
   puntosNecesarios!: number;
 }
+
+export class RecompensaCanjeada {
+  id!: number;
+  recompensa!: Recompensa;
+  estado!: 'DISPONIBLE' | 'CANJEADO' | 'RECLAMADO';
+  fechaCanjeo?: string;
+}

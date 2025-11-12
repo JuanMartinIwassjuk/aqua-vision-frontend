@@ -542,6 +542,39 @@ h2 {
   align-items: center;
 }
 
+.item-recompensa.canjeada {
+  background: rgba(76, 175, 80, 0.1);
+  border-left: 4px solid #4caf50;
+  transition: background 0.4s ease, border-left 0.4s ease;
+}
+
+.item-recompensa.canjeada h3 {
+  color: #4caf50;
+}
+
+.item-recompensa.insuficiente {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.item-recompensa.canjeando {
+  position: relative;
+}
+
+.item-recompensa.canjeando::after {
+  content: "⏳ Canjeando...";
+  position: absolute;
+  right: 1rem;
+  color: var(--azul-fondo);
+  font-size: 0.9rem;
+  animation: parpadeo 1.5s infinite ease-in-out;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
 .user-container-ranking {
   grid-column-gap: 3rem;
   grid-row-gap: 3rem;
@@ -940,6 +973,55 @@ h2 {
   width: 220px;
   height: 220px;
   opacity: 1;
+}
+
+.animated-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: 0 0 0 2px gray;
+  color: gray;
+  fill: gray;
+  pointer-events: none;
+}
+
+.animated-button:disabled:hover {
+  box-shadow: 0 0 0 2px gray;
+}
+
+.animated-button.canjeado {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px #4caf50;
+}
+
+.animated-button.canjeado:hover {
+  background: #43a047;
+  box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.3);
+  color: white;
+}
+
+.animated-button.cargando {
+  position: relative;
+  pointer-events: none;
+}
+
+.animated-button.cargando::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-top-color: var(--azul-fondo);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /************/

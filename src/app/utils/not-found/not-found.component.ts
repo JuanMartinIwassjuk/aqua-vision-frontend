@@ -14,7 +14,7 @@ export class NotFoundComponent {
   constructor(private router: Router) {}
 
   goHome() {
-    this.router.navigate(['/reportes/diario']);
+    this.router.navigate(['/']);
   }
 
   goBack() {

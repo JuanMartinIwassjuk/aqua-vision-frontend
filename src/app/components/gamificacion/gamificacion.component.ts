@@ -12,7 +12,7 @@ import { User } from '../../models/user';
 import { Hogar } from '../../models/hogar';
 
 import { GamificacionService } from '../../services/gamificacion.service';
-import { HogarRanking, Recompensa } from '../../models/gamificacion';
+import { HogarRanking, Recompensa, RecompensaCanjeada } from '../../models/gamificacion';
 
 @Component({
   selector: 'app-gamificacion',
@@ -117,7 +117,14 @@ export class GamificacionComponent implements OnInit{
     this.homeService.waitForHomeId().subscribe({
       next: (hogarId: number) => {
         console.log('Hogar ID obtenido:', hogarId);
-       this.cargarPuntos(hogarId);
+        this.homeService.getHogar(hogarId).subscribe({
+          next: (hogarFull) => {
+            this.hogar = hogarFull;
+            this.cargarRecompensasCanjeadas(hogarFull);
+          }
+        });
+        this.cargarPuntos(hogarId);
+        this.cargarRecompensasGlobales();
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
@@ -134,9 +141,7 @@ export class GamificacionComponent implements OnInit{
 
   private intervalId: any = null;
 
-  /**
-   * Calcula el tiempo restante hasta el inicio del día de la trivia.
-   */
+  /*Calcula el tiempo restante hasta el inicio del día de la trivia.*/
   calcularTiempoRestante(diaTrivia: number): string {
     const ahora = new Date();
     const diaActual = this.diaActual;
@@ -215,6 +220,9 @@ export class GamificacionComponent implements OnInit{
   top5Hogares: HogarRanking[] = [];
   recompensas: Recompensa[] = [];
 
+  recompensasCanjeadas = new Set<number>();
+  isLoadingCanje: { [id: number]: boolean } = {};
+
   cargarRanking(): void {
     this.gamificacionService.getRanking().subscribe({
       next: (data) => {
@@ -244,10 +252,67 @@ export class GamificacionComponent implements OnInit{
     });
   }
 
-  cargarRecompensas(): void {
+  cargarRecompensasGlobales(): void {
+    this.gamificacionService.getRecompensas().subscribe({
+      next: (data) => this.recompensas = data,
+      error: (err) => console.error('Error al cargar recompensas globales', err)
+    });
+  }
+
+  cargarRecompensas(hogarId?: number): void {
     this.gamificacionService.getRecompensas().subscribe({
       next: (data) => this.recompensas = data,
       error: (err) => console.error('Error al cargar recompensas', err)
+    });
+  }
+
+  cargarRecompensasCanjeadas(hogar: Hogar): void {
+    if (hogar.recompensas) {
+      hogar.recompensas.forEach((r: RecompensaCanjeada) => {
+        if (r.estado === 'CANJEADO' || r.estado === 'RECLAMADO') {
+          this.recompensasCanjeadas.add(r.recompensa.id);
+        }
+      });
+    }
+  }
+
+  puedeCanjear(r: Recompensa): boolean {
+    if (!this.hogar) return false;
+    if (this.recompensasCanjeadas.has(r.id)) return false;
+    return this.hogar.puntos >= r.puntosNecesarios;
+  }
+
+
+  canjear(recompensa: Recompensa) {
+    console.log('Entro a canjear');
+    if (!this.hogar?.id) {
+      alert('No se encontró el hogar. Intenta recargar la página.');
+      return;
+    }
+
+    const id = recompensa.id;
+    const puntosNecesarios = recompensa.puntosNecesarios;
+
+    if (this.recompensasCanjeadas.has(id)) return;
+    if (this.hogar.puntos < puntosNecesarios) {
+      alert('No tenés suficientes puntos para canjear esta recompensa.');
+      console.log('Puntos del hogar: ', this.hogar.puntos);
+      return;
+    }
+
+    this.isLoadingCanje[id] = true;
+
+    this.gamificacionService.canjearRecompensa(this.hogar.id, id).subscribe({
+      next: (res) => {
+        this.hogar!.puntos -= puntosNecesarios;
+        this.recompensasCanjeadas.add(id);
+        this.isLoadingCanje[id] = false;
+        alert(`Recompensa canjeada: ${recompensa.descripcion}`);
+      },
+      error: (err) => {
+        console.error('Error al canjear recompensa', err);
+        this.isLoadingCanje[id] = false;
+      }
     });
   }
 
