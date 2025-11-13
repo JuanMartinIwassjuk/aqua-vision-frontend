@@ -100,7 +100,7 @@ export class ConsumoService {
   }
 
 getEventosDeLosSectores(hogarId: number | null): Observable<EventoSector[]> {
-  return this.http.get<EventoSector[]>(`http://localhost:8080/hogares/${hogarId}/sectores-eventos`).pipe(
+  return this.http.get<EventoSector[]>(`${environment.apiUrl}/hogares/${hogarId}/sectores-eventos`).pipe(
     tap(response => {
       console.log('📦 Respuesta del backend (eventos por sectores):', response);
     })
@@ -108,7 +108,7 @@ getEventosDeLosSectores(hogarId: number | null): Observable<EventoSector[]> {
 }
 
 getEventos(): Observable<any[]> {
-  return this.http.get<any[]>('http://localhost:8080/eventos').pipe(
+  return this.http.get<any[]>(`${environment.apiUrl}/eventos`).pipe(
     tap(res => console.log('📦 Eventos del backend:', res))
   );
 }
@@ -151,7 +151,7 @@ getPrediccionConsumoPorDia(hogarId: number): Observable<PrediccionPorDia[]> {
 
 
 getConsumosPorHoraYSector(hogarId: number, dia: string): Observable<any> {
-  const url = `http://localhost:8080/reportes/${hogarId}/consumo-dia-hora-sectores?dia=${dia}`;
+  const url = `${this.baseUrl}/${hogarId}/consumo-dia-hora-sectores?dia=${encodeURIComponent(dia)}`;
   return this.http.get<any>(url).pipe(
     tap(res => console.log('📦 Respuesta del backend (consumo por hora y sectores):', res))
   );
