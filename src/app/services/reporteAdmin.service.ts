@@ -100,51 +100,35 @@ export class ReporteAdminService {
 
   constructor(private http: HttpClient) { }
 
-    descargarReporteConsumoPDF(fechaDesde: string, fechaHasta: string): void {
-    const params = new HttpParams().set('fechaInicio', fechaDesde).set('fechaFin', fechaHasta);
-    const url = `${this.baseUrl}/consumo/descargar-pdf?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
+  descargarReporteConsumoPDF(fechaDesde: string, fechaHasta: string): void {
+    const url = `${this.baseUrl}/consumo/descargar-pdf?fechaInicio=${fechaDesde}&fechaFin=${fechaHasta}`;
     window.open(url, '_blank');
   }
 
 
 
-  // Consumo agregado por día para todos los hogares -> mock lineal por fecha
-  getConsumoGlobalPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string, totalLitros: number, costo: number }[]> {
-    const desde = new Date(desdeIso);
-    const hasta = new Date(hastaIso);
-    const dias = Math.ceil((hasta.getTime() - desde.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    const result: { fecha: string, totalLitros: number, costo: number }[] = [];
-    for (let i = 0; i < dias; i++) {
-      const day = new Date(desde);
-      day.setDate(desde.getDate() + i);
-      const dayIso = day.toISOString().split('T')[0];
-      // sumar eventos del día
-      const eventosDelDia = this.eventos.filter(ev => ev.fechaInicio?.startsWith(dayIso));
-      const totalLitros = eventosDelDia.reduce((s, e) => s + (e.litrosConsumidos || 0), 0) + Math.round(Math.random() * 200);
-      const costo = eventosDelDia.reduce((s, e) => s + (e.costo || 0), 0) + Math.round( (totalLitros * 0.18) * 100) / 100;
-      result.push({ fecha: dayIso, totalLitros: Math.round(totalLitros * 100) / 100, costo: Math.round(costo * 100) / 100 });
-    }
-    return of(result);
-  }
 
-  // Resumen agregado (media, total y costo) para periodo
-  getResumenConsumoGlobal(desdeIso: string, hastaIso: string): Observable<{ total: number, media: number, pico: number, costo: number }> {
-    return this.getConsumoGlobalPorPeriodo(desdeIso, hastaIso).pipe(
-      // map in subscribe; but keep simple: use of(...) recalculated
-      (obs) => {
-        return new Observable(sub => {
-          obs.subscribe(arr => {
-            const total = arr.reduce((s, a) => s + a.totalLitros, 0);
-            const media = arr.length ? total / arr.length : 0;
-            const pico = arr.reduce((p, a) => Math.max(p, a.totalLitros), 0);
-            const costo = arr.reduce((s, a) => s + a.costo, 0);
-            sub.next({ total: Math.round(total * 100) / 100, media: Math.round(media * 100) / 100, pico: Math.round(pico * 100) / 100, costo: Math.round(costo * 100) / 100 });
-            sub.complete();
-          });
-        });
-      }
-    );
-  }
+getConsumoGlobalPorPeriodo(desdeIso: string, hastaIso: string) {
+  const params = new HttpParams()
+    .set('fechaInicio', desdeIso)
+    .set('fechaFin', hastaIso);
+
+  return this.http.get<{ fecha: string; totalLitros: number; costo: number }[]>(
+    `${this.baseUrl}/consumo/periodo`,
+    { params }
+  );
+}
+
+getResumenConsumoGlobal(desdeIso: string, hastaIso: string) {
+  const params = new HttpParams()
+    .set('fechaInicio', desdeIso)
+    .set('fechaFin', hastaIso);
+
+  return this.http.get<{ total: number; media: number; pico: number; costo: number }>(
+    `${this.baseUrl}/consumo/resumen`,
+    { params }
+  );
+}
 
   getEventosFiltro(desdeIso?: string, hastaIso?: string, tagIds?: number[]): Observable<AquaEvent[]> {
     let params = new HttpParams()
@@ -303,14 +287,17 @@ getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: 
   }
 
 
-  descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
-    const paramsArr = [];
-    paramsArr.push(`fechaInicio=${encodeURIComponent(fechaDesde)}`);
-    paramsArr.push(`fechaFin=${encodeURIComponent(fechaHasta)}`);
-    if (tagIds && tagIds.length) tagIds.forEach(id => paramsArr.push(`tagIds=${encodeURIComponent(String(id))}`));
-    const url = `${this.baseUrl}/eventos/descargar-pdf?${paramsArr.join('&')}`;
-    window.open(url, '_blank');
+descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
+  const params = [];
+  params.push(`fechaInicio=${encodeURIComponent(fechaDesde)}`);
+  params.push(`fechaFin=${encodeURIComponent(fechaHasta)}`);
+  if (tagIds && tagIds.length) {
+
+    tagIds.forEach(id => params.push(`tagIds=${encodeURIComponent(String(id))}`));
   }
+  const url = `${this.baseUrl}/eventos/descargar-pdf?${params.join('&')}`;
+  window.open(url, '_blank');
+}
 
 
 descargarReporteLocalidadPDF(fechaDesde: string, fechaHasta: string): void {

@@ -22,6 +22,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class EventosAdminComponent implements OnInit {
 
+  private readonly ZONA_ARG = 'America/Argentina/Buenos_Aires';
+
   fechaDesde?: string;
   fechaHasta?: string;
 
