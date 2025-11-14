@@ -5,6 +5,7 @@ import { Sector } from '../models/sector';
 import { Notification } from '../models/notification';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { catchError } from 'rxjs/operators';
 
 import { Hogar } from '../models/hogar';
 
@@ -15,6 +16,7 @@ export class HomeService {
   private readonly STORAGE_KEY = 'homeId';
   private homeIdSubject: BehaviorSubject<number | null>;
   public homeId$: Observable<number | null>;
+  private initialized = false; 
 
   constructor(private userService: UserService, private http: HttpClient) {
     const storedHomeId = sessionStorage.getItem(this.STORAGE_KEY);
@@ -23,14 +25,23 @@ export class HomeService {
     this.homeIdSubject = new BehaviorSubject<number | null>(initialValue);
     this.homeId$ = this.homeIdSubject.asObservable();
 
-    this.initHomeId();
+
   }
 
 
-  initHomeId(): void {
-    this.userService.getAuthenticatedHomeId().subscribe({
-      next: (id) => {
+  public initHomeId(): void {
+    if (this.initialized) {
+      return;
+    }
+    this.initialized = true;
 
+    this.userService.getAuthenticatedHomeId().pipe(
+      catchError(err => {
+        console.warn('HomeService: no se pudo obtener homeId (se ignora):', err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (id) => {
         const parsed = id !== null && id !== undefined ? Number(id) : null;
         if (!isNaN(parsed as number) || parsed === null) {
           this.setHomeId(parsed);
@@ -39,8 +50,7 @@ export class HomeService {
         }
       },
       error: (err) => {
-        console.error('Error obteniendo homeId', err);
-
+        console.error('homeService.initHomeId: error no esperado', err);
       }
     });
   }
@@ -59,12 +69,15 @@ export class HomeService {
     }
   }
 
-
   public clearHomeId(): void {
     sessionStorage.removeItem(this.STORAGE_KEY);
     this.homeIdSubject.next(null);
+    this.initialized = false;
   }
 
+  /**
+   * Espera hasta que exista un homeId válido (no-null, distinto de 0) y emite una vez.
+   */
   public waitForHomeId(): Observable<number> {
     return this.homeId$.pipe(
       filter((id): id is number => id !== null && id !== 0),
@@ -78,7 +91,7 @@ export class HomeService {
   }
 
   private apiUrl = environment.apiUrl + '/hogares';
-   
+
   getPuntosHogar(hogarId: number): Observable<Hogar> {
     return this.http.get<Hogar>(`${this.apiUrl}/${hogarId}/puntos`);
   }
