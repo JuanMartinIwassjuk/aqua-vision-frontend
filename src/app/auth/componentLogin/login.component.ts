@@ -28,7 +28,7 @@ export class LoginComponent {
   onLogin(): void {
     this.authService.login(this.username, this.password).pipe(
       tap(response => {
-        // guardar token synchronously
+
         this.authService.setToken(response.token);
       }),
 
