@@ -146,24 +146,31 @@ export class ReporteAdminService {
     );
   }
 
-  // Eventos (filtrados)
   getEventosFiltro(desdeIso?: string, hastaIso?: string, tagIds?: number[]): Observable<AquaEvent[]> {
-    let list = [...this.eventos];
-    if (desdeIso) {
-      const desde = new Date(desdeIso);
-      list = list.filter(e => new Date(e.fechaInicio || '') >= desde);
-    }
-    if (hastaIso) {
-      const hasta = new Date(hastaIso);
-      hasta.setHours(23,59,59,999);
-      list = list.filter(e => new Date(e.fechaInicio || '') <= hasta);
-    }
+    let params = new HttpParams()
+      .set('fechaInicio', desdeIso || '')
+      .set('fechaFin', hastaIso || '');
     if (tagIds && tagIds.length) {
-      list = list.filter(e => e.tags.some(t => tagIds.includes(t.id)));
+      tagIds.forEach(id => params = params.append('tagIds', String(id)));
     }
-    // ordenar asc por fecha
-    list.sort((a,b) => (new Date(a.fechaInicio||'')).getTime() - (new Date(b.fechaInicio||'')).getTime());
-    return of(list);
+    const url = `${this.baseUrl}/eventos`;
+    return this.http.get<AquaEvent[]>(url, { params });
+  }
+
+    getResumenEventos(desdeIso: string, hastaIso: string): Observable<{ totalEventos: number; totalLitros: number; totalCosto: number; tagsActivos: number }> {
+    const params = new HttpParams().set('fechaInicio', desdeIso).set('fechaFin', hastaIso);
+    return this.http.get<any>(`${this.baseUrl}/eventos/resumen`, { params });
+  }
+
+    getRankingTags(desdeIso: string, hastaIso: string, tagIds?: number[]): Observable<any[]> {
+    let params = new HttpParams().set('fechaInicio', desdeIso).set('fechaFin', hastaIso);
+    if (tagIds && tagIds.length) tagIds.forEach(id => params = params.append('tagIds', String(id)));
+    return this.http.get<any[]>(`${this.baseUrl}/eventos/ranking`, { params });
+  }
+
+    getEventosPorDia(desdeIso: string, hastaIso: string): Observable<{ fecha: string, count: number }[]> {
+    const params = new HttpParams().set('fechaInicio', desdeIso).set('fechaFin', hastaIso);
+    return this.http.get<any[]>(`${this.baseUrl}/eventos/por-dia`, { params });
   }
 
   // Lista de tags
@@ -296,17 +303,14 @@ getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: 
   }
 
 
-descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
-  const params = [];
-  params.push(`fechaInicio=${encodeURIComponent(fechaDesde)}`);
-  params.push(`fechaFin=${encodeURIComponent(fechaHasta)}`);
-  if (tagIds && tagIds.length) {
-
-    tagIds.forEach(id => params.push(`tagIds=${encodeURIComponent(String(id))}`));
+  descargarReporteEventosPDF(fechaDesde: string, fechaHasta: string, tagIds?: number[]): void {
+    const paramsArr = [];
+    paramsArr.push(`fechaInicio=${encodeURIComponent(fechaDesde)}`);
+    paramsArr.push(`fechaFin=${encodeURIComponent(fechaHasta)}`);
+    if (tagIds && tagIds.length) tagIds.forEach(id => paramsArr.push(`tagIds=${encodeURIComponent(String(id))}`));
+    const url = `${this.baseUrl}/eventos/descargar-pdf?${paramsArr.join('&')}`;
+    window.open(url, '_blank');
   }
-  const url = `${this.baseUrl}/eventos/descargar-pdf?${params.join('&')}`;
-  window.open(url, '_blank');
-}
 
 
 descargarReporteLocalidadPDF(fechaDesde: string, fechaHasta: string): void {
