@@ -69,12 +69,9 @@ export class GamificacionService {
       );
   }
 
+  //CREO QUE TENDRIA QUE SER RECLAMAR PUNTOS Y SEA UN PUT DE PUNTOS
   completarDesafio(hogarId: number, desafioId: number): Observable<any> {
     return this.http.put(`${this.baseUrl}/${hogarId}/desafios/${desafioId}/completar`, {});
-  }
-
-  aumentarProgreso(hogarId: number, desafioId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${hogarId}/desafios/${desafioId}/progreso-manual`, {});
   }
 
 }

@@ -320,7 +320,6 @@
   </div-->
 
   
-  
   <div class="seccion-minijuegos">
     <h2 class="heading-2">Minijuegos</h2>
     <p class="bio-micuenta">Poné a prueba tu agilidad y memoria mientras aprendés a cuidar el agua.</p>
@@ -345,7 +344,7 @@
     </div>
   </div>
 
-  <div class="div-block">
+  <div class="seccion-trivias">
     <h2 class="heading-2">Trivias</h2>
     <p class="bio-micuenta">Poné a prueba tus conocimientos sobre el consumo de agua.</p>
     <div class="spacer-40"></div>
@@ -387,7 +386,7 @@
     </div>
   </div>
 
-  <div class="div-block">
+  <div class="seccion-desafios">
     <h2 class="heading-2">Desafíos</h2>
     <p class="bio-micuenta">Cumplí misiones diarias o semanales para sumar puntos.</p>
     <div class="spacer-40"></div>
@@ -397,7 +396,7 @@
       <ul role="list" class="desafios-list">
         
         <li class="titulo-desafios">
-          <div class="div-block-12">
+          <div class="primera-parte-header-desafios">
             <div class="con-numero-desafio">
               <h3 class="heading-5">#</h3>
             </div>
@@ -405,7 +404,7 @@
               <h3 class="heading-6">Descripción</h3>
             </div>
           </div>
-          <div class="div-block-13">
+          <div class="estado-desafio-titulo">
             <h3 class="heading-7">Estado</h3>
           </div>
         </li>
@@ -419,40 +418,61 @@
             </div>
             <div class="descripcion-desafio">
               <p class="text-descripcion-desafio">{{ desafio.descripcion }}</p>
+              <p>|</p>
+              <p class="recompensa-puntos">Ganas: {{ desafio.puntosRecompensa }} puntos</p>
             </div>
           </div>
 
           <div class="container-estado-desafio">
             <div class="estado-desafio">
-              <h3 class="progreso-texto">{{ desafio.progresoActual }} / {{ desafio.progresoTotal }}</h3>
-                  
-              <ng-container [ngSwitch]="desafio.tipoValidacion">
-                <button 
-                  *ngSwitchCase="'manual'" 
-                  (click)="aumentarProgreso(desafio)"
-                  [disabled]="isLoadingDesafio[desafio.idDesafioGlobal]"
-                  class="btn-manual"
-                >
-                  {{ desafio.progresoActual < desafio.progresoTotal ? 'Aumentar Progreso' : 'Canjear Puntos' }}
-                </button>
-                <span *ngSwitchCase="'sistema'" class="estado-sistema">
-                  Progreso Automático
-                </span>
-              </ng-container>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width.%]="desafio.progresoActual">{{ desafio.progresoActual }}%</div>
+                </div>
+              </div>
             </div>
           </div>
         </li>
 
+        <li class="item-desafio completado-listo-para-reclamar" 
+          *ngFor="let desafio of desafiosListosParaReclamar; let i = index">
+            
+          <div class="container-desafio-numYdesc">
+            <div class="con-numero-desafio">
+              <h3 class="text-numero-desafio">✅</h3>
+            </div>
+            <div class="descripcion-desafio">
+              <p class="text-descripcion-desafio">
+                **¡COMPLETADO!** {{ desafio.descripcion }}
+              </p>
+              <p class="recompensa-puntos">Puntos por reclamar: {{ desafio.puntosRecompensa }}</p>
+            </div>
+          </div>
+
+          <div class="container-estado-desafio">
+            <button
+              (click)="reclamarPuntos(desafio)"
+              [disabled]="isLoadingDesafio[desafio.idDesafioGlobal]"
+              class="btn-reclamar-puntos"
+            >
+              {{ isLoadingDesafio[desafio.idDesafioGlobal] ? 'Reclamando...' : 'Reclamar Puntos' }}
+            </button>
+          </div>
+        </li>
+
       </ul>
-      <p class="no-desafios-mensaje" *ngIf="desafios.length > 0 && desafiosPendientes.length === 0">
-        ¡Excelente! No tienes desafíos activos. 🎉
+      <p class="no-desafios-mensaje" *ngIf="desafios.length === 0">
+         Cargando desafíos...
+      </p>
+      <p class="no-desafios-mensaje" *ngIf="desafiosPendientes.length === 0 && desafiosListosParaReclamar.length === 0 && desafios.length > 0">
+         ¡Excelente! No tienes desafíos pendientes ni listos para reclamar. 🎉
       </p>
 
 
     </div>
   </div>
 
-  <div class="div-block">
+  <div class="seccion-ranking">
     <h2 class="heading-2">Ranking de hogares</h2>
     <p class="bio-micuenta">Competí con otros hogares para ver quién cuida más el agua.</p>
     <div class="spacer-40"></div>

@@ -1,22 +1,19 @@
-export interface DesafioDetalle {
-    id: number;
-    titulo: string;
-    descripcion: string;
-    puntos_recompensa: number;
-    
-    progreso_total: number; //SUMAR AL BACK
-    tipo_validacion: 'manual' | 'sistema';  //SUMAR AL BACK
+export class DesafioDetalle {
+    id!: number;
+    titulo!: string;
+    descripcion!: string;
+    puntos_recompensa!: number;    
 }
 
-export interface DesafioHogarApi {
-    id: number;
-    desafio: DesafioDetalle;
-    progreso: number; // Progreso actual (ej. 2 de 5)
+export class DesafioHogarApi {
+    id!: number;
+    desafio!: DesafioDetalle;
+    progreso!: number; // Progreso actual (es un % de 0 a 100)
 }
 
-export interface HogarDesafiosResponse {
-    hogarId: number;
-    desafiosHogar: DesafioHogarApi[];
+export class HogarDesafiosResponse {
+    hogarId!: number;
+    desafiosHogar!: DesafioHogarApi[];
 }
 
 export class Desafio {
@@ -27,11 +24,10 @@ export class Desafio {
     descripcion!: string;
     
     progresoActual!: number;
-    progresoTotal!: number; 
     
     puntosRecompensa!: number;
-    tipoValidacion?: 'manual' | 'sistema'; 
     completado: boolean = false; 
+    reclamado: boolean = false;
 
     constructor(data: DesafioHogarApi) {
         this.idDesafioHogar = data.id;
@@ -42,13 +38,14 @@ export class Desafio {
         this.puntosRecompensa = data.desafio.puntos_recompensa;
         
         this.progresoActual = data.progreso;
-        //this.progresoTotal = data.desafio.progreso_total; 
-        this.progresoTotal = data.desafio.progreso_total || 100;
-        //this.tipoValidacion = data.desafio.tipo_validacion;
-        this.tipoValidacion = data.desafio.tipo_validacion || 'manual';
+        //this.progresoActual = 100;
         
         // Lógica de completado
-        this.completado = this.progresoActual >= this.progresoTotal; 
+        this.completado = this.progresoActual >= 100; 
         //this.completado = true;
+
+        //TODO: habria que agregar del back la propiedad de completado y reclamado
+        //y poder validar con el back tambien en el get si ya está reclamado
+        //this.reclamado = data.estadoReclamado;
     }
 }
