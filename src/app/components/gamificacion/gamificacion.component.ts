@@ -130,6 +130,7 @@ export class GamificacionComponent implements OnInit{
         this.cargarPuntos(hogarId);
         this.cargarRecompensasGlobales();
         this.cargarDesafiosPorHogar(hogarId);
+        this.cargarMedallas(hogarId);
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
@@ -371,27 +372,32 @@ export class GamificacionComponent implements OnInit{
   //MUCHAS DE ESTAS MEDALLAS EN REALIDAD SON MAS LOGROS QUE MEDALLA PERO ES 
   //POR TENER ALGO Y ME LO TIRO GPT COMO PARA QUE NO QUEDAN DOS MEDALLAS SOLAS
   medallas: Medalla[] = [
-    { nombre: 'Ahorro Semanal', descripcion: 'Reduciste tu consumo durante una semana completa.' },
-    { nombre: 'Consumo Eficiente', descripcion: 'Mantuviste un consumo óptimo durante un mes.' },
-    { nombre: 'Guardian del Agua', descripcion: 'Completaste todos los desafíos mensuales.' },
-    { nombre: 'Participante Activo', descripcion: 'Participaste en todas las trivias del mes.' },
-    { nombre: 'Sensor Maestro', descripcion: 'Instalaste más de 3 sensores en tu hogar.' }
+    { id: 1, nombre: 'Hogar sustentable', descripcion: 'Redujiste el consumo usando AquaVision.' },
+    { id: 2, nombre: 'Consumo Eficiente', descripcion: 'Mantuviste un consumo óptimo durante un mes.' },
+    { id: 3, nombre: 'Guardian del Agua', descripcion: 'Completaste todos los desafíos mensuales.' },
+    { id: 4, nombre: 'Participante Activo', descripcion: 'Participaste en todas las trivias del mes.' },
+    { id: 5, nombre: 'Sensor Maestro', descripcion: 'Instalaste más de 3 sensores en tu hogar.' }
   ];
 
   medallasDesbloqueadas: Medalla[] = [];
+  medallasDesbloqueadasSet = new Set<number>();
 
   cargarMedallas(hogarId: number): void {
     this.gamificacionService.getMedallas(hogarId).subscribe({
       next: (data) => {
         this.medallasDesbloqueadas = data;
-        console.log('Medallas desbloqueadas:', data);
+        this.medallasDesbloqueadasSet.clear();
+        
+        data.forEach(m => this.medallasDesbloqueadasSet.add(m.id));
+        
+        console.log('Medallas desbloqueadas (IDs):', this.medallasDesbloqueadasSet);
       },
       error: (err) => console.error('Error al cargar medallas', err)
     });
   }
 
-  esMedallaDesbloqueada(nombre: string): boolean {
-    return this.medallasDesbloqueadas.some(m => m.nombre === nombre);
+  esMedallaDesbloqueada(medallaId: number): boolean {
+    return this.medallasDesbloqueadasSet.has(medallaId);
   }
 
   desafios: Desafio[] = []; 

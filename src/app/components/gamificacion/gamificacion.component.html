@@ -39,13 +39,13 @@
           <div
             class="medalla"
             *ngFor="let medalla of medallas"
-            [class.bloqueada]="!esMedallaDesbloqueada(medalla.nombre)"
+            [class.bloqueada]="!esMedallaDesbloqueada(medalla.id)"
             (mouseenter)="showTooltipMedalla($event, medalla)"
             (mousemove)="moveTooltipMedalla($event)"
             (mouseleave)="hideTooltipMedalla()"
           >
             <img class="prueba"
-              [src]="esMedallaDesbloqueada(medalla.nombre)
+              [src]="esMedallaDesbloqueada(medalla.id)
                 ? 'images/medalla_oro.png'
                 : 'images/medalla_oro_bloqueada.png'"
               alt="{{ medalla.nombre }}"
