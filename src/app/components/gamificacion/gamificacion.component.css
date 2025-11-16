@@ -392,8 +392,8 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  width: 170px;
-  height: 30px;
+  width: 10vw;
+  height: 4vh;
   z-index: 2;
 }
 
@@ -1279,6 +1279,10 @@ h2 {
     padding-left: 1rem !important;
     margin-left: .75rem !important;
   }
+  .image-17-no-completado{
+    width: 10vw;
+    height: 3vh;
+  }
 }
 /* Tablet small */
 @media (max-width: 768px) {
@@ -1294,6 +1298,10 @@ h2 {
   }
   .image-15, .image-16{
     margin-left: -7rem;
+  }
+  .image-17-no-completado{
+    width: 17vw;
+    height: 4vh;
   }
 }
 /* Mobile */
@@ -1325,5 +1333,12 @@ h2 {
   }
   .modal-popup-medallas{
     padding: 1.55rem !important;
+  }
+  .container-minijuegos{
+    grid-template-columns: 1fr;
+  }
+  .image-17-no-completado{
+    width: 20vw;
+    height: 5vh;
   }
 }

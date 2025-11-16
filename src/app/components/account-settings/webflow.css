@@ -55,7 +55,7 @@ body {
   color: #333;
 }
 img {
-  max-width: 100%;
+  /*max-width: 100%; ESTO ROMPE EL LOGO PARA RESPONSIVE*/
   vertical-align: middle;
   display: inline-block;
 }
