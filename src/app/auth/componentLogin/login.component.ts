@@ -4,39 +4,54 @@ import { Router } from '@angular/router';
 import { AuthService } from '../serviceAuth/auth.service'; // Asegúrate de que la ruta sea la correcta
 import { NgIf } from '@angular/common';
 import { HomeService } from '../../services/home.service';
+import { catchError, of, switchMap, tap } from 'rxjs';
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule,NgIf],
+  imports: [FormsModule, NgIf],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  errorMessage: string = ''; 
-constructor(
-  private authService: AuthService,
-  private homeService: HomeService, 
-  private router: Router
-) {}
+  errorMessage: string = '';
 
-onLogin(): void {
-  this.authService.login(this.username, this.password).subscribe(
-    (response) => {
-      this.authService.setToken(response.token);
-      console.log(response.message);
-   
-      this.homeService.initHomeId();
+  constructor(
+    private authService: AuthService,
+    private homeService: HomeService,
+    private router: Router
+  ) {}
 
-      this.router.navigate(['/dashboard']);
-    }, 
-    (error) => {
-      console.error('Error during login:', error);
-      this.errorMessage = 'Usuario o contraseña incorrecta';
-    }
-  );
-}
+  onLogin(): void {
+    this.authService.login(this.username, this.password).pipe(
+      tap(response => {
 
+        this.authService.setToken(response.token);
+      }),
+
+      switchMap(() => {
+        this.homeService.initHomeId(); 
+
+        return this.homeService.waitForHomeId().pipe(
+          catchError(err => {
+
+            console.warn('No se obtuvo homeId en login, se navega igual', err);
+            return of(null as any);
+          })
+        );
+      })
+    ).subscribe({
+      next: (_) => {
+
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Error during login:', error);
+        this.errorMessage = 'Usuario o contraseña incorrecta';
+      }
+    });
+  }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 @Injectable({
@@ -36,9 +36,17 @@ export class UserService {
     );
   }
 
-  getAuthenticatedHomeId(): Observable<number> {
-    return this.http.get<number>(`${this.urlBackend}/authenticatedId`);
-  }
+getAuthenticatedHomeId(): Observable<number | null> {
+  return this.http.get<number>(`${this.urlBackend}/authenticatedId`).pipe(
+    catchError(err => {
+      if (err && (err.status === 401 || err.status === 403)) {
+        return of(null);
+      }
+      // opcional: rethrow si querés que otros errores no se silencien
+      return throwError(() => err);
+    })
+  );
+}
 
   getAuthenticatedUser(): Observable<User> {
     return this.http.get<User>(`${this.urlBackend}/me`);

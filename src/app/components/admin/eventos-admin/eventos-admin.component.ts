@@ -10,6 +10,8 @@ import { ReporteAdminService } from '../../../services/reporteAdmin.service';
 import { map } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-eventos-admin',
@@ -59,42 +61,99 @@ export class EventosAdminComponent implements OnInit {
     });
   }
 
-  aplicarFiltro(): void {
-    const tagIds = Object.keys(this.selectedTags)
-      .filter(k => this.selectedTags[+k])
-      .map(k => +k);
+aplicarFiltro(): void {
+  const tagIds = Object.keys(this.selectedTags)
+    .filter(k => this.selectedTags[+k])
+    .map(k => +k);
 
-    this.reporteService.getEventosFiltro(this.fechaDesde, this.fechaHasta, tagIds)
-      .subscribe(evts => {
-        // mapear fechas string -> Date para que coincida con el modelo (si es necesario)
-        const mapped: AquaEvent[] = (evts || []).map((e: any) => {
-          const fechaInicio = e.fechaInicio ? new Date(e.fechaInicio) : undefined;
-          const fechaFin = e.fechaFin ? new Date(e.fechaFin) : undefined;
-          const base = { ...(e as any) } as any;
-          base.fechaInicio = fechaInicio;
-          base.fechaFin = fechaFin;
-          return base as AquaEvent;
-        });
+  // Observables
+  const obsEventos = this.reporteService.getEventosFiltro(this.fechaDesde, this.fechaHasta, tagIds)
+    .pipe(catchError(err => { console.error('err eventos', err); return of([] as AquaEvent[]); }));
 
-        this.eventosList = mapped;
+  const obsResumen = this.reporteService.getResumenEventos(this.fechaDesde!, this.fechaHasta!)
+    .pipe(catchError(err => { console.error('err resumen', err); return of(null); }));
 
-        // ordenar por litros consumidos (desc) para ranking
-        this.eventosListSorted = [...this.eventosList].sort((a, b) => {
-          const la = Number(a.litrosConsumidos ?? 0);
-          const lb = Number(b.litrosConsumidos ?? 0);
-          return lb - la;
-        }).slice(0, 25);
+  const obsRanking = this.reporteService.getRankingTags(this.fechaDesde!, this.fechaHasta!, tagIds)
+    .pipe(catchError(err => { console.error('err ranking', err); return of([]); }));
 
-        this.calcularResumenes();
-        this.generarCharts();
-      }, err => {
-        console.error('Error cargando eventos (admin):', err);
-        this.eventosList = [];
-        this.eventosListSorted = [];
-        this.calcularResumenes();
-        this.generarCharts();
+  const obsPorDia = this.reporteService.getEventosPorDia(this.fechaDesde!, this.fechaHasta!)
+    .pipe(catchError(err => { console.error('err porDia', err); return of([]); }));
+
+  forkJoin({
+    eventos: obsEventos,
+    resumen: obsResumen,
+    ranking: obsRanking,
+    porDia: obsPorDia
+  }).subscribe(({ eventos, resumen, ranking, porDia }) => {
+
+    // --- Eventos: mapear fechas a Date para uso interno (si lo necesitás)
+    const mapped: AquaEvent[] = (eventos || []).map((e: any) => {
+      const fechaInicio = e.fechaInicio ? new Date(e.fechaInicio) : undefined;
+      const fechaFin = e.fechaFin ? new Date(e.fechaFin) : undefined;
+      const base = { ...(e as any) } as any;
+      base.fechaInicio = fechaInicio;
+      base.fechaFin = fechaFin;
+      return base as AquaEvent;
+    });
+    this.eventosList = mapped;
+
+    // ordenar para listado
+    this.eventosListSorted = [...this.eventosList].sort((a, b) => {
+      const la = Number(a.litrosConsumidos ?? 0);
+      const lb = Number(b.litrosConsumidos ?? 0);
+      return lb - la;
+    }).slice(0, 25);
+
+    // --- Resumen: preferible usar el que trae el backend si existe
+    if (resumen) {
+      this.totalEventos = resumen.totalEventos ?? this.eventosList.length;
+      this.totalLitros = Math.round((resumen.totalLitros ?? this.eventosList.reduce((s,e)=>s+(e.litrosConsumidos||0),0)) * 100) / 100;
+      this.totalCosto = Math.round((resumen.totalCosto ?? this.eventosList.reduce((s,e)=>s+(e.costo||0),0)) * 100) / 100;
+      // tags activos lo mostramos por get activeTagsCount o si backend devuelve tagsActivos, podés usarlo
+    } else {
+      this.calcularResumenes();
+    }
+
+    // --- Ranking: backend devuelve lista ordenada por count desc con avgLitros
+    if (ranking && Array.isArray(ranking)) {
+      // adaptá campos según lo que devuelve el backend
+      this.rankingTop = ranking.map((r: any) => ({
+        nombre: r.nombre,
+        count: Number(r.count ?? r.cantidad ?? 0),
+        avgLitros: Number(r.avgLitros ?? r.promedioLitros ?? 0)
+      })).sort((a,b)=>b.count - a.count).slice(0, 5);
+    }
+
+    // --- Chart: eventos por tag (reutiliza la lógica previa para doughnut)
+    this.generarCharts(); // continuará calculando tagPieData a partir de this.eventosList y this.tags
+
+    // --- Eventos por día: usar el resultado del backend si viene
+    if (porDia && Array.isArray(porDia)) {
+      // porDia: [{ fecha: '2025-11-01', count: 3 }, ...]
+      const days = porDia.map(d => d.fecha).sort();
+      const dayValues = porDia.map(d => d.count);
+      const labelsDay = days.map(d => {
+        const dt = new Date(d);
+        return dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
       });
-  }
+      this.eventsByDayData = {
+        labels: labelsDay,
+        datasets: [{ data: dayValues, label: 'Eventos por día' }]
+      };
+    } else {
+      // si no vino porDia (fallback): generamos localmente
+      this.generarCharts(); // ya tiene lógica para calcular byDay desde eventosList
+    }
+
+  }, err => {
+    console.error('Error combinando datos reporte eventos:', err);
+    // fallback: vaciar o mantener lo anterior
+    this.eventosList = [];
+    this.eventosListSorted = [];
+    this.calcularResumenes();
+    this.generarCharts();
+  });
+}
 
   calcularResumenes(): void {
     this.totalEventos = this.eventosList.length;
