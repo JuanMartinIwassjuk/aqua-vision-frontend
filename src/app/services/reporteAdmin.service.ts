@@ -141,6 +141,7 @@ getResumenConsumoGlobal(desdeIso: string, hastaIso: string) {
     if (tagIds && tagIds.length) {
       tagIds.forEach(id => params = params.append('tagIds', String(id)));
     }
+    console.log('GET /eventos params:', params.toString());
     const url = `${this.baseUrl}/eventos`;
     return this.http.get<AquaEvent[]>(url, { params });
   }
