@@ -83,8 +83,9 @@ export class GamificacionAdminComponent implements OnInit {
     const haceMes = new Date(hoy);
     haceMes.setMonth(hoy.getMonth() - 1);
 
-    this.fechaDesde = haceMes.toISOString().split('T')[0];
-    this.fechaHasta = hoy.toISOString().split('T')[0];
+    this.fechaDesde = this.formatFechaLocal(haceMes);
+    this.fechaHasta = this.formatFechaLocal(hoy);
+
 
     this.aplicarFiltro();
   }
@@ -143,7 +144,9 @@ export class GamificacionAdminComponent implements OnInit {
   buildPointsByDayChart(data: PuntosDia[]): void {
     const byDay: Record<string, number> = {};
     (data || []).forEach(d => {
-      const dayKey = (d.fecha || '').substring(0,10);
+      const parsed = this.parseFechaLocalISO((d.fecha || '').substring(0,10));
+      const dayKey = parsed && !isNaN(parsed.getTime()) ? this.formatFechaLocal(parsed) : (d.fecha || '').substring(0,10);
+
       if (!byDay[dayKey]) byDay[dayKey] = 0;
       byDay[dayKey] += Number(d.puntos || 0);
     });
@@ -155,8 +158,13 @@ export class GamificacionAdminComponent implements OnInit {
     const bg = days.map(() => 'rgba(37,99,235,0.85)'); // barra principal
     const border = days.map(() => 'rgba(8,29,74,0.95)');
 
-    this.pointsByDayData = {
-      labels: days.map(d => new Date(d).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })),
+this.pointsByDayData = {
+  labels: days.map(d => {
+    const dt = this.parseFechaLocalISO(d);
+    return (dt && !isNaN(dt.getTime()))
+      ? dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })
+      : String(d);
+  }),
       datasets: [{
         label: 'Puntos por día',
         data: values,
@@ -172,9 +180,10 @@ export class GamificacionAdminComponent implements OnInit {
   buildPointsByMonthChart(data: PuntosDia[]): void {
     const byMonth: Record<string, number> = {};
     (data || []).forEach(d => {
-      const dt = new Date(d.fecha);
-      if (isNaN(dt.getTime())) return;
-      const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;
+    const dt = this.parseFechaLocalISO(d.fecha);
+    if (!dt || isNaN(dt.getTime())) return;
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;
+
       byMonth[key] = (byMonth[key] || 0) + Number(d.puntos || 0);
     });
 
@@ -211,8 +220,9 @@ export class GamificacionAdminComponent implements OnInit {
       case '3m': desde.setMonth(hoy.getMonth() - 3); break;
       case '6m': desde.setMonth(hoy.getMonth() - 6); break;
     }
-    this.fechaDesde = desde.toISOString().split('T')[0];
-    this.fechaHasta = new Date().toISOString().split('T')[0];
+    this.fechaDesde = this.formatFechaLocal(desde);
+    this.fechaHasta = this.formatFechaLocal(new Date());
+
     this.aplicarFiltro();
   }
 
@@ -319,7 +329,7 @@ exportarExcel(): void {
     }
 
     this.selectedHogarName = hogarNombre ?? 'Hogar';
-    // llama al service (necesitas agregar getMedallasPorHogar en ReporteAdminService)
+
     (this.reporteAdminService.getMedallasPorHogar ? this.reporteAdminService.getMedallasPorHogar(hogarId) : of([]))
       .pipe(catchError(() => of([])))
       .subscribe((meds: string[]) => {
@@ -337,5 +347,31 @@ exportarExcel(): void {
     this.selectedHogarMedals = [];
     this.selectedHogarName = '';
   }
+
+  private formatFechaLocal(d: Date): string {
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+private parseFechaLocalISO(fechaIso?: string | null): Date | null {
+  if (!fechaIso) return null;
+  const s = String(fechaIso).trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const parts = s.split('-');
+    const y = Number(parts[0]);
+    const m = Number(parts[1]) - 1;
+    const d = Number(parts[2]);
+    if ([y, m, d].some(Number.isNaN)) return null;
+    return new Date(y, m, d);
+  }
+
+  const parsed = new Date(s);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
   
 }

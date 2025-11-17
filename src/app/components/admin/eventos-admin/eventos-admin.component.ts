@@ -22,6 +22,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class EventosAdminComponent implements OnInit {
 
+  private readonly ZONA_ARG = 'America/Argentina/Buenos_Aires';
+
   fechaDesde?: string;
   fechaHasta?: string;
 
@@ -50,8 +52,9 @@ export class EventosAdminComponent implements OnInit {
     const hoy = new Date();
     const haceMes = new Date();
     haceMes.setMonth(hoy.getMonth() - 1);
-    this.fechaDesde = haceMes.toISOString().split('T')[0];
-    this.fechaHasta = hoy.toISOString().split('T')[0];
+    this.fechaDesde = this.formatFechaLocal(haceMes);
+    this.fechaHasta = this.formatFechaLocal(hoy);
+
 
     this.reporteService.getTags().subscribe(t => {
       // casteo seguro; si tu service ya devuelve el mismo tipo, esto es directo
@@ -88,8 +91,9 @@ aplicarFiltro(): void {
 
     // --- Eventos: mapear fechas a Date para uso interno (si lo necesitás)
     const mapped: AquaEvent[] = (eventos || []).map((e: any) => {
-      const fechaInicio = e.fechaInicio ? new Date(e.fechaInicio) : undefined;
-      const fechaFin = e.fechaFin ? new Date(e.fechaFin) : undefined;
+    const fechaInicio = e.fechaInicio ? this.parseFechaLocalISO(String(e.fechaInicio)) ?? new Date(String(e.fechaInicio)) : undefined;
+    const fechaFin = e.fechaFin ? this.parseFechaLocalISO(String(e.fechaFin)) ?? new Date(String(e.fechaFin)) : undefined;
+
       const base = { ...(e as any) } as any;
       base.fechaInicio = fechaInicio;
       base.fechaFin = fechaFin;
@@ -133,9 +137,10 @@ aplicarFiltro(): void {
       const days = porDia.map(d => d.fecha).sort();
       const dayValues = porDia.map(d => d.count);
       const labelsDay = days.map(d => {
-        const dt = new Date(d);
-        return dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+        const dt = this.parseFechaLocalISO(d) ?? new Date(d);
+        return isNaN(dt.getTime()) ? String(d) : dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
       });
+
       this.eventsByDayData = {
         labels: labelsDay,
         datasets: [{ data: dayValues, label: 'Eventos por día' }]
@@ -212,20 +217,27 @@ aplicarFiltro(): void {
   ranking.sort((a, b) => b.count - a.count);
   this.rankingTop = ranking.slice(0, 5);
 
-  // Bar: eventos por día (igual que antes)
-  const byDay: Record<string, number> = {};
-  (this.eventosList || []).forEach(e => {
-    const dayDate = (e.fechaInicio instanceof Date) ? e.fechaInicio : new Date(e.fechaInicio || '');
-    const day = isNaN(dayDate.getTime()) ? 'unknown' : dayDate.toISOString().split('T')[0];
+      // Bar: eventos por día (igual que antes)
+      const byDay: Record<string, number> = {};
+      (this.eventosList || []).forEach(e => {
+    let dayDate: Date | null = null;
+    if (e.fechaInicio instanceof Date) {
+      dayDate = e.fechaInicio;
+    } else {
+      dayDate = this.parseFechaLocalISO(String(e.fechaInicio)) ?? (e.fechaInicio ? new Date(String(e.fechaInicio)) : null);
+    }
+    const day = (dayDate && !isNaN(dayDate.getTime())) ? this.formatFechaLocal(dayDate) : 'unknown';
+
     byDay[day] = (byDay[day] || 0) + 1;
   });
 
   const days = Object.keys(byDay).filter(d => d !== 'unknown').sort();
   const dayValues = days.map(d => byDay[d]);
   const labelsDay = days.map(d => {
-    const dt = new Date(d);
-    return dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    const dt = this.parseFechaLocalISO(d) ?? new Date(d);
+    return isNaN(dt.getTime()) ? String(d) : dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
   });
+
 
   this.eventsByDayData = {
     labels: labelsDay,
@@ -248,8 +260,11 @@ aplicarFiltro(): void {
     if (value instanceof Date) {
       d = value;
     } else {
-      d = new Date(value);
+      // si es YYYY-MM-DD preferimos parse local
+      const asStr = String(value);
+      d = this.parseFechaLocalISO(asStr) ?? new Date(asStr);
     }
+
     if (isNaN(d.getTime())) return String(value);
     return d.toLocaleString('es-AR');
   }
@@ -363,8 +378,29 @@ setAtajo(rango: '7d' | '1m' | '3m' | '6m'): void {
 }
 
 formatFechaLocal(d: Date): string {
-  return d.toISOString().split('T')[0];
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
+
+private parseFechaLocalISO(fechaIso?: string | null): Date | null {
+  if (!fechaIso) return null;
+
+  const onlyDateMatch = /^\d{4}-\d{2}-\d{2}$/.test(fechaIso);
+  if (onlyDateMatch) {
+    const parts = fechaIso.split('-');
+    const y = Number(parts[0]);
+    const m = Number(parts[1]) - 1;
+    const d = Number(parts[2]);
+    if ([y, m, d].some(Number.isNaN)) return null;
+    return new Date(y, m, d);
+  }
+
+  const parsed = new Date(fechaIso);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
 
 // Método: toggle modal ranking
 toggleRanking(): void {
