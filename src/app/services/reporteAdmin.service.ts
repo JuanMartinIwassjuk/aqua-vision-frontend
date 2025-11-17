@@ -113,6 +113,8 @@ getConsumoGlobalPorPeriodo(desdeIso: string, hastaIso: string) {
     .set('fechaInicio', desdeIso)
     .set('fechaFin', hastaIso);
 
+  console.log('getConsumoGlobalPorPeriodo params:', params.toString());
+
   return this.http.get<{ fecha: string; totalLitros: number; costo: number }[]>(
     `${this.baseUrl}/consumo/periodo`,
     { params }
@@ -123,6 +125,8 @@ getResumenConsumoGlobal(desdeIso: string, hastaIso: string) {
   const params = new HttpParams()
     .set('fechaInicio', desdeIso)
     .set('fechaFin', hastaIso);
+
+  console.log('getResumenConsumoGlobal params:', params.toString());
 
   return this.http.get<{ total: number; media: number; pico: number; costo: number }>(
     `${this.baseUrl}/consumo/resumen`,

@@ -70,9 +70,26 @@ export class ConsumoAdminComponent implements OnInit {
     this.aplicarFiltro();
   }
 
-  private formatFechaLocal(d: Date): string {
-    return d.toISOString().split('T')[0];
-  }
+private formatFechaLocal(d: Date): string {
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+private parseFechaLocalISO(fechaIso: string): Date | null {
+  if (!fechaIso) return null;
+  const parts = fechaIso.split('-');
+  if (parts.length !== 3) return null;
+  const y = Number(parts[0]);
+  const m = Number(parts[1]) - 1; // monthIndex
+  const d = Number(parts[2]);
+  if (Number.isNaN(y) || Number.isNaN(m) || Number.isNaN(d)) return null;
+  return new Date(y, m, d); // construye en local, sin shift por UTC
+}
+
+
 
   setAtajo(r: '7d' | '1m' | '3m'): void {
     const hoy = new Date();
@@ -88,9 +105,10 @@ export class ConsumoAdminComponent implements OnInit {
   // Genera un chartData tipo 'bar' solo con consumo (sin costo)
   generarGrafico(data: { fecha: string, totalLitros: number, costo?: number }[]): void {
     const labels = (data || []).map(d => {
-      const dt = new Date(d.fecha);
+      const dt = this.parseFechaLocalISO(d.fecha) ?? new Date(d.fecha);
       return isNaN(dt.getTime()) ? String(d.fecha) : dt.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
     });
+
 
     const valores = (data || []).map(d => Math.round((d.totalLitros || 0) * 100) / 100);
 
