@@ -392,8 +392,8 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  width: 170px;
-  height: 30px;
+  width: 10vw;
+  height: 4vh;
   z-index: 2;
 }
 
@@ -513,6 +513,11 @@ h2 {
   background-color: #fdfdfd; 
 }
 
+.item-desafio.completado-listo-para-reclamar {
+  background-color: #f0fff0; /* Fondo verde claro para destacar */
+  border-left: 5px solid #4CAF50;
+}
+
 .desafio {
   grid-column-gap: 3rem;
   grid-row-gap: 3rem;
@@ -530,9 +535,12 @@ h2 {
 }
 
 .progreso-texto{
+  width: 40px; 
+  flex-shrink: 0;
   font-weight: 700;
   color: var(--azul-fondo); 
   font-size: 1.1rem;
+  text-align: right;
 }
 
 .numero-desafio {
@@ -655,6 +663,19 @@ h2 {
   padding-right: 5rem;
 }
 
+.recompensa-puntos {
+  color: var(--azul-fondo); 
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-top: 5px; /* Pequeña separación */
+  margin-bottom: 0;
+}
+
+.recompensa-puntos:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .recompensa-canjearpuntos-boton {
   margin-right: .5rem;
   padding-left: 5rem;
@@ -676,7 +697,7 @@ h2 {
   display: block;
 }
 
-.div-block {
+.div-block, .seccion-desafios, .seccion-trivias, .seccion-ranking {
   background-color: var(--gris-fondo);
   flex: 1;
   width: 100%;
@@ -684,6 +705,13 @@ h2 {
 }
 
 .div-block-12 {
+  grid-column-gap: 3rem;
+  grid-row-gap: 3rem;
+  justify-content: space-around;
+  display: flex;
+}
+
+.primera-parte-header-desafios{
   grid-column-gap: 3rem;
   grid-row-gap: 3rem;
   justify-content: space-around;
@@ -720,7 +748,7 @@ h2 {
   text-transform: uppercase;
 }
 
-.test-descripcion-desafio{
+.text-descripcion-desafio{
   color: var(--azul-fondo);
   font-size: 1rem; 
   text-align: left;
@@ -747,6 +775,85 @@ h2 {
 .btn-manual[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-reclamar-puntos {
+  background-color: var(--azul-fondo); 
+  color: var(--gris-blanco);
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-reclamar-puntos:hover {
+  background-color: var(--gris-blanco);
+  color: var(--azul-fondo);
+  transform: translate(-2px, -2px);
+  box-shadow: 2px 5px 2px #0003;
+}
+
+.progress-bar-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 250px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 10px;
+  min-width: 15rem;
+}
+
+.progress-bar-container:hover {
+  transform: translateY(-2px); 
+  transition: all 0.3s ease-in-out;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--azul-fondo);
+  transition: width 1s ease-in-out; 
+  color: var(--gris-blanco);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15rem;
+
+  background-image: linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 40px 40px;
+  animation: move-stripes 2s linear infinite;
+}
+
+.progress-fill[style*="width: 100%"] {
+  animation: none;
+}
+
+@keyframes move-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 0;
+  }
 }
 
 .no-desafios-mensaje {
@@ -777,6 +884,7 @@ h2 {
   flex-grow: 1; 
   display: flex;
   align-items: center;
+  gap: 5rem;
 }
 
 .div-recompensa {
@@ -790,6 +898,14 @@ h2 {
 .div-block-13 {
   padding-left: 5rem;
   padding-right: 5rem;
+}
+
+.estado-desafio-titulo{
+  padding-left: 2rem;
+  padding-right: 7rem;
+  width: 200px; 
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .container-estado-desafio {
@@ -1279,6 +1395,16 @@ h2 {
     padding-left: 1rem !important;
     margin-left: .75rem !important;
   }
+  .image-17-no-completado{
+    width: 10vw;
+    height: 3vh;
+  }
+  .descripcion-desafio{
+    gap: 3rem;
+  }
+  .item-desafio{
+    gap: 3rem;
+  }
 }
 /* Tablet small */
 @media (max-width: 768px) {
@@ -1294,6 +1420,19 @@ h2 {
   }
   .image-15, .image-16{
     margin-left: -7rem;
+  }
+  .image-17-no-completado{
+    width: 17vw;
+    height: 4vh;
+  }
+  .item-desafio{
+    gap: 1rem;
+  }
+  .descripcion-desafio{
+    gap: .5rem;
+  }
+  .desafios-list{
+    margin: 0;
   }
 }
 /* Mobile */
@@ -1325,5 +1464,27 @@ h2 {
   }
   .modal-popup-medallas{
     padding: 1.55rem !important;
+  }
+  .container-minijuegos{
+    grid-template-columns: 1fr;
+  }
+  .image-17-no-completado{
+    width: 20vw;
+    height: 5vh;
+  }
+  .container-desafio-numYdesc{
+    gap: 0;
+  }
+  .primera-parte-header-desafios{
+    gap: 0;
+  }
+  .estado-desafio{
+    padding: 0;
+  }
+  .progress-bar{
+    min-width: 9rem;
+  }
+  .estado-desafio-titulo{
+    padding-right: 3rem;
   }
 }

@@ -130,6 +130,7 @@ export class GamificacionComponent implements OnInit{
         this.cargarPuntos(hogarId);
         this.cargarRecompensasGlobales();
         this.cargarDesafiosPorHogar(hogarId);
+        this.cargarMedallas(hogarId);
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
@@ -371,33 +372,35 @@ export class GamificacionComponent implements OnInit{
   //MUCHAS DE ESTAS MEDALLAS EN REALIDAD SON MAS LOGROS QUE MEDALLA PERO ES 
   //POR TENER ALGO Y ME LO TIRO GPT COMO PARA QUE NO QUEDAN DOS MEDALLAS SOLAS
   medallas: Medalla[] = [
-    { nombre: 'Ahorro Semanal', descripcion: 'Reduciste tu consumo durante una semana completa.' },
-    { nombre: 'Consumo Eficiente', descripcion: 'Mantuviste un consumo óptimo durante un mes.' },
-    { nombre: 'Guardian del Agua', descripcion: 'Completaste todos los desafíos mensuales.' },
-    { nombre: 'Participante Activo', descripcion: 'Participaste en todas las trivias del mes.' },
-    { nombre: 'Sensor Maestro', descripcion: 'Instalaste más de 3 sensores en tu hogar.' }
+    { id: 1, nombre: 'Hogar sustentable', descripcion: 'Redujiste el consumo usando AquaVision.' },
+    { id: 2, nombre: 'Consumo Eficiente', descripcion: 'Mantuviste un consumo óptimo durante un mes.' },
+    { id: 3, nombre: 'Guardian del Agua', descripcion: 'Completaste todos los desafíos mensuales.' },
+    { id: 4, nombre: 'Participante Activo', descripcion: 'Participaste en todas las trivias del mes.' },
+    { id: 5, nombre: 'Sensor Maestro', descripcion: 'Instalaste más de 3 sensores en tu hogar.' }
   ];
 
   medallasDesbloqueadas: Medalla[] = [];
+  medallasDesbloqueadasSet = new Set<number>();
 
   cargarMedallas(hogarId: number): void {
     this.gamificacionService.getMedallas(hogarId).subscribe({
       next: (data) => {
         this.medallasDesbloqueadas = data;
-        console.log('Medallas desbloqueadas:', data);
+        this.medallasDesbloqueadasSet.clear();
+        
+        data.forEach(m => this.medallasDesbloqueadasSet.add(m.id));
+        
+        console.log('Medallas desbloqueadas (IDs):', this.medallasDesbloqueadasSet);
       },
       error: (err) => console.error('Error al cargar medallas', err)
     });
   }
 
-  esMedallaDesbloqueada(nombre: string): boolean {
-    return this.medallasDesbloqueadas.some(m => m.nombre === nombre);
+  esMedallaDesbloqueada(medallaId: number): boolean {
+    return this.medallasDesbloqueadasSet.has(medallaId);
   }
 
   desafios: Desafio[] = []; 
-  desafiosPendientes: Desafio[] = []; 
-  desafiosCompletados: Desafio[] = []; 
-
   isLoadingDesafio: { [id: number]: boolean } = {};
 
   /**
@@ -408,43 +411,21 @@ export class GamificacionComponent implements OnInit{
     this.gamificacionService.getDesafiosPorHogar(hogarId).subscribe({
       next: (data) => {
         this.desafios = data;
-
-        this.desafiosPendientes = data.filter(d => d.puntosRecompensa > 0);
-        //this.desafiosPendientes = data.filter(d => !d.completado);
-        this.desafiosCompletados = data.filter(d => d.completado);
-        
         console.log(`Cargados: ${this.desafios.length} desafíos.`);
-        console.log(`Pendientes: ${this.desafiosPendientes.length}`);
-        console.log(`Completados: ${this.desafiosCompletados.length}`);
-        console.log('Todo pendientes: ', this.desafiosPendientes);
       },
       error: (err) => console.error('Error al cargar desafíos del hogar', err)
     });
   }
 
-  aumentarProgreso(desafio: Desafio): void {
-    if (desafio.tipoValidacion !== 'manual' || !this.hogar?.id) return;
-       
-    if (desafio.progresoActual < desafio.progresoTotal) {
-      const id = desafio.idDesafioGlobal;
-      this.isLoadingDesafio[id] = true;
-            
-      this.gamificacionService.aumentarProgreso(this.hogar.id, id).subscribe({
-        next: () => {
-          this.cargarDesafiosPorHogar(this.hogar!.id);
-          alert(`Progreso de ${desafio.titulo} aumentado.`);
-        },
-        error: (err) => {
-          console.error('Error al aumentar progreso', err);
-          this.isLoadingDesafio[id] = false;
-        }
-      });
-    } else {
-        this.completarDesafio(desafio);
-      }
+  get desafiosPendientes(): Desafio[] {
+    return this.desafios.filter(d => !d.completado);
   }
 
-  completarDesafio(desafio: Desafio): void {
+  get desafiosListosParaReclamar(): Desafio[] {
+    return this.desafios.filter(d => d.completado && !d.reclamado);
+  }
+
+  reclamarPuntos(desafio: Desafio): void {
     if (!this.hogar?.id || !desafio.completado) return;
 
     const id = desafio.idDesafioGlobal; 
@@ -453,14 +434,13 @@ export class GamificacionComponent implements OnInit{
     this.gamificacionService.completarDesafio(this.hogar.id, id).subscribe({
       next: (res) => {
         this.cargarDesafiosPorHogar(this.hogar!.id);
-        alert(`¡Desafío completado: ${desafio.titulo}! Has ganado ${desafio.puntosRecompensa} puntos.`);
+        alert(`¡Puntos reclamados! Has ganado ${desafio.puntosRecompensa} puntos.`);
       },
       error: (err) => {
-        console.error('Error al completar desafío', err);
+        console.error('Error al reclamar puntos', err);
         this.isLoadingDesafio[id] = false;
       }
     });
   }
-
 
 }
