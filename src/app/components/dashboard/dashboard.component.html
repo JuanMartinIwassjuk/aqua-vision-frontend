@@ -64,31 +64,6 @@
         </div>
       </a>
 
-      <!-- Card 4: Notificaciones (igual que usuario, con link) -->
-      <a routerLink="/consumption-alerts" class="card info-card" title="Ir a notificaciones detalladas">
-        <div class="card-hint">Ir a notificaciones detalladas</div>
-
-        <div class="icon-row">
-          <mat-icon 
-            [ngClass]="{ 'blink-red': cantidadNotificaciones > 0, 'ok-icon': cantidadNotificaciones === 0 }">
-            {{ cantidadNotificaciones > 0 ? 'notification_important' : 'notifications_none' }}
-          </mat-icon>
-
-          <span>
-            <ng-container *ngIf="cantidadNotificaciones > 0; else sinNotifsAdmin">
-              <strong>
-                Tenés 
-                <span class="notif-count blink-red">({{ cantidadNotificaciones }})</span> 
-                notificaciones nuevas
-              </strong>
-            </ng-container>
-            <ng-template #sinNotifsAdmin>
-              <strong>No hay notificaciones nuevas</strong>
-            </ng-template>
-          </span>
-        </div>
-
-      </a>
 
     </ng-container>
 

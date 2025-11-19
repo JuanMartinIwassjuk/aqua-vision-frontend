@@ -55,16 +55,12 @@
             <a routerLink="/gamificacion" (click)="closeMenu()">AquaQuest</a>
           </li>
                     
-          <li class="submenu" *ngIf="isAdmin">
-            <a (click)="toggleService(1)" class="boton-item-navbar">Reportes ▾</a>
-            <ul *ngIf="expandedIndex === 1" class="submenu-list">
-              <li class="list-subitem-navbar"><a routerLink="/consumo-admin" (click)="closeMenu()">▸ Consumo</a></li>
-              <li class="list-subitem-navbar"><a routerLink="/eventos-admin" (click)="closeMenu()">▸ Eventos</a></li>
-              <li class="list-subitem-navbar"><a routerLink="/localidad-admin" (click)="closeMenu()">▸ Localidad</a></li>
-                            <li class="list-subitem-navbar"><a routerLink="/gamification-admin" (click)="closeMenu()">▸ Trivias</a></li>
-            </ul>
-          </li>
-           <li class="list-item-navbar"><a routerLink="/consumption-alerts" (click)="closeMenu()">Notificaciones</a></li>
+
+           <li *ngIf="isAdmin" class="list-item-navbar"><a routerLink="/consumo-admin" (click)="closeMenu()">Consumos</a></li>
+           <li *ngIf="isAdmin" class="list-item-navbar"><a routerLink="/eventos-admin" (click)="closeMenu()">Eventos</a></li>
+           <li *ngIf="isAdmin" class="list-item-navbar"><a routerLink="/localidad-admin" (click)="closeMenu()">Localidades</a></li>
+           <li *ngIf="isAdmin" class="list-item-navbar"><a routerLink="/gamification-admin" (click)="closeMenu()">Trivias</a></li>
+           <li *ngIf="!isAdmin" class="list-item-navbar"><a routerLink="/consumption-alerts" (click)="closeMenu()">Notificaciones</a></li>
 
 
 
