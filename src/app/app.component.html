@@ -66,7 +66,7 @@
 
 
 
-          <li *ngIf="isUser || isAdmin" class="list-item-navbar">
+          <li *ngIf="!isAdmin" class="list-item-navbar">
             <a routerLink="/account-settings" (click)="closeMenu()">Mi Cuenta</a>
           </li>
         </ul>
