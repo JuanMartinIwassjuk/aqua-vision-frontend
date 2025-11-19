@@ -1450,10 +1450,39 @@
   align-items: center;
   width: 80%;
   /*max-width: 600px;*/
-  height: 35rem;
+  height: 45rem;
   padding: 2rem;
   position: relative;
   overflow: auto;
+}
+
+.sector-tag{
+  font-weight: 700;
+  font-size: 24px;
+  padding-left: .5rem;
+}
+
+.sector-tag2 {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: var(--azul-fondo); /* Color primario */
+    background-color: #e9f5ff; /* Fondo muy claro para el tag */
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block; /* Para que solo ocupe el espacio del texto */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 10px; /* Separación del título */
+}
+
+.main-modal-title {
+    margin-bottom: 2rem;
+    text-align: left;
+    margin-top: 1rem;
+}
+.main-modal-title strong {
+    font-weight: 600;
+    color: var(--azul-fondo); /* Destacar el nombre del sector */
 }
 
 .image-4 {
@@ -2292,28 +2321,33 @@ input:checked:focus + .switch-left + .switch-right {
   color: #333;
 }
 
-.estado-cone{
+.estado-on{
   color: rgb(28, 255, 28);
 }
 
-.estado-descone{
+.estado-idle {
+  color: #ffc107;
+}
+.estado-hibernate {
+  color: #fd7e14;
+}
+
+.estado-offline, .estado-unknown{
   color: rgb(255, 94, 94);
 }
 
 /*PUNTOS ESTADO KIT*/
-.punto-cone {
+.punto-on {
   margin-left: 5px;
   height: 20px;
   width: 20px;
   border-radius: 50%;
-  /*background-color: #69ffa8;*/
   background-color: rgb(28, 255, 28);
   animation: 1.5s pulse infinite ease-in-out;
 }
 
 @keyframes pulse {
   0% {
-    /*box-shadow: 0 0 0 0 #69ffa8;*/
     box-shadow: 0 0 0 0 rgb(28, 255, 28);
   }
 
@@ -2322,12 +2356,49 @@ input:checked:focus + .switch-left + .switch-right {
   }
 }
 
-.punto-descone {
+.punto-idle {
   margin-left: 5px;
   height: 20px;
   width: 20px;
   border-radius: 50%;
-  /*background-color: #69ffa8;*/
+  background-color: #ffc107;
+  animation: 1.5s pulse3 infinite ease-in-out;
+}
+
+@keyframes pulse3 {
+  0% {
+    box-shadow: 0 0 0 0 #ffc107;
+  }
+
+  100% {
+    box-shadow: 0 0 0 14px #69ffa800;
+  }
+}
+
+.punto-hibernate {
+  margin-left: 5px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: #fd7e14;
+  animation: 1.5s pulse4 infinite ease-in-out;
+}
+
+@keyframes pulse4 {
+  0% {
+    box-shadow: 0 0 0 0 #fd7e14;
+  }
+
+  100% {
+    box-shadow: 0 0 0 14px #69ffa800;
+  }
+}
+
+.punto-offline, .punto-unknown {
+  margin-left: 5px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
   background-color: rgb(255, 94, 94);
   animation: 1.5s pulse2 infinite ease-in-out;
 }
@@ -2570,7 +2641,7 @@ input:checked:focus + .switch-left + .switch-right {
   .modal-block4{
     /*grid-column-gap: 1rem;*/
   }
-  .punto-cone{
+  .punto-on, .punto-idle, .punto-hibernate, .punto-offline, .punto-unknown{
     position: relative;
     right: 1rem;
     width: 25px;
@@ -2601,7 +2672,7 @@ input:checked:focus + .switch-left + .switch-right {
     align-items: center;
     gap: 2.5rem;
   }
-  .punto-cone{
+  .punto-on, .punto-idle, .punto-hibernate, .punto-offline, .punto-unknown{
     position: relative;
     right: 2rem;
     bottom: 0.5rem;
@@ -2669,4 +2740,220 @@ input:checked:focus + .switch-left + .switch-right {
   .candado-blanco-logro{
     height: 5vh !important;
   }
+}
+
+/* ============================================== */
+/* ESTILOS PARA LA VISUALIZACIÓN DE CAUDAL (INLINE) */
+/* ============================================== */
+
+/* Contenedor principal de la nueva sección */
+.caudal-actual-container {
+    margin-top: 25px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Contenedor de controles (Input y Botones) */
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Para asegurar que se ajusta en pantallas pequeñas */
+}
+.controls-container2 {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center; /* Alinea el label y el input/texto */
+    gap: 15px; /* Espacio entre el label y el input group */
+}
+
+.input-grupo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el input y el texto de ayuda */
+}
+.rango-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 80px; /* Ancho fijo para que se vea bien */
+    text-align: center;
+}
+
+.rango-help-text {
+    font-size: 0.9rem;
+    color: #6c757d; /* Color gris suave */
+    padding: 5px 0;
+}
+
+
+/* Estilos para el Input de Rango de Minutos */
+.rango-selector-container {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.input-minutos-rango {
+    width: 60px;
+    padding: 8px 10px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-minutos-rango:focus {
+    border-color: #2F80ED;
+    box-shadow: 0 0 0 1px #2F80ED;
+}
+
+/* Estilos para los botones de cambio de vista */
+.view-toggle-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-toggle-view {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.btn-toggle-view:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilo para el botón de vista activa */
+.btn-toggle-view.active {
+    /*background-color: #2F80ED;*/
+    background-color: var(--azul-fondo);
+    /*border-color: #2F80ED;*/
+    border-color: var(--azul-fondo);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Contenedor del Gráfico */
+.chart-wrapper-inline {
+    position: relative;
+    /* Define una altura fija para el contenedor del gráfico */
+    height: 300px; 
+    width: 100%;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Contenedor de la Tabla */
+.table-wrapper-inline {
+    max-height: 300px;
+    overflow-y: auto; /* Scroll vertical para muchos datos */
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    max-width: 25rem;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin: 0 auto;
+}
+
+.table-wrapper-inline table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table-wrapper-inline th, 
+.table-wrapper-inline td {
+    padding: 10px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.table-wrapper-inline th {
+    /*background-color: #eaf4ff; /* Un color suave para el encabezado */
+    background-color: var(--azul-fondo); /* Un color suave para el encabezado */
+    /*color: #333;*/
+    color: var(--gris-blanco);
+    font-weight: 600;
+    position: sticky; /* Fija el encabezado al hacer scroll */
+    top: 0;
+    z-index: 10;
+}
+
+.table-wrapper-inline tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.table-wrapper-inline tr:hover {
+    background-color: #e8f5ff;
+}
+
+/* Estilos para Loader y Error */
+.data-loader {
+    text-align: center;
+    padding: 20px;
+    color: #2F80ED;
+    font-weight: 500;
+}
+
+.data-error {
+    text-align: center;
+    padding: 20px;
+    color: #EB5757;
+    font-weight: 500;
+    border: 1px solid #EB5757;
+    border-radius: 4px;
+    background-color: #ffeaea;
+}
+
+.quick-select-buttons {
+    display: flex;
+    gap: 5px; /* Espacio entre los botones */
+    margin-left: 15px; /* Separa los botones del input group */
+}
+
+.quick-button {
+    padding: 6px 10px;
+    /*border: 1px solid #007bff; /* Color primario */
+    border: 1px solid var(--azul-fondo); /* Color primario */
+    border-radius: 4px;
+    /*background-color: #007bff;*/
+    background-color: var(--azul-fondo);
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.quick-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.info-message {
+    text-align: center;
+    margin: 25px auto;
+    padding: 15px;
+    border: 1px solid #c3e6cb; /* Borde verde claro */
+    background-color: #d4edda; /* Fondo verde claro */
+    color: #155724; /* Texto verde oscuro */
+    border-radius: 5px;
+    font-size: 1rem;
+    max-width: 600px;
 }

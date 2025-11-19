@@ -250,14 +250,101 @@
                   Soporte técnico
               </button>
             </div>
-          </div>
         </div>
+        
+        <div class="caudal-actual-container" *ngIf="sensor?.idSector">
+            
+            <h3 class="main-modal-title">
+              Caudal (Minuto a Minuto) para el sector <span class="sector-tag2">{{ sensor?.nombreSensor }}</span>.
+            </h3>
+
+            <div class="controls-container">            
+
+              <div class="rango-selector-container">
+                <label for="rangoMinutos-{{i}}" class="rango-label">Rango a mostrar (minutos):</label>
+                <div class="input-grupo">
+                    <input 
+                        type="number" 
+                        id="rangoMinutos" 
+                        [(ngModel)]="currentMinutosSeleccionados" 
+                        (ngModelChange)="onRangeChange()" 
+                        min="1" 
+                        max="60"
+                        class="input-minutos-rango"
+                    >
+                    
+                    <small class="rango-help-text">Máximo 60 minutos.</small>
+                </div>
+                
+                <div class="quick-select-buttons">
+                    <button class="quick-button" (click)="setRangeAndLoad(10); $event.preventDefault()" (click)="$event.stopPropagation()">10 min</button>
+                    <button class="quick-button" (click)="setRangeAndLoad(30); $event.preventDefault()" >30 min</button>
+                    <button class="quick-button" (click)="setRangeAndLoad(60); $event.preventDefault()">60 min</button>
+                </div>
+              </div>
+
+              <div class="view-toggle-buttons" *ngIf="getFlowData(sensor.idSector)">
+                <button 
+                  (click)="toggleViewMode(sensor.idSector, 'graph')" 
+                  [class.active]="getFlowData(sensor.idSector)?.viewMode === 'graph'"
+                  class="btn-toggle-view"
+                >Gráfico</button>
+                <button 
+                  (click)="toggleViewMode(sensor.idSector, 'table')" 
+                  [class.active]="getFlowData(sensor.idSector)?.viewMode === 'table'"
+                  class="btn-toggle-view"
+                >Tabla</button>
+              </div>
+
+            </div>
+
+              <ng-container *ngIf="getFlowData(sensor.idSector) as flowData">
+                  
+                <div *ngIf="flowData.loading" class="data-loader">Cargando datos...</div>
+                <div *ngIf="flowData.errorMessage" class="data-error">{{ flowData.errorMessage }}</div>
+                 
+                <div *ngIf="!flowData.loading && !flowData.errorMessage && flowData.noDataFound" class="info-message">
+                  ✅ Sistema OK. No se registró consumo de agua en el sector en los últimos {{ flowData.minutosSeleccionados }} minutos.
+                </div>
+
+                  <ng-container *ngIf="!flowData.loading && !flowData.errorMessage">
+                      
+                    <div *ngIf="flowData.viewMode === 'graph'" class="chart-wrapper-inline">
+                      <canvas
+                        baseChart
+                        [data]="flowData.chartData"
+                        [options]="flowData.chartOptions"
+                        type="line">
+                      </canvas>
+                    </div>
+
+                      <div *ngIf="flowData.viewMode === 'table'" class="table-wrapper-inline">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Hora (HH:MM)</th>
+                              <th>Caudal (L/min)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of flowData.caudales">
+                              <td>{{ item.time }}</td>
+                              <td>{{ item.flow | number:'1.0-2' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                      
+                  </ng-container>
+              </ng-container>
+        </div>
+        
+      </div>
       </div>
 
       <div class="div-block-4"></div>
     </div>
   </ng-container>
-
 
   <!--FIN DE MODALS ORIGINALES-->
 
@@ -305,7 +392,7 @@
       <div
         *ngFor="let sensor of sensores; let i = index"
         class="modal-block4 w-inline-block"
-        (click)="openModal('sensor' + i)"
+        (click)="openModalSensor('sensor' + i)"
       >
         <img src="images/house-wifi.png" loading="lazy" alt="sensor-icon" class="image-3">
         <div class="card-micuenta">
@@ -313,11 +400,11 @@
           <div class="estado-container">
             <p class="paragraph-2">
               Estado actual:
-              <span [ngClass]="sensor.estadoActual === 'ON' ? 'estado-cone' : 'estado-descone'">
-                {{ sensor.estadoActual === 'ON' ? 'Conectado' : 'Desconectado'  }}
+              <span [ngClass]="getSensorStatusDisplay(sensor?.estadoActual).className">
+                {{ getSensorStatusDisplay(sensor?.estadoActual).text }}
               </span>
             </p>
-            <div [ngClass]="sensor.estadoActual === 'ON' ? 'punto-cone' : 'punto-descone'"></div>
+            <div [ngClass]="getSensorStatusDisplay(sensor?.estadoActual).className.replace('estado', 'punto')"></div>
           </div>
         </div>
       </div>
