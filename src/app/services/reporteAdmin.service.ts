@@ -1,7 +1,7 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 
@@ -40,6 +40,21 @@ export interface Hogar {
   facturacion?: any;
 }
 
+export interface ConsumoPorHoraDTO {
+  hora: number;   
+  consumo: number;
+}
+
+export interface ConsumosPorHoraHogarDTO {
+  hogarId: number;
+  fechaDesde: string;    
+  fechaHasta: string;    
+  fechaGeneracion: string;
+  consumoTotal: number;
+  consumosPorHora: ConsumoPorHoraDTO[];
+}
+
+
 @Injectable({ providedIn: 'root' })
 export class ReporteAdminService {
 
@@ -65,6 +80,8 @@ export class ReporteAdminService {
     { id: 4, miembros: 5, localidad: 'Palermo', email: 'd@h.com', nombre: 'Hogar D', ambientes: 5, tienePileta: true, tienePatio: true },
     { id: 5, miembros: 1, localidad: 'Recoleta', email: 'e@h.com', nombre: 'Hogar E', ambientes: 1, tienePileta: false, tienePatio: false }
   ];
+
+  
 
   // Mock eventos distribuidos en últimos 60 días
   private eventos: AquaEvent[] = (() => {
@@ -216,45 +233,26 @@ getNotificacionesCount(): Observable<number> {
 
 
 
-getConsumoPorHoraTotal(fechaIso: string): Observable<{ hora: string; caudal_m3: number }[]> {
-  const basePerHour = [
-    0.12,0.09,0.07,0.06,0.05,0.06,0.18,0.45,0.78,0.95,1.05,1.12,
-    1.20,1.10,1.00,0.92,0.86,0.80,0.72,0.65,0.58,0.45,0.32,0.20
-  ];
+ getConsumoPorHoraTotal(fecha: string): Observable<{ hora: string; caudal_m3: number }[]> {
 
-  const onlyDate = (fechaIso || '').split('T')[0];
-  const today = new Date().toISOString().split('T')[0];
-  const ayerDt = new Date();
-  ayerDt.setDate(ayerDt.getDate() - 1);
-  const ayer = ayerDt.toISOString().split('T')[0];
+    const onlyDate = (fecha || '').split('T')[0];
 
-  let values: number[];
+    const params = new HttpParams().set('dia', onlyDate);
 
-  if (onlyDate === today) {
-
-    values = basePerHour.slice();
-  } else if (onlyDate === ayer) {
-
-    values = basePerHour.map((v, i) => {
-
-      const factor = 0.88 + ( (i % 6) * 0.02 ); 
-
-      const noise = (((i * 37) % 11) - 5) / 100; 
-      const val = v * factor + noise;
-      return Math.round(val * 100) / 100;
-    });
-  } else {
-
-    values = basePerHour.map((v, i) => {
-      const val = v * 0.96 + ((i % 3) - 1) * 0.01; // pequeña variación
-      return Math.round(val * 100) / 100;
-    });
+    return this.http.get<ConsumosPorHoraHogarDTO>(`${this.baseUrl}/consumo-dia-hora`, { params }).pipe(
+      map(dto => {
+        if (!dto || !dto.consumosPorHora) return [];
+        return dto.consumosPorHora.map(h => ({
+          hora: String(h.hora).padStart(2, '0') + ':00',
+          caudal_m3: h.consumo 
+        }));
+      }),
+      catchError(err => {
+        console.error('Error al pedir consumo por hora', err);
+        return of([]);
+      })
+    );
   }
-
-  const result = values.map((v, i) => ({ hora: String(i).padStart(2, '0') + ':00', caudal_m3: v }));
-  return of(result);
-}
-
 
  getPuntosPorPeriodo(desdeIso: string, hastaIso: string): Observable<{ fecha: string; puntos: number }[]> {
     const url = `${this.baseUrl}/gamificacion/puntos-periodo?fechaInicio=${encodeURIComponent(desdeIso)}&fechaFin=${encodeURIComponent(hastaIso)}`;
