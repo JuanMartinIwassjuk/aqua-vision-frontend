@@ -86,86 +86,82 @@ export class DashboardComponent implements OnInit {
           const diaAyer = this.formatFechaLocal(ayer);
 
           if (this.isAdmin) {
-            // ADMIN: traigo promedio, totals y consumos por hora para hoy y ayer
-            forkJoin({
-              consumoPromHoy: this.reporteAdminService.getConsumoPromedioPorHogar(diaHoy).pipe(catchError(() => of(0))),
-              consumoPromAyer: this.reporteAdminService.getConsumoPromedioPorHogar(diaAyer).pipe(catchError(() => of(0))),
-              trivias: this.reporteAdminService.getTotalTriviasCompletadas().pipe(catchError(() => of(0))),
-              eventos: this.reporteAdminService.getTotalEventos().pipe(catchError(() => of(0))),
-              notifs: this.reporteAdminService.getNotificacionesCount().pipe(catchError(() => of(0))),
-              horasHoy: this.reporteAdminService.getConsumoPorHoraTotal(diaHoy).pipe(catchError(() => of([]))),
-              horasAyer: this.reporteAdminService.getConsumoPorHoraTotal(diaAyer).pipe(catchError(() => of([])))
-            }).subscribe({
-              next: ({ consumoPromHoy, consumoPromAyer, trivias, eventos, notifs, horasHoy, horasAyer }: any) => {
-                // Promedio por hogar (m³)
-                this.consumoPromedio = Number(consumoPromHoy || 0);
-                this.consumoPromedioAnterior = Number(consumoPromAyer || 0);
-                this.calcularDiferencia(this.consumoPromedio, this.consumoPromedioAnterior);
+  // ADMIN: solicitamos el DTO dashboard y además horas (hoy/ayer) y notifs
+  forkJoin({
+    dashboard: this.reporteAdminService.getDashboard().pipe(catchError(() => of({
+      consumoPromHoy: 0, consumoPromAyer: 0, trivias: 0, eventos: 0
+    }))),
+    notifs: this.reporteAdminService.getNotificacionesCount?.().pipe ? this.reporteAdminService.getNotificacionesCount().pipe(catchError(() => of(0))) : of(0),
+    horasHoy: this.reporteAdminService.getConsumoPorHoraTotal(diaHoy).pipe(catchError(() => of([]))),
+    horasAyer: this.reporteAdminService.getConsumoPorHoraTotal(diaAyer).pipe(catchError(() => of([])))
+  }).subscribe({
+    next: ({ dashboard, notifs, horasHoy, horasAyer }: any) => {
+      // DTO -> variables del componente
+      this.consumoPromedio = Number(dashboard.consumoPromHoy || 0);
+      this.consumoPromedioAnterior = Number(dashboard.consumoPromAyer || 0);
+      this.calcularDiferencia(this.consumoPromedio, this.consumoPromedioAnterior);
 
-                // Otros mocks
-                this.totalTriviasAdmin = Number(trivias || 0);
-                this.totalEventosAdmin = Number(eventos || 0);
-                this.cantidadNotificaciones = Number(notifs || 0);
+      this.totalTriviasAdmin = Number(dashboard.trivias || 0);
+      this.totalEventosAdmin = Number(dashboard.eventos || 0);
+      this.cantidadNotificaciones = Number(notifs || 0);
 
-                // Chart: construyo Hoy/Ayer. Asumo arrays horarios de 24 elementos (00:00..23:00).
-                // Si no, intento mapear por hora en común.
-                const labels = (horasHoy && horasHoy.length) ? horasHoy.map((h: any) => h.hora)
-                              : (horasAyer && horasAyer.length) ? horasAyer.map((h: any) => h.hora)
-                              : Array.from({length:24}, (_,i) => String(i).padStart(2,'0') + ':00');
+      // Chart: construyo Hoy/Ayer. Asumo arrays horarios de 24 elementos (00:00..23:00).
+      const labels = (horasHoy && horasHoy.length) ? horasHoy.map((h: any) => h.hora)
+                    : (horasAyer && horasAyer.length) ? horasAyer.map((h: any) => h.hora)
+                    : Array.from({length:24}, (_,i) => String(i).padStart(2,'0') + ':00');
 
-                const valoresHoy = (labels.map((lbl: string) => {
-                  const found = (horasHoy || []).find((h: any) => h.hora === lbl);
-                  return found ? found.caudal_m3 : 0;
-                }));
+      const valoresHoy = (labels.map((lbl: string) => {
+        const found = (horasHoy || []).find((h: any) => h.hora === lbl);
+        return found ? found.caudal_m3 : 0;
+      }));
 
-                const valoresAyer = (labels.map((lbl: string) => {
-                  const found = (horasAyer || []).find((h: any) => h.hora === lbl);
-                  return found ? found.caudal_m3 : 0;
-                }));
+      const valoresAyer = (labels.map((lbl: string) => {
+        const found = (horasAyer || []).find((h: any) => h.hora === lbl);
+        return found ? found.caudal_m3 : 0;
+      }));
 
-                this.lineChartDataAdmin = {
-                  labels,
-                  datasets: [
-                    {
-                      label: 'Hoy',
-                      data: valoresHoy,
-                      borderColor: '#2563eb',
-                      fill: true,
-                      tension: 0.3,
-                      borderWidth: 3,
-                      pointRadius: 3.5,
-                      pointBackgroundColor: '#2563eb',
-                      backgroundColor: 'rgba(37,99,235,0.08)'
-                    },
-                    {
-                      label: 'Ayer',
-                      data: valoresAyer,
-                      borderColor: '#25a2ebff',
-                      fill: false,
-                      tension: 0.3,
-                      borderWidth: 2,
-                      borderDash: [6, 6],
-                      pointRadius: 3,
-                      pointBackgroundColor: '#25a2ebff',
-                      backgroundColor: 'transparent'
-                    }
-                  ]
-                };
+      this.lineChartDataAdmin = {
+        labels,
+        datasets: [
+          {
+            label: 'Hoy',
+            data: valoresHoy,
+            borderColor: '#2563eb',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 3,
+            pointRadius: 3.5,
+            pointBackgroundColor: '#2563eb',
+            backgroundColor: 'rgba(37,99,235,0.08)'
+          },
+          {
+            label: 'Ayer',
+            data: valoresAyer,
+            borderColor: '#25a2ebff',
+            fill: false,
+            tension: 0.3,
+            borderWidth: 2,
+            borderDash: [6, 6],
+            pointRadius: 3,
+            pointBackgroundColor: '#25a2ebff',
+            backgroundColor: 'transparent'
+          }
+        ]
+      };
 
-                // total hogares (desde service) - si tu servicio expone esta info
-                this.totalHogaresAdmin = (this.reporteAdminService as any).hogares?.length ?? this.totalHogaresAdmin;
-              },
-              error: err => {
-                console.error('Error cargando datos admin:', err);
-                this.snackBar.open('Error al cargar datos admin', 'Cerrar', { duration: 4000 });
-                this.isLoading = false;
-              },
-              complete: () => {
-                this.isLoading = false;
-              }
-            });
-
-          } else {
+      // total hogares (si tu servicio lo expone) - lo dejo intacto
+      this.totalHogaresAdmin = (this.reporteAdminService as any).hogares?.length ?? this.totalHogaresAdmin;
+    },
+    error: err => {
+      console.error('Error cargando datos admin:', err);
+      this.snackBar.open('Error al cargar datos admin', 'Cerrar', { duration: 4000 });
+      this.isLoading = false;
+    },
+    complete: () => {
+      this.isLoading = false;
+    }
+  });
+} else {
             // USUARIO: mantenemos lógica previa (por hogar)
             forkJoin({
               hoy: this.reporteService.getConsumoPorHoraBackend(hogarId, diaHoy).pipe(catchError(err => { console.error('hoy error', err); return of([]); })),

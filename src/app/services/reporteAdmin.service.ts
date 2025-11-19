@@ -54,6 +54,13 @@ export interface ConsumosPorHoraHogarDTO {
   consumosPorHora: ConsumoPorHoraDTO[];
 }
 
+export interface ReportAdminDashboardDTO {
+  consumoPromHoy: number;
+  consumoPromAyer: number;
+  trivias: number; 
+  eventos: number; 
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class ReporteAdminService {
@@ -189,7 +196,9 @@ getConsumoPorLocalidad(desdeIso: string, hastaIso: string): Observable<{ localid
   return this.http.get<any[]>(url);
 }
 
-
+  getDashboard(): Observable<ReportAdminDashboardDTO> {
+    return this.http.get<ReportAdminDashboardDTO>(`${this.baseUrl}/dashboard`);
+  }
 
 getConsumoPromedioPorHogar(fechaIso: string): Observable<number> {
   const fechaOnly = (fechaIso || '').split('T')[0];
