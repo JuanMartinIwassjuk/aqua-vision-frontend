@@ -129,6 +129,7 @@ export class GamificacionComponent implements OnInit{
         });
         this.cargarPuntos(hogarId);
         this.cargarRecompensasGlobales();
+        console.log('Apunto de cargar desafios');
         this.cargarDesafiosPorHogar(hogarId);
         this.cargarMedallas(hogarId);
       },
@@ -411,7 +412,7 @@ export class GamificacionComponent implements OnInit{
     this.gamificacionService.getDesafiosPorHogar(hogarId).subscribe({
       next: (data) => {
         this.desafios = data;
-        console.log(`Cargados: ${this.desafios.length} desafíos.`);
+        console.log(`Cargados: ${this.desafios.length} desafíos: `,data);
       },
       error: (err) => console.error('Error al cargar desafíos del hogar', err)
     });
@@ -421,6 +422,10 @@ export class GamificacionComponent implements OnInit{
     return this.desafios.filter(d => !d.completado);
   }
 
+  get desafiosCompletados(): Desafio[] {
+    return this.desafios.filter(d => d.completado);
+  }
+
   get desafiosListosParaReclamar(): Desafio[] {
     return this.desafios.filter(d => d.completado && !d.reclamado);
   }
@@ -428,17 +433,23 @@ export class GamificacionComponent implements OnInit{
   reclamarPuntos(desafio: Desafio): void {
     if (!this.hogar?.id || !desafio.completado) return;
 
-    const id = desafio.idDesafioGlobal; 
-    this.isLoadingDesafio[id] = true;
+    const idDesafioHogar = desafio.idDesafioHogar; 
+    const puntos = desafio.puntosRecompensa;
 
-    this.gamificacionService.completarDesafio(this.hogar.id, id).subscribe({
+    this.isLoadingDesafio[idDesafioHogar] = true;
+
+    this.gamificacionService.reclamarPuntosDesafio(this.hogar.id, idDesafioHogar).subscribe({
       next: (res) => {
         this.cargarDesafiosPorHogar(this.hogar!.id);
+        console.log('Puntos reclamados: ', res);
         alert(`¡Puntos reclamados! Has ganado ${desafio.puntosRecompensa} puntos.`);
+        
+        this.isLoadingDesafio[idDesafioHogar] = false;
       },
       error: (err) => {
         console.error('Error al reclamar puntos', err);
-        this.isLoadingDesafio[id] = false;
+        
+        this.isLoadingDesafio[idDesafioHogar] = false;
       }
     });
   }

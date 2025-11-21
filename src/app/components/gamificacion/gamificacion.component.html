@@ -435,27 +435,35 @@
         </li>
 
         <li class="item-desafio completado-listo-para-reclamar" 
-          *ngFor="let desafio of desafiosListosParaReclamar; let i = index">
-            
+          *ngFor="let desafio of desafiosCompletados; let i = index"
+          [class.desafio-reclamado]="desafio.reclamado"> 
+
           <div class="container-desafio-numYdesc">
             <div class="con-numero-desafio">
-              <h3 class="text-numero-desafio">✅</h3>
+              <h3 class="text-numero-desafio">{{ desafio.reclamado ? '🏆' : '✅' }}</h3>
             </div>
             <div class="descripcion-desafio">
               <p class="text-descripcion-desafio">
-                **¡COMPLETADO!** {{ desafio.descripcion }}
+                {{ desafio.reclamado ? '¡RECLAMADO!' : '¡COMPLETADO!' }} {{ desafio.descripcion }}
               </p>
-              <p class="recompensa-puntos">Puntos por reclamar: {{ desafio.puntosRecompensa }}</p>
+              <p class="recompensa-puntos">
+                {{ desafio.reclamado ? 'Puntos obtenidos' : 'Puntos por reclamar' }}: {{ desafio.puntosRecompensa }}
+              </p>
             </div>
           </div>
 
           <div class="container-estado-desafio">
             <button
               (click)="reclamarPuntos(desafio)"
-              [disabled]="isLoadingDesafio[desafio.idDesafioGlobal]"
-              class="btn-reclamar-puntos"
+              [disabled]="desafio.reclamado || isLoadingDesafio[desafio.idDesafioGlobal]"
+              [class.btn-reclamar-reclamado]="desafio.reclamado" class="btn-reclamar-puntos"
             >
-              {{ isLoadingDesafio[desafio.idDesafioGlobal] ? 'Reclamando...' : 'Reclamar Puntos' }}
+              <ng-container *ngIf="desafio.reclamado; else botonReclamar">
+                Reclamado
+              </ng-container>
+              <ng-template #botonReclamar>
+                {{ isLoadingDesafio[desafio.idDesafioHogar] ? 'Reclamando...' : 'Reclamar Puntos' }}
+              </ng-template>
             </button>
           </div>
         </li>

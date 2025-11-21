@@ -9,6 +9,7 @@ export class DesafioHogarApi {
     id!: number;
     desafio!: DesafioDetalle;
     progreso!: number; // Progreso actual (es un % de 0 a 100)
+    reclamado!: boolean;
 }
 
 export class HogarDesafiosResponse {
@@ -27,7 +28,7 @@ export class Desafio {
     
     puntosRecompensa!: number;
     completado: boolean = false; 
-    reclamado: boolean = false;
+    reclamado!: boolean;
 
     constructor(data: DesafioHogarApi) {
         this.idDesafioHogar = data.id;
@@ -46,6 +47,6 @@ export class Desafio {
 
         //TODO: habria que agregar del back la propiedad de completado y reclamado
         //y poder validar con el back tambien en el get si ya está reclamado
-        //this.reclamado = data.estadoReclamado;
+        this.reclamado = data.reclamado;
     }
 }
