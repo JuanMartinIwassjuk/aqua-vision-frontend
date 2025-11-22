@@ -227,7 +227,6 @@ export class AccountSettingsComponent implements OnInit{
     this.tooltipVisible = false;
   }
 
-  // MODIFICAR: Al abrir el modal, inicializamos los datos de flujo
   openModalSensor(id: string) {
     console.log('abriendo modal sensor: ', id);
     this.activeModal = id;
@@ -236,6 +235,8 @@ export class AccountSettingsComponent implements OnInit{
         
         // Asumiendo que los sensores en el array son 0-based:
         const sensor = this.sensores[sensorIndex]; 
+
+        this.currentSensorIndex = sensorIndex;
 
         // 🚨 SI TU INDEXACIÓN ES 1-BASED (sensor1 -> index 0), usa:
         // const sensor = this.sensores[sensorIndex - 1]; 
@@ -261,6 +262,33 @@ export class AccountSettingsComponent implements OnInit{
         }
     }
   }
+
+  currentSensorIndex: number | null = null;
+
+  goToPreviousSensor() {
+    if (this.currentSensorIndex !== null) {
+      let newIndex = this.currentSensorIndex - 1;
+
+      if (newIndex < 0) {
+        newIndex = this.sensores.length - 1;
+      }
+      
+      this.openModalSensor('sensor' + newIndex);
+    }
+  }
+
+  goToNextSensor() {
+    if (this.currentSensorIndex !== null) {
+      let newIndex = this.currentSensorIndex + 1;
+
+      if (newIndex >= this.sensores.length) {
+        newIndex = 0;
+      }
+
+      this.openModalSensor('sensor' + newIndex);
+    }
+  }
+
 
   // ----------------------------------------------------------------------------------
   // MÉTODOS DE LÓGICA DE CAUDAL
@@ -357,87 +385,87 @@ export class AccountSettingsComponent implements OnInit{
   }
 
   /**
- * 1. Función para manejar los clics en los botones predefinidos.
- * Setea el rango y recarga inmediatamente los datos.
- */
-setRangeAndLoad(minutos: number): void {
-    // 1. Aplicamos el rango, asegurando que no exceda 60
-    this.currentMinutosSeleccionados = Math.min(minutos, 60); 
+   * 1. Función para manejar los clics en los botones predefinidos.
+   * Setea el rango y recarga inmediatamente los datos.
+   */
+  setRangeAndLoad(minutos: number): void {
+      // 1. Aplicamos el rango, asegurando que no exceda 60
+      this.currentMinutosSeleccionados = Math.min(minutos, 60); 
 
-    // 2. Disparamos la carga de datos
-    this.reloadCurrentSensorData();
-}
+      // 2. Disparamos la carga de datos
+      this.reloadCurrentSensorData();
+  }
 
-/**
- * 2. Función para manejar la escritura manual en el input.
- * Se llama cuando el ngModel de currentMinutosSeleccionados cambia.
- */
-onRangeChange(): void {
-    // Retrasamos la carga un poco para que el usuario pueda terminar de escribir
-    // Puedes usar un debounceTime si lo tienes, o simplemente esta lógica de validación
-    
-    // Aseguramos que el valor esté entre 1 y 60
-    let minutos = this.currentMinutosSeleccionados;
-    if (minutos > 60) {
-        minutos = 60;
-    } else if (minutos < 1) {
-        // Podrías resetearlo a un valor por defecto o dejarlo para que lo corrijan
-        return; // No recargamos si es un valor inválido
-    }
+  /**
+   * 2. Función para manejar la escritura manual en el input.
+   * Se llama cuando el ngModel de currentMinutosSeleccionados cambia.
+   */
+  onRangeChange(): void {
+      // Retrasamos la carga un poco para que el usuario pueda terminar de escribir
+      // Puedes usar un debounceTime si lo tienes, o simplemente esta lógica de validación
+      
+      // Aseguramos que el valor esté entre 1 y 60
+      let minutos = this.currentMinutosSeleccionados;
+      if (minutos > 60) {
+          minutos = 60;
+      } else if (minutos < 1) {
+          // Podrías resetearlo a un valor por defecto o dejarlo para que lo corrijan
+          return; // No recargamos si es un valor inválido
+      }
 
-    // Actualizamos la variable (útil si pusimos 61 y se forzó a 60)
-    this.currentMinutosSeleccionados = minutos;
-    
-    // Disparamos la carga de datos
-    this.reloadCurrentSensorData();
-}
+      // Actualizamos la variable (útil si pusimos 61 y se forzó a 60)
+      this.currentMinutosSeleccionados = minutos;
+      
+      // Disparamos la carga de datos
+      this.reloadCurrentSensorData();
+  }
 
 
-/**
- * 3. Función auxiliar para recargar los datos del sensor activo
- */
-reloadCurrentSensorData(): void {
-    // 1. Parseamos el ID del sensor activo
-    if (!this.activeModal || !this.activeModal.startsWith('sensor') || this.currentHogarId === null) {
-      console.warn('Recarga abortada: Modal no activo o ID de Hogar no disponible.');  
-      return;
-    }
-    
-    const sensorIndex = parseInt(this.activeModal.replace('sensor', ''));
-    const sensor = this.sensores[sensorIndex]; // Ajustar el índice si es 1-based
-    
-    if (sensor?.idSector) {
-        // 2. Llamamos a la función principal de carga con el nuevo rango
-        this.loadSensorFlowData(sensor.idSector, this.currentMinutosSeleccionados);
+  /**
+   * 3. Función auxiliar para recargar los datos del sensor activo
+   */
+  reloadCurrentSensorData(): void {
+      // 1. Parseamos el ID del sensor activo
+      if (!this.activeModal || !this.activeModal.startsWith('sensor') || this.currentHogarId === null) {
+        console.warn('Recarga abortada: Modal no activo o ID de Hogar no disponible.');  
+        return;
+      }
+      
+      const sensorIndex = parseInt(this.activeModal.replace('sensor', ''));
+      const sensor = this.sensores[sensorIndex]; // Ajustar el índice si es 1-based
+      
+      if (sensor?.idSector) {
+          // 2. Llamamos a la función principal de carga con el nuevo rango
+          this.loadSensorFlowData(sensor.idSector, this.currentMinutosSeleccionados);
 
-        this.refreshSensorMetadata(sensorIndex, this.currentHogarId);
-    }
-}
+          this.refreshSensorMetadata(sensorIndex, this.currentHogarId);
+      }
+  }
 
-/**
- * Recarga los metadatos (estado, última medición) del sensor por su ID de Hogar e Índice.
- * @param sensorIndex El índice del sensor en el array `this.sensores`.
- * @param hogarId El ID del hogar asociado (necesario para la API).
- */
-refreshSensorMetadata(sensorIndex: number, hogarId: number): void {
-    // 1. Obtener los sensores más recientes del hogar
-    this.cuentaService.getSensores(hogarId).subscribe({
-        next: (sensoresActualizados) => {
-            // 2. Encontrar el sensor específico que estamos visualizando
-            const sensorActualizado = sensoresActualizados.find(s => s.idSector === this.sensores[sensorIndex].idSector);
+  /**
+   * Recarga los metadatos (estado, última medición) del sensor por su ID de Hogar e Índice.
+   * @param sensorIndex El índice del sensor en el array `this.sensores`.
+   * @param hogarId El ID del hogar asociado (necesario para la API).
+   */
+  refreshSensorMetadata(sensorIndex: number, hogarId: number): void {
+      // 1. Obtener los sensores más recientes del hogar
+      this.cuentaService.getSensores(hogarId).subscribe({
+          next: (sensoresActualizados) => {
+              // 2. Encontrar el sensor específico que estamos visualizando
+              const sensorActualizado = sensoresActualizados.find(s => s.idSector === this.sensores[sensorIndex].idSector);
 
-            if (sensorActualizado) {
-                // 3. Reemplazar el objeto obsoleto en el array principal
-                //this.sensores[sensorIndex] = sensorActualizado;
-                const sensorActual = this.sensores[sensorIndex];
-                sensorActual.estadoActual = sensorActualizado.estadoActual;
+              if (sensorActualizado) {
+                  // 3. Reemplazar el objeto obsoleto en el array principal
+                  //this.sensores[sensorIndex] = sensorActualizado;
+                  const sensorActual = this.sensores[sensorIndex];
+                  sensorActual.estadoActual = sensorActualizado.estadoActual;
 
-                console.log(`[Metadata] Sensor ${sensorActualizado.nombreSensor} actualizado. Nuevo estado: ${sensorActualizado.estadoActual}`);
-            }
-        },
-        error: (err) => console.error('Error al recargar metadatos del sensor:', err)
-    });
-}
+                  console.log(`[Metadata] Sensor ${sensorActualizado.nombreSensor} actualizado. Nuevo estado: ${sensorActualizado.estadoActual}`);
+              }
+          },
+          error: (err) => console.error('Error al recargar metadatos del sensor:', err)
+      });
+  }
 
   // ----------------------------------------------------------------------------------
   // **LÓGICA CLAVE: RELLENAR MINUTOS FALTANTES (flow = 0)**
@@ -523,29 +551,29 @@ refreshSensorMetadata(sensorIndex: number, hogarId: number): void {
   }
 
   /**
- * Mapea el estado del sensor (Enum) a un texto descriptivo y una clase CSS.
- * @param estado El valor del enum del backend (ej: 'ON', 'IDLE').
- * @returns Un objeto con el texto y la clase CSS.
- */
-getSensorStatusDisplay(estado: string | undefined): { text: string, className: string } {
-    if (!estado) {
-        return { text: 'Desconocido', className: 'estado-unknown' };
-    }
+   * Mapea el estado del sensor (Enum) a un texto descriptivo y una clase CSS.
+   * @param estado El valor del enum del backend (ej: 'ON', 'IDLE').
+   * @returns Un objeto con el texto y la clase CSS.
+   */
+  getSensorStatusDisplay(estado: string | undefined): { text: string, className: string } {
+      if (!estado) {
+          return { text: 'Desconocido', className: 'estado-unknown' };
+      }
 
-    // Definimos las clases y los textos para cada estado
-    switch (estado.toUpperCase()) {
-        case 'ON':
-            return { text: 'Conectado', className: 'estado-on' }; // Verde
-        case 'IDLE':
-            return { text: 'Inactivo (Cero Caudal)', className: 'estado-idle' }; // Amarillo/Naranja
-        case 'HIBERNATING':
-            return { text: 'Reposo', className: 'estado-hibernate' }; // Naranja/Dormido
-        case 'OFFLINE':
-            return { text: 'Desconectado', className: 'estado-offline' }; // Rojo
-        case 'UNKNOWN':
-        default:
-            return { text: 'Error de estado', className: 'estado-unknown' }; // Gris
-    }
-}
+      // Definimos las clases y los textos para cada estado
+      switch (estado.toUpperCase()) {
+          case 'ON':
+              return { text: 'Conectado', className: 'estado-on' }; // Verde
+          case 'IDLE':
+              return { text: 'Inactivo (Cero Caudal)', className: 'estado-idle' }; // Amarillo/Naranja
+          case 'HIBERNATING':
+              return { text: 'Reposo', className: 'estado-hibernate' }; // Naranja/Dormido
+          case 'OFFLINE':
+              return { text: 'Desconectado', className: 'estado-offline' }; // Rojo
+          case 'UNKNOWN':
+          default:
+              return { text: 'Error de estado', className: 'estado-unknown' }; // Gris
+      }
+  }
 
 }

@@ -106,7 +106,7 @@
             <p class="datoperso">{{hogar?.cantidadIntegrantes}}</p>
           </div>
         </div>
-        <div class="tiene-algo-micuenta">
+        <div class="tiene-algo-micuenta">          
           <div class="dato-perso-container">
             <h4 class="datoperso-subtitle">Tiene patio</h4>
             <label class="rocker rocker-small">
@@ -208,7 +208,28 @@
   >
     <div class="modal-popup-item" (click)="$event.stopPropagation()">
       <img src="images/x.png" alt="cross-icon" class="cross-icon" (click)="closeModal()">
-      <h1 class="modal-datosperso-title">Sensor / {{ i + 1 }}</h1>
+      
+      <div class="nombreSensor-y-botones">
+      
+        <button 
+        class="nav-button prev-sensor" 
+          (click)="goToPreviousSensor(); $event.stopPropagation()"
+          title="Sensor anterior"
+        >
+          <img src="images/arrow-left-blanca.png" alt="Anterior"> 
+        </button>
+        
+        <h1 class="modal-datosperso-title">Sensor / {{ i + 1 }}</h1>
+        
+        <button 
+          class="nav-button next-sensor" 
+          (click)="goToNextSensor(); $event.stopPropagation()"
+          title="Sensor siguiente"
+        >
+          <img src="images/arrow-right-blanca.png" alt="Siguiente"> 
+        </button>
+      </div>
+
       <div class="div-block-2">
         <h4 class="descr-datosperso">
           Acá podrás ver el estado del sensor junto con más detalles del mismo.
