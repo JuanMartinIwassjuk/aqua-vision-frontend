@@ -2653,7 +2653,7 @@ input:checked:focus + .switch-left + .switch-right {
 
 .nav-button img {
     width: 15px;
-
+}
 .nombreSensor-y-botones {
   display: flex;
   align-items: center;

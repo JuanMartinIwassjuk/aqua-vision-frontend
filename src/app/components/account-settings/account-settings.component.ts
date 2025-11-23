@@ -141,7 +141,7 @@ export class AccountSettingsComponent implements OnInit{
 
   descargarManual() {
     const link = document.createElement('a');
-    link.href = 'files/Manual_usuario_Aquavision_v1.0.pdf';
+    link.href = 'files/Manual_usuario_Aquavision_v1.2.pdf';
     link.download = 'Manual_Sensor.pdf';
     link.click();
   }
@@ -472,6 +472,8 @@ export class AccountSettingsComponent implements OnInit{
   // ----------------------------------------------------------------------------------
   private fillMissingMinutes(measurements: Medicion[], minuteRange: number): CaudalMinuto[] {
     const filledMap = new Map<string, number>();
+    const filledWithTime = new Map<string, Date>();
+
     // Usamos la hora actual para definir el final del rango
     const now = new Date(); 
     
@@ -479,7 +481,11 @@ export class AccountSettingsComponent implements OnInit{
     for (let i = 0; i < minuteRange; i++) {
       const time = new Date(now.getTime() - i * 60000); // Restamos i minutos
       const label = time.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false }); 
-      filledMap.set(label, 0); 
+            
+      if (!filledMap.has(label)) {
+            filledMap.set(label, 0); 
+            filledWithTime.set(label, time);
+        }
     }
 
     // 2. Sobreescribir con datos reales
@@ -489,13 +495,16 @@ export class AccountSettingsComponent implements OnInit{
       const label = measurementDate.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
       // Si hay múltiples mediciones en el mismo minuto, sumamos o tomamos la última (aquí tomamos la última)
       filledMap.set(label, m.flow);
+
+      filledWithTime.set(label, measurementDate);
     });
 
     // 3. Convertir a Array y ordenar
     const filledArray = Array.from(filledMap.entries())
-      .map(([time, flow]) => ({ time, flow }))
-      // Ordenamos para que el gráfico vaya de más antiguo a más reciente
-      .sort((a, b) => new Date(`2000/01/01 ${a.time}`).getTime() - new Date(`2000/01/01 ${b.time}`).getTime()); 
+      .map(([time, flow]) => ({ time, flow, realTime: filledWithTime.get(time) as Date }))
+      // Ordenamos usando la propiedad `realTime` que incluye el día correcto
+      .sort((a, b) => a.realTime.getTime() - b.realTime.getTime())
+      .map(({ time, flow }) => ({ time, flow }));
 
     // Aseguramos que solo devolvemos los 'minuteRange' puntos (los más recientes)
     return filledArray.slice(-minuteRange); 
