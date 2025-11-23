@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth';
 import { LoginGuard } from './auth/guards/login';
 import { GamificacionComponent } from './components/gamificacion/gamificacion.component';
-import { TriviaComponent } from './components/gamificacion/trivia/trivia.component';
+import { AquaTriviaComponent } from './components/gamificacion/aqua-trivia/aqua-trivia.component';
 import { AquaBucketComponent } from './components/gamificacion/aqua-bucket/aqua-bucket.component';
 import { AquaCardsComponent } from './components/gamificacion/aqua-cards/aqua-cards.component';
 import { AquaMatchComponent } from './components/gamificacion/aqua-match/aqua-match.component';
@@ -106,7 +106,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard] 
   },
   { path: 'gamificacion', component: GamificacionComponent },
-  { path: 'gamificacion/trivia', component: TriviaComponent },
+  { path: 'gamificacion/trivia', component: AquaTriviaComponent },
   { path: 'gamificacion/aqua-bucket', component: AquaBucketComponent },
   { path: 'gamificacion/aqua-cards', component: AquaCardsComponent },
   { path: 'gamificacion/aqua-match', component: AquaMatchComponent },
