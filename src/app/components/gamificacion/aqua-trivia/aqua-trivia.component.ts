@@ -61,7 +61,6 @@ answerHistory: {
     this.determineCurrentDay();
     this.loadQuestions();
     this.setupSounds();
-    this.checkIfPointsAlreadyClaimed();
   }
 
   ngOnDestroy() {
@@ -157,23 +156,6 @@ this.answerHistory.push({
   }, totalDelay);
 }
 
-  checkIfPointsAlreadyClaimed() {
-    const minijuego = 'AQUA_TRIVIA';
-    const escena = 'TRIVIA';
-
-    this.gamificacionService.getUltimaFechaReclamo(this.hogarId, minijuego, escena)
-      .subscribe({
-        next: (fecha) => {
-          const yaReclamado = !!fecha;
-          this.alreadyClaimed = yaReclamado;
-          if (yaReclamado) this.lastClaimDate = new Date(fecha);
-        },
-        error: (err) => {
-          if (err.status === 404) this.alreadyClaimed = false;
-          else console.error('Error al verificar reclamo:', err);
-        }
-      });
-  }
 
   toggleMute() {
     this.muted = !this.muted;
@@ -212,7 +194,7 @@ this.answerHistory.push({
 
 
 claimPoints() {
-  if (this.alreadyClaimed || this.score === 0) return;
+  if (this.alreadyClaimed) return;
 
   this.alreadyClaimed = true;
 

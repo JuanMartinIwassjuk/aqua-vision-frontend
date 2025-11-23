@@ -16,7 +16,7 @@ import { HogarRanking, Recompensa, RecompensaCanjeada } from '../../models/gamif
 import { Medalla } from '../../models/medalla';
 
 import { Desafio } from '../../models/desafio';
-import { Observable, BehaviorSubject, switchMap, tap, map } from 'rxjs';
+import { Observable, BehaviorSubject, switchMap, tap, map, forkJoin, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-gamificacion',
@@ -77,15 +77,15 @@ export class GamificacionComponent implements OnInit{
 
   user: User | null = null;
 
-  trivias = [
-    { id: 1, nombre: 'Trivia 1', diaSemana: 1, completado: true },
-    { id: 2, nombre: 'Trivia 2', diaSemana: 2, completado: true },
-    { id: 3, nombre: 'Trivia 3', diaSemana: 3, completado: false },
-    { id: 4, nombre: 'Trivia 4', diaSemana: 4, completado: true },
-    { id: 5, nombre: 'Trivia 5', diaSemana: 5, completado: false },
-    { id: 6, nombre: 'Trivia 6', diaSemana: 6, completado: false },
-    { id: 7, nombre: 'Trivia 7', diaSemana: 7, completado: false },
-    ];
+trivias = [
+  { id: 1, nombre: 'Trivia 1', diaSemana: 1, escena: 'Lunes', completado: false, reclamado: false, disponible: false },
+  { id: 2, nombre: 'Trivia 2', diaSemana: 2, escena: 'Martes', completado: false, reclamado: false, disponible: false },
+  { id: 3, nombre: 'Trivia 3', diaSemana: 3, escena: 'Miércoles', completado: false, reclamado: false, disponible: false },
+  { id: 4, nombre: 'Trivia 4', diaSemana: 4, escena: 'Jueves', completado: false, reclamado: false, disponible: false },
+  { id: 5, nombre: 'Trivia 5', diaSemana: 5, escena: 'Viernes', completado: false, reclamado: false, disponible: false },
+  { id: 6, nombre: 'Trivia 6', diaSemana: 6, escena: 'Sábado', completado: false, reclamado: false, disponible: false },
+  { id: 7, nombre: 'Trivia 7', diaSemana: 7, escena: 'Domingo', completado: false, reclamado: false, disponible: false }
+];
 
   diaActual: number = 0;
   tiempoRestante: string = '';
@@ -132,6 +132,7 @@ export class GamificacionComponent implements OnInit{
         console.log('Apunto de cargar desafios');
         this.cargarDesafiosPorHogar(hogarId);
         this.cargarMedallas(hogarId);
+        this.actualizarEstadoTrivias(hogarId);
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
@@ -453,5 +454,55 @@ export class GamificacionComponent implements OnInit{
       }
     });
   }
+
+  get dayName(): string {
+  const days = [
+    "Domingo", "Lunes", "Martes", "Miércoles",
+    "Jueves", "Viernes", "Sábado"
+  ];
+  return days[new Date().getDay()];
+}
+
+
+actualizarEstadoTrivias(hogarId: number) {
+  const hoy = this.diaActual;
+
+  this.trivias.forEach(t => {
+    t.disponible = (t.diaSemana === hoy);
+
+  });
+
+  const calls = this.trivias.map(t =>
+    this.gamificacionService.getUltimaFechaReclamo(hogarId, 'TRIVIA', t.escena)
+      .pipe(
+        catchError(err => of(null))
+      )
+  );
+
+  forkJoin(calls).subscribe({
+    next: (results) => {
+      results.forEach((fecha: any, idx: number) => {
+        const trivia = this.trivias[idx];
+        if (!fecha) {
+          trivia.reclamado = false;
+        } else {
+          trivia.reclamado = true;
+
+          try {
+            const fechaObj = new Date(fecha);
+            const diaSemanaDeFecha = fechaObj.getDay() === 0 ? 7 : fechaObj.getDay();
+
+            trivia.completado = (diaSemanaDeFecha === trivia.diaSemana);
+          } catch (e) {
+            trivia.completado = true;
+          }
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Error al consultar estado de trivias:', err);
+    }
+  });
+}
 
 }

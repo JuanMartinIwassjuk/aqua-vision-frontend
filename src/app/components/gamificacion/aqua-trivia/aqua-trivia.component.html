@@ -102,7 +102,7 @@
       class="claim-btn animate-fade-in"
       *ngIf="showClaimButton"
       (click)="claimPoints()"
-      [disabled]="alreadyClaimed || score === 0"
+      [disabled]="alreadyClaimed"
     >
       {{ alreadyClaimed ? 'Ya reclamado' : 'Reclamar puntos' }}
     </button>
