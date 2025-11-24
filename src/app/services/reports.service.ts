@@ -28,7 +28,7 @@ export class ReporteService {
 
   getConsumoDiarioPorSector(id: number, fecha: Date): Observable<ReporteDiario[]> {
     const fechaDesde = this.dateUtils.formatDateToJava(new Date(fecha.setHours(0, 0, 0, 0)));
-    const fechaHasta = this.dateUtils.formatDateToJava(new Date(fecha.setHours(23, 59, 59, 999)));
+    const fechaHasta = this.dateUtils.formatDateToJava(new Date(fecha.setHours(0, 0, 0, 0)));
 
     const url = `${this.baseUrl}/${id}/consumo-fecha?fechaInicio=${encodeURIComponent(fechaDesde)}&fechaFin=${encodeURIComponent(fechaHasta)}`;
 
