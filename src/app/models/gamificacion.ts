@@ -2,6 +2,9 @@ export class HogarRanking {
   nombre!: string;
   puntaje_ranking!: number;
   posicion!: number;
+  juego_mas_jugado!: string;
+  localidad!: string;
+  cantidad_sectores!: string;
 }
 
 export class RankingResponse {

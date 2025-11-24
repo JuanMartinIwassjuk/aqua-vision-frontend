@@ -37,6 +37,8 @@ import { Observable, BehaviorSubject, switchMap, tap, map, forkJoin, catchError,
 export class GamificacionComponent implements OnInit{
 
   activeModal: string | null = null;
+
+
   
   constructor(
     private authService: AuthService, 
@@ -89,6 +91,7 @@ trivias = [
 
   diaActual: number = 0;
   tiempoRestante: string = '';
+  hogarId: any;
 
   actualizarTiempoRestante() {
     const ahora = new Date();
@@ -136,10 +139,10 @@ trivias = [
       },
       error: (err) => console.error('Error al obtener hogarId', err)
     });
-
+    this.hogarId = Number(sessionStorage.getItem('homeId'));
     this.cargarRanking();
+    this.cargarRankingGeneral();
     this.cargarRecompensas();
-
   }    
 
   tooltipVisible = false;
@@ -274,38 +277,40 @@ trivias = [
   rankingHogares: HogarRanking[] = [];
   top5Hogares: HogarRanking[] = [];
   recompensas: Recompensa[] = [];
+  rankingHogaresGeneral: HogarRanking[] = [];
 
   recompensasCanjeadas = new Set<number>();
   isLoadingCanje: { [id: number]: boolean } = {};
 
-  cargarRanking(): void {
-    this.gamificacionService.getRanking().subscribe({
-      next: (data) => {
-        const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
+cargarRanking(): void {
 
-        let ultimaPosicion = 0;
-        let ultimoPuntaje: number | null = null;
-        let conteo = 0;
+  this.gamificacionService.getRanking(this.hogarId).subscribe({
+    next: (data) => {
+      const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
 
-        this.rankingHogares = hogaresOrdenados.map((hogar) => {
-          conteo++;
+      let ultimaPosicion = 0;
+      let ultimoPuntaje: number | null = null;
+      let conteo = 0;
 
-          // Si el puntaje es distinto al anterior, se actualiza la posición
-          if (hogar.puntaje_ranking !== ultimoPuntaje) {
-            ultimaPosicion = conteo;
-            ultimoPuntaje = hogar.puntaje_ranking;
-          }
-          return {
-            ...hogar,
-            posicion: ultimaPosicion
-          };
-        });
+      this.rankingHogares = hogaresOrdenados.map((hogar) => {
+        conteo++;
+
+        if (hogar.puntaje_ranking !== ultimoPuntaje) {
+          ultimaPosicion = conteo;
+          ultimoPuntaje = hogar.puntaje_ranking;
+        }
+
+        return {
+          ...hogar,
+          posicion: ultimaPosicion
+        };
+      });
 
       this.top5Hogares = this.rankingHogares.slice(0, 5);
-      },
-      error: (err) => console.error('Error al cargar ranking', err)
-    });
-  }
+    },
+    error: (err) => console.error('Error al cargar ranking', err)
+  });
+}
 
   cargarRecompensasGlobales(): void {
     this.gamificacionService.getRecompensas().subscribe({
@@ -502,6 +507,54 @@ actualizarEstadoTrivias(hogarId: number) {
     error: (err) => {
       console.error('Error al consultar estado de trivias:', err);
     }
+  });
+}
+
+private formatoJuegoMap: { [key: string]: string } = {
+  AQUA_MATCH: "Aqua Match",
+  TRIVIA: "Trivias",
+  AQUA_CARDS: "Aqua Cards",
+  AQUA_SAVE: "Aqua Save",
+};
+
+formatearNombreJuego(juego: string): string {
+  if (!juego) return "";
+  return this.formatoJuegoMap[juego] ?? this.capitalizar(juego);
+}
+
+private capitalizar(texto: string): string {
+  return texto
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+
+cargarRankingGeneral(): void {
+
+  this.gamificacionService.getRankingGeneral().subscribe({
+    next: (data) => {
+      const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
+
+      let ultimaPosicion = 0;
+      let ultimoPuntaje: number | null = null;
+      let conteo = 0;
+
+      this.rankingHogaresGeneral = hogaresOrdenados.map((hogar) => {
+        conteo++;
+
+        if (hogar.puntaje_ranking !== ultimoPuntaje) {
+          ultimaPosicion = conteo;
+          ultimoPuntaje = hogar.puntaje_ranking;
+        }
+
+        return {
+          ...hogar,
+          posicion: ultimaPosicion
+        };
+      });
+    },
+    error: (err) => console.error('Error al cargar ranking', err)
   });
 }
 

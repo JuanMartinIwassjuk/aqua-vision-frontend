@@ -17,9 +17,14 @@ export class GamificacionService {
 
   constructor(private http: HttpClient) {}
 
-  getRanking(): Observable<RankingResponse> {
-    return this.http.get<RankingResponse>(`${this.baseUrl}/ranking`);
-  }
+getRanking(hogarId: number): Observable<RankingResponse> {
+  return this.http.get<RankingResponse>(`${this.baseUrl}/ranking/${hogarId}`);
+}
+
+getRankingGeneral(): Observable<RankingResponse> {
+  return this.http.get<RankingResponse>(`${this.baseUrl}/ranking/`);
+}
+
 
   getRecompensas(): Observable<Recompensa[]> {
     return this.http.get<Recompensa[]>(`${this.baseUrl}/recompensas`);
