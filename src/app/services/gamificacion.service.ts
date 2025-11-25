@@ -33,7 +33,7 @@ getRankingGeneral(): Observable<RankingResponse> {
   canjearRecompensa(hogarId: number, recompensaId: number): Observable<{ nuevoPuntaje: number, estado: string, fechaCanjeo?: string }> {
     console.log('canjeando recompensa: ', recompensaId);
     return this.http.post<{ nuevoPuntaje: number, estado: string, fechaCanjeo?: string }>(
-      `${this.baseUrl}/${hogarId}/recompensas/${recompensaId}/canjear`, {}
+      `${this.baseUrl}/${hogarId}/recompensas/${recompensaId}`, {}
     );
   }
 

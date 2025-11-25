@@ -120,71 +120,71 @@
   </div>
 
 
-<div class="modal-popup" *ngIf="activeModal === 'ranking'" (click)="closeModal()">
+  <div class="modal-popup" *ngIf="activeModal === 'ranking'" (click)="closeModal()">
 
-  <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
-    <img src="images/x.png" loading="lazy" alt="cross-icon" class="cross-icon" (click)="closeModal()">
+    <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
+      <img src="images/x.png" loading="lazy" alt="cross-icon" class="cross-icon" (click)="closeModal()">
 
-    <h1 class="title-medallas">Ranking completo de hogares</h1>
+      <h1 class="title-medallas">Ranking completo de hogares</h1>
 
-    <div class="container-modal-medallas">
-      <p class="descr-medallas">
-        Acá podés ver todas las posiciones del ranking de hogares. ¿En qué posición estás hoy?
-      </p>
-    </div>
-
-
-    <div class="ranking-scroll-wrapper">
-      <div class="container-ranking">
-        <ul role="list" class="ranking-list">
+      <div class="container-modal-medallas">
+        <p class="descr-medallas">
+          Acá podés ver todas las posiciones del ranking de hogares. ¿En qué posición estás hoy?
+        </p>
+      </div>
 
 
-          <li class="ranking-row header">
-            <div class="col pos"><h3>#</h3></div>
-            <div class="col user"><h3>Usuario</h3></div>
-            <div class="col loc"><h3>Localidad</h3></div>
-            <div class="col sec"><h3>Sectores</h3></div>
-            <div class="col juego"><h3>Juego más jugado</h3></div>
-            <div class="col pts"><h3>Puntos</h3></div>
-          </li>
+      <div class="ranking-scroll-wrapper">
+        <div class="container-ranking">
+          <ul role="list" class="ranking-list">
 
 
-          <li class="ranking-row" *ngFor="let hogar of rankingHogaresGeneral">
+            <li class="ranking-row header">
+              <div class="col pos"><h3>#</h3></div>
+              <div class="col user"><h3>Usuario</h3></div>
+              <div class="col loc"><h3>Localidad</h3></div>
+              <div class="col sec"><h3>Sectores</h3></div>
+              <div class="col juego"><h3>Juego más jugado</h3></div>
+              <div class="col pts"><h3>Puntos</h3></div>
+            </li>
 
-            <div class="col pos">
-              <h3>{{ hogar.posicion }}</h3>
-            </div>
 
-            <div class="col user">
-              <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
-              <span>{{ hogar.nombre }}</span>
-            </div>
+            <li class="ranking-row" *ngFor="let hogar of rankingHogaresGeneral">
 
-            <div class="col loc">
-              <span>{{ hogar.localidad }}</span>
-            </div>
+              <div class="col pos">
+                <h3>{{ hogar.posicion }}</h3>
+              </div>
 
-            <div class="col sec">
-              <span>{{ hogar.cantidad_sectores }}</span>
-            </div>
+              <div class="col user">
+                <img src="images/circle-user-dark.png" loading="lazy" alt="user-icon">
+                <span>{{ hogar.nombre }}</span>
+              </div>
 
-            <div class="col juego">
-              <span>{{ formatearNombreJuego(hogar.juego_mas_jugado) }}</span>
-            </div>
+              <div class="col loc">
+                <span>{{ hogar.localidad }}</span>
+              </div>
 
-            <div class="col pts">
-              <h3>{{ hogar.puntaje_ranking }}</h3>
-            </div>
+              <div class="col sec">
+                <span>{{ hogar.cantidad_sectores }}</span>
+              </div>
 
-          </li>
+              <div class="col juego">
+                <span>{{ formatearNombreJuego(hogar.juego_mas_jugado) }}</span>
+              </div>
 
-        </ul>
+              <div class="col pts">
+                <h3>{{ hogar.puntaje_ranking }}</h3>
+              </div>
+
+            </li>
+
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="div-block-4"></div>
-</div>
+    <div class="div-block-4"></div>
+  </div>
 
   <div class="modal-popup" *ngIf="activeModal === 'recompensas'" (click)="closeModal()">
     <div class="modal-popup-medallas" (click)="$event.stopPropagation()">
