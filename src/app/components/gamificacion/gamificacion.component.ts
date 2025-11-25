@@ -127,6 +127,7 @@ trivias = [
         this.homeService.getHogar(hogarId).subscribe({
           next: (hogarFull) => {
             this.hogar = hogarFull;
+            console.log("Puntos hogar: ", this.hogar.puntos);
             this.cargarRecompensasCanjeadas(hogarFull);
           }
         });
@@ -282,35 +283,35 @@ trivias = [
   recompensasCanjeadas = new Set<number>();
   isLoadingCanje: { [id: number]: boolean } = {};
 
-cargarRanking(): void {
+  cargarRanking(): void {
 
-  this.gamificacionService.getRanking(this.hogarId).subscribe({
-    next: (data) => {
-      const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
+    this.gamificacionService.getRanking(this.hogarId).subscribe({
+      next: (data) => {
+        const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
 
-      let ultimaPosicion = 0;
-      let ultimoPuntaje: number | null = null;
-      let conteo = 0;
+        let ultimaPosicion = 0;
+        let ultimoPuntaje: number | null = null;
+        let conteo = 0;
 
-      this.rankingHogares = hogaresOrdenados.map((hogar) => {
-        conteo++;
+        this.rankingHogares = hogaresOrdenados.map((hogar) => {
+          conteo++;
 
-        if (hogar.puntaje_ranking !== ultimoPuntaje) {
-          ultimaPosicion = conteo;
-          ultimoPuntaje = hogar.puntaje_ranking;
-        }
+          if (hogar.puntaje_ranking !== ultimoPuntaje) {
+            ultimaPosicion = conteo;
+            ultimoPuntaje = hogar.puntaje_ranking;
+          }
 
-        return {
-          ...hogar,
-          posicion: ultimaPosicion
-        };
-      });
+          return {
+            ...hogar,
+            posicion: ultimaPosicion
+          };
+        });
 
-      this.top5Hogares = this.rankingHogares.slice(0, 5);
-    },
-    error: (err) => console.error('Error al cargar ranking', err)
-  });
-}
+        this.top5Hogares = this.rankingHogares.slice(0, 5);
+      },
+      error: (err) => console.error('Error al cargar ranking', err)
+    });
+  }
 
   cargarRecompensasGlobales(): void {
     this.gamificacionService.getRecompensas().subscribe({
@@ -329,7 +330,7 @@ cargarRanking(): void {
   cargarRecompensasCanjeadas(hogar: Hogar): void {
     if (hogar.recompensas) {
       hogar.recompensas.forEach((r: RecompensaCanjeada) => {
-        if (r.estado === 'CANJEADO' || r.estado === 'RECLAMADO') {
+        if (r.estado === 'CANJEADO' || r.estado === 'RECLAMADO' || r.estado === 'DISPONIBLE') {
           this.recompensasCanjeadas.add(r.recompensa.id);
         }
       });
