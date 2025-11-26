@@ -7,7 +7,7 @@
     "explanation": "Un goteo constante puede superar los 30 litros diarios según el caudal de salida."
   },
   {
-    "day": 1,
+    "day": 3,
     "question": "¿Qué acción ayuda más a reducir el consumo al cepillarte los dientes?",
     "options": ["Usar agua tibia", "Bajar la presión del grifo", "Cerrar la canilla mientras cepillás", "Cepillarse más rápido"],
     "correctAnswer": 2,
@@ -118,42 +118,42 @@
 
 
   {
-    "day": 3,
+    "day": 99,
     "question": "¿Cuántos litros consume una ducha promedio de 10 minutos?",
     "options": ["50 litros", "80 litros", "100 litros", "150 litros"],
     "correctAnswer": 2,
     "explanation": "Una ducha de 10 minutos consume alrededor de 100 litros según el caudal estándar."
   },
   {
-    "day": 3,
+    "day": 99,
     "question": "¿Qué acción permite ahorrar más agua durante la ducha?",
     "options": ["Usar agua caliente", "Cerrar mientras te enjabonás", "No usar shampoo", "Ducharse con la puerta abierta"],
     "correctAnswer": 1,
     "explanation": "Cerrar la ducha mientras te enjabonás puede ahorrar 20 a 40 litros por sesión."
   },
   {
-    "day": 3,
+    "day": 99,
     "question": "¿Cuánta agua se puede ahorrar reduciendo la ducha a 5 minutos?",
     "options": ["10 litros", "30 litros", "50 litros", "70 litros"],
     "correctAnswer": 3,
     "explanation": "Una ducha corta puede ahorrar hasta 70 litros comparado con una larga."
   },
   {
-    "day": 3,
+    "day": 99,
     "question": "¿Cuál es el mayor responsable del consumo de agua en el baño?",
     "options": ["Lavamanos", "Inodoro", "Ducha", "Bidet"],
     "correctAnswer": 2,
     "explanation": "La ducha suele representar el mayor consumo por su caudal sostenido."
   },
   {
-    "day": 3,
+    "day": 99,
     "question": "¿Cuánta agua se desperdicia dejando la canilla abierta mientras te afeitás?",
     "options": ["5 litros", "10 litros", "20 litros", "30 litros"],
     "correctAnswer": 3,
     "explanation": "El caudal del lavamanos puede causar pérdidas de hasta 30 litros durante una afeitada."
   },
   {
-    "day": 3,
+    "day": 99,
     "question": "¿Qué dispositivo ayuda a reducir el consumo en la ducha?",
     "options": ["Filtro de carbón", "Cabezal de bajo flujo", "Manguera reforzada", "Aromatizador"],
     "correctAnswer": 1,
@@ -293,7 +293,7 @@
 
 
   {
-    "day": 6,
+    "day": 3,
     "question": "¿Cuál es una forma efectiva de reutilizar agua en casa?",
     "options": ["Reutilizar agua de lluvia", "Reutilizar agua del inodoro", "Reutilizar agua jabonosa para cocinar", "No reutilizar ninguna"],
     "correctAnswer": 0,

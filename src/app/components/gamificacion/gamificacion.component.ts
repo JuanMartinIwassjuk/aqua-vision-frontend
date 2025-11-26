@@ -287,7 +287,13 @@ trivias = [
 
     this.gamificacionService.getRanking(this.hogarId).subscribe({
       next: (data) => {
-        const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
+
+      const hogaresFiltrados = data.hogares.filter((hogar: any) => {
+        const nombre = hogar.nombre?.toLowerCase() || "";
+        return !nombre.includes("admin");
+      });
+
+        const hogaresOrdenados = hogaresFiltrados.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
 
         let ultimaPosicion = 0;
         let ultimoPuntaje: number | null = null;
@@ -308,6 +314,7 @@ trivias = [
         });
 
         this.top5Hogares = this.rankingHogares.slice(0, 5);
+        console.log(this.top5Hogares, "hogares");
       },
       error: (err) => console.error('Error al cargar ranking', err)
     });
@@ -535,7 +542,14 @@ cargarRankingGeneral(): void {
 
   this.gamificacionService.getRankingGeneral().subscribe({
     next: (data) => {
-      const hogaresOrdenados = data.hogares.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
+
+      const hogaresFiltrados = data.hogares.filter((hogar: any) => {
+        const nombre = hogar.nombre?.toLowerCase() || "";
+        return !nombre.includes("admin");
+      });
+
+
+      const hogaresOrdenados = hogaresFiltrados.sort((a, b) => b.puntaje_ranking - a.puntaje_ranking);
 
       let ultimaPosicion = 0;
       let ultimoPuntaje: number | null = null;

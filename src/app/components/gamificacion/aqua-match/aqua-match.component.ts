@@ -33,12 +33,12 @@ export interface MergedCard {
 })
 export class AquaMatchComponent implements OnInit, OnDestroy {
   private allLeftCards: Card[] = [
-    { id: 1, text: 'Si lavás el auto dejando correr la manguera por minutos', matched: false, tip: 'Usá balde y esponja: podés ahorrar hasta 200 L por lavado.' },
+    { id: 1, text: 'Si usás el lavarropas con media carga varias veces por semana', matched: false, tip: 'Esperar a tener carga completa ahorra agua y energía.' },
     { id: 2, text: 'Si regás el jardín al mediodía, cuando el sol es más fuerte', matched: false, tip: 'Regá temprano o al atardecer para evitar hasta un 50% de evaporación.' },
     { id: 3, text: 'Si dejás la canilla abierta mientras te cepillás los dientes', matched: false, tip: 'Cerrarla mientras te cepillás ahorra unos 6 L por minuto.' },
     { id: 4, text: 'Si te das duchas largas de más de 10 minutos', matched: false, tip: 'Reduciendo la ducha a 5 minutos se ahorran hasta 75 L por día.' },
     { id: 5, text: 'Si tu inodoro o canillas gotean constantemente', matched: false, tip: 'Una fuga puede desperdiciar 20 L diarios. Revisá y arreglá a tiempo.' },
-    { id: 6, text: 'Si usás el lavarropas con media carga varias veces por semana', matched: false, tip: 'Esperar a tener carga completa ahorra agua y energía.' },
+    { id: 6, text: 'Si lavás el auto dejando correr la manguera por minutos', matched: false, tip: 'Usá balde y esponja: podés ahorrar hasta 200 L por lavado.' },
     { id: 7, text: 'Si lavás frutas y verduras directamente bajo la canilla', matched: false, tip: 'Lavar en un recipiente puede ahorrar hasta 10 L por vez.' },
     { id: 8, text: 'Si nunca controlás tu consumo de agua ni revisás el medidor', matched: false, tip: 'Monitorear el consumo ayuda a detectar fugas y reducir gastos.' },
     { id: 9, text: 'Si llenás la pileta sin control ni mantenimiento', matched: false, tip: 'Cubrirla con una lona reduce evaporación y mantiene el agua limpia más tiempo.' },
@@ -48,12 +48,12 @@ export class AquaMatchComponent implements OnInit, OnDestroy {
   ];
 
   private allRightCards: Card[] = [
-    { id: 1, text: 'Desperdiciás cientos de litros de agua cada vez que lavás el auto.', matched: false },
+    { id: 1, text: 'Aumentás el consumo de agua y energía sin aprovechar su capacidad.', matched: false },
     { id: 2, text: 'Gran parte del agua se evapora antes de que las plantas la absorban.', matched: false },
     { id: 3, text: 'Se pierden varios litros de agua por minuto innecesariamente.', matched: false },
     { id: 4, text: 'Tu consumo diario se dispara y usás más agua de la necesaria.', matched: false },
     { id: 5, text: 'Las fugas constantes generan pérdidas de agua todos los días.', matched: false },
-    { id: 6, text: 'Aumentás el consumo de agua y energía sin aprovechar la capacidad del lavarropas.', matched: false },
+    { id: 6, text: 'Desperdiciás cientos de litros de agua cada vez que lavás el auto.', matched: false },
     { id: 7, text: 'Malgastás agua en la cocina con un uso poco eficiente del recurso.', matched: false },
     { id: 8, text: 'Podés tener fugas ocultas o consumos excesivos sin darte cuenta.', matched: false },
     { id: 9, text: 'La evaporación y los recambios innecesarios desperdician miles de litros.', matched: false },
